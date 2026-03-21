@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cutesy Photobooth — Free Vintage Photo Strips Philippines</title>
+<meta name="description" content="Free online photobooth Philippines. Take 4 cute vintage photo strips instantly — no sign up, no download needed. Perfect for debuts, weddings, and parties.">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:wght@300;400;500&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --forest:  #1B3A2D;
+  --moss:    #2D5C42;
+  --garden:  #4A8C6A;
+  --fern:    #A8D5B5;
+  --mint:    #C8E6D4;
+  --rose:    #A63D5C;
+  --bloom:   #D4607E;
+  --petal:   #F0A0B8;
+  --blush:   #FDE8EF;
+  --gold:    #E8C84A;
+  --butter:  #F5E27A;
+  --cream:   #FDFAF4;
+  --dark:    #0F2419;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{
+  background:var(--forest);
+  color:var(--cream);
+  font-family:'DM Sans',sans-serif;
+  cursor:none;
+}
+body::after{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity:0.03;pointer-events:none;z-index:9000;
+}
+.cursor{
+  position:fixed;width:14px;height:14px;
+  background:var(--gold);border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:width .15s,height .15s,background .15s;
+  mix-blend-mode:difference;
+}
+.cursor.big{width:32px;height:32px;}
+
+/* ── SCREENS ── */
+.screen{
+  position:fixed;inset:0;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:24px;
+  opacity:0;pointer-events:none;
+  transition:opacity .4s ease;
+  overflow-y:auto;
+}
+.screen.active{opacity:1;pointer-events:all;}
+
+/* blobs */
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.1;pointer-events:none;}
+
+/* ── NAV BAR ── */
+.topbar{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 32px;
+  background:linear-gradient(to bottom,rgba(15,36,25,.95),transparent);
+}
+.logo{font-family:'Caveat',cursive;font-size:20px;font-weight:700;color:var(--gold);cursor:none;}
+.step-dots{display:flex;gap:8px;align-items:center;}
+.dot{width:8px;height:8px;border-radius:50%;background:rgba(168,213,181,.25);transition:all .3s;}
+.dot.active{background:var(--gold);width:24px;border-radius:4px;}
+.dot.done{background:var(--garden);}
+
+/* ── BUTTONS ── */
+.btn{
+  font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;
+  padding:12px 28px;border-radius:100px;border:none;cursor:none;
+  transition:transform .15s,box-shadow .15s;letter-spacing:.04em;
+}
+.btn:hover{transform:translateY(-2px);}
+.btn-primary{background:var(--rose);color:#fff;box-shadow:0 8px 24px rgba(166,61,92,.35);}
+.btn-primary:hover{background:var(--bloom);box-shadow:0 12px 32px rgba(166,61,92,.5);}
+.btn-secondary{background:var(--moss);color:var(--mint);border:1px solid rgba(74,140,106,.4);}
+.btn-secondary:hover{border-color:var(--garden);}
+.btn-gold{background:var(--gold);color:var(--forest);font-weight:600;}
+.btn-gold:hover{background:var(--butter);}
+.btn-outline{background:transparent;color:var(--mint);border:1.5px solid rgba(168,213,181,.35);}
+.btn-outline:hover{border-color:var(--fern);}
+.btn-icon{width:48px;height:48px;padding:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;}
+
+/* ════════════════════════════════
+   SCREEN 1 — LANDING
+════════════════════════════════ */
+#s1{background:var(--forest);}
+#s1 .blob1{width:500px;height:500px;background:var(--rose);top:-150px;right:-100px;}
+#s1 .blob2{width:380px;height:380px;background:var(--garden);bottom:-80px;left:-60px;}
+
+.hero-tag{
+  font-size:11px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--gold);border:1px solid rgba(232,200,74,.3);
+  padding:6px 18px;border-radius:100px;margin-bottom:24px;
+  animation:fadeUp .5s ease both;
+}
+.hero-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(36px,6vw,72px);font-weight:700;
+  line-height:1.08;text-align:center;color:var(--cream);
+  max-width:700px;animation:fadeUp .5s .1s ease both;
+}
+.hero-title em{font-style:italic;color:var(--gold);}
+.hero-sub{
+  font-size:15px;font-weight:300;color:var(--mint);
+  text-align:center;max-width:420px;line-height:1.7;
+  margin-top:16px;animation:fadeUp .5s .2s ease both;
+}
+.hero-actions{display:flex;gap:12px;margin-top:32px;flex-wrap:wrap;justify-content:center;animation:fadeUp .5s .3s ease both;}
+.price-badge{
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  width:72px;height:72px;border-radius:50%;
+  border:2px solid var(--garden);background:var(--moss);
+  font-family:'Playfair Display',serif;color:var(--gold);
+  font-size:13px;font-weight:700;line-height:1.2;
+  position:absolute;right:20px;bottom:20px;
+}
+.price-badge span{font-size:10px;font-weight:400;color:var(--fern);}
+
+/* booth on landing */
+.booth-hero{
+  position:relative;margin-top:40px;
+  animation:fadeUp .5s .35s ease both, float 4s ease-in-out infinite;
+}
+.booth-hero svg{width:min(300px,70vw);filter:drop-shadow(0 24px 48px rgba(0,0,0,.5));}
+
+/* ════════════════════════════════
+   SCREEN 2 — CAPTURE
+════════════════════════════════ */
+#s2{background:var(--dark);flex-direction:row;gap:0;padding:0;align-items:stretch;justify-content:flex-start;}
+
+.capture-sidebar{
+  width:220px;flex-shrink:0;
+  background:var(--forest);
+  border-right:1px solid rgba(74,140,106,.25);
+  display:flex;flex-direction:column;
+  padding:80px 20px 24px;gap:16px;overflow-y:auto;
+}
+.sidebar-section{margin-bottom:4px;}
+.sidebar-label{
+  font-size:9px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--garden);font-weight:500;margin-bottom:10px;
+  display:flex;align-items:center;gap:6px;
+}
+.sidebar-label::after{content:'';flex:1;height:1px;background:rgba(74,140,106,.25);}
+
+/* filter chips */
+.filter-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.chip{
+  font-size:11px;padding:5px 10px;border-radius:100px;
+  border:1px solid rgba(74,140,106,.35);
+  background:transparent;color:var(--mint);cursor:none;
+  transition:all .15s;font-family:'DM Sans',sans-serif;
+}
+.chip:hover,.chip.active{background:var(--moss);border-color:var(--garden);color:var(--cream);}
+.chip.active{background:var(--rose);border-color:var(--rose);color:#fff;}
+
+/* template strip picker */
+.template-nav{display:flex;align-items:center;gap:8px;margin-top:4px;}
+.t-arr{
+  width:28px;height:28px;border-radius:50%;
+  background:var(--moss);border:1px solid rgba(74,140,106,.35);
+  color:var(--mint);font-size:14px;cursor:none;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;flex-shrink:0;
+}
+.t-arr:hover{background:var(--garden);color:var(--cream);}
+.template-preview{
+  flex:1;aspect-ratio:1/2.2;background:var(--moss);
+  border-radius:6px;border:1.5px solid rgba(74,140,106,.3);
+  overflow:hidden;display:flex;flex-direction:column;gap:2px;padding:4px;
+  transition:border-color .2s;
+}
+.template-preview.active{border-color:var(--gold);}
+.t-frame{flex:1;border-radius:3px;background:var(--forest);}
+
+/* main camera area */
+.capture-main{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:80px 24px 24px;gap:16px;
+  position:relative;
+}
+.viewfinder-wrap{
+  position:relative;
+  border-radius:16px;overflow:hidden;
+  border:2px solid rgba(74,140,106,.4);
+  box-shadow:0 0 0 1px rgba(232,200,74,.1),0 32px 64px rgba(0,0,0,.6);
+  background:#000;
+}
+#video{
+  width:min(400px,calc(100vw - 280px));
+  aspect-ratio:3/4;object-fit:cover;
+  display:block;transform:scaleX(-1);
+}
+.vf-corners .c{
+  position:absolute;width:20px;height:20px;
+  border-color:var(--gold);border-style:solid;opacity:.7;
+}
+.c.tl{top:10px;left:10px;border-width:2px 0 0 2px;}
+.c.tr{top:10px;right:10px;border-width:2px 2px 0 0;}
+.c.bl{bottom:10px;left:10px;border-width:0 0 2px 2px;}
+.c.br{bottom:10px;right:10px;border-width:0 2px 2px 0;}
+
+/* led */
+.led-wrap{position:absolute;top:12px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:6px;}
+.led{width:8px;height:8px;border-radius:50%;background:#444;}
+.led.green{background:#2ecc71;box-shadow:0 0 8px #2ecc71;animation:blink 1.5s infinite;}
+.led.red{background:var(--rose);box-shadow:0 0 8px var(--rose);animation:blink .4s infinite;}
+.led-txt{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:rgba(168,213,181,.5);font-family:monospace;}
+
+/* countdown overlay */
+#countdown{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-size:120px;font-weight:700;
+  color:#fff;text-shadow:0 0 60px rgba(0,0,0,.8);
+  opacity:0;transition:opacity .15s;pointer-events:none;
+  background:rgba(0,0,0,.25);
+}
+#flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;border-radius:14px;}
+
+/* shot indicators */
+.shot-indicators{display:flex;gap:8px;}
+.shot-ind{
+  width:32px;height:32px;border-radius:50%;
+  border:2px solid rgba(74,140,106,.4);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;color:var(--garden);
+  transition:all .3s;font-family:monospace;
+}
+.shot-ind.done{background:var(--garden);border-color:var(--garden);color:#fff;}
+.shot-ind.current{border-color:var(--rose);color:var(--rose);box-shadow:0 0 12px rgba(166,61,92,.4);}
+
+.capture-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;}
+
+/* filter preview on video */
+#video.bw{filter:grayscale(1);}
+#video.sepia{filter:sepia(.85) contrast(1.1);}
+#video.fade{filter:contrast(.85) brightness(1.1) saturate(.7);}
+#video.vivid{filter:saturate(1.5) contrast(1.1);}
+#video.noir{filter:grayscale(1) contrast(1.4) brightness(.9);}
+
+/* right — film strip live preview */
+.strip-preview-panel{
+  width:110px;flex-shrink:0;
+  background:var(--forest);
+  border-left:1px solid rgba(74,140,106,.25);
+  display:flex;flex-direction:column;
+  align-items:center;padding:80px 12px 24px;gap:8px;
+}
+.strip-preview-label{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--garden);font-family:monospace;margin-bottom:4px;}
+.sp-film{
+  background:var(--dark);border-radius:6px;padding:6px 5px;
+  border:1px solid rgba(74,140,106,.2);width:88px;
+}
+.sp-perf{display:flex;justify-content:space-between;padding:2px 0;}
+.sp-hole{width:8px;height:6px;background:rgba(255,255,255,.06);border-radius:1px;}
+.sp-frame{
+  width:100%;aspect-ratio:3/4;border-radius:3px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);
+  margin-bottom:4px;overflow:hidden;position:relative;
+}
+.sp-frame img{width:100%;height:100%;object-fit:cover;display:block;}
+.sp-frame.empty{display:flex;align-items:center;justify-content:center;font-size:16px;opacity:.2;}
+.sp-num{font-size:8px;font-family:monospace;color:rgba(168,213,181,.3);text-align:right;margin-bottom:3px;}
+
+/* hidden canvas */
+#cap-canvas{display:none;}
+
+/* ════════════════════════════════
+   SCREEN 3 — PRINTING
+════════════════════════════════ */
+#s3{background:var(--dark);}
+#s3 .blob1{width:400px;height:400px;background:var(--rose);top:0;right:0;opacity:.06;}
+#s3 .blob2{width:350px;height:350px;background:var(--garden);bottom:0;left:0;opacity:.06;}
+
+.print-machine{
+  display:flex;flex-direction:column;align-items:center;gap:0;
+  animation:fadeUp .5s ease both;
+}
+.print-sign{
+  background:var(--moss);border:1.5px solid var(--garden);
+  border-radius:10px 10px 0 0;padding:16px 32px;text-align:center;
+  border-bottom:none;min-width:200px;
+}
+.print-sign-title{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:var(--gold);letter-spacing:.08em;}
+.print-countdown-num{font-family:'Playfair Display',serif;font-size:48px;font-weight:700;color:var(--cream);line-height:1;}
+.print-sign-sub{font-size:10px;color:var(--fern);letter-spacing:.12em;text-transform:uppercase;font-family:monospace;}
+
+.print-slot{
+  background:var(--forest);border:1.5px solid var(--garden);
+  border-radius:0 0 10px 10px;
+  width:200px;height:280px;
+  position:relative;overflow:hidden;
+  display:flex;align-items:flex-start;justify-content:center;
+}
+.print-slot-inner{
+  width:140px;background:var(--dark);border-radius:4px;
+  position:absolute;top:0;
+  transform:translateY(-100%);
+  transition:transform 2.5s cubic-bezier(.25,.46,.45,.94);
+  overflow:hidden;
+}
+.print-slot-inner.printing{transform:translateY(20px);}
+.ps-frame{width:100%;aspect-ratio:3/4;background:var(--moss);border-bottom:2px solid rgba(255,255,255,.04);overflow:hidden;}
+.ps-frame img{width:100%;height:100%;object-fit:cover;display:block;}
+.ps-frame.empty{background:var(--dark);display:flex;align-items:center;justify-content:center;font-size:20px;opacity:.2;}
+
+.slot-lines{
+  position:absolute;bottom:0;left:0;right:0;height:40px;
+  display:flex;flex-direction:column;justify-content:space-around;padding:8px 12px;
+}
+.slot-line{height:1px;background:rgba(74,140,106,.2);}
+
+.pickup-btn-wrap{margin-top:32px;text-align:center;animation:fadeUp .5s .8s ease both;opacity:0;}
+.pickup-btn-wrap.show{opacity:1;}
+
+/* ════════════════════════════════
+   SCREEN 4 — PICKUP / RESULT
+════════════════════════════════ */
+#s4{background:var(--dark);}
+#s4 .blob1{width:450px;height:450px;background:var(--petal);top:-100px;right:-100px;opacity:.06;}
+#s4 .blob2{width:350px;height:350px;background:var(--garden);bottom:-80px;left:-60px;opacity:.07;}
+
+.result-layout{
+  display:flex;gap:40px;align-items:flex-start;
+  max-width:700px;width:100%;
+  animation:fadeUp .5s ease both;
+  flex-wrap:wrap;justify-content:center;
+}
+.result-strip-wrap{position:relative;flex-shrink:0;}
+.result-label{
+  font-family:'Caveat',cursive;font-size:22px;font-weight:700;
+  color:var(--gold);margin-bottom:8px;
+  display:flex;align-items:center;gap:8px;
+}
+.result-strip{
+  background:var(--dark);border-radius:8px;
+  padding:8px 6px;border:1.5px solid rgba(74,140,106,.3);
+  width:160px;
+  box-shadow:0 32px 64px rgba(0,0,0,.5);
+}
+.rs-header{text-align:center;padding:6px 0 10px;}
+.rs-brand{font-family:'Caveat',cursive;font-size:13px;font-weight:700;color:var(--gold);}
+.rs-date{font-size:8px;font-family:monospace;color:rgba(168,213,181,.35);margin-top:2px;}
+.rs-frame{
+  width:100%;aspect-ratio:3/4;border-radius:4px;
+  margin-bottom:6px;overflow:hidden;background:var(--moss);
+}
+.rs-frame img{width:100%;height:100%;object-fit:cover;display:block;}
+.rs-frame.empty{display:flex;align-items:center;justify-content:center;font-size:24px;opacity:.2;}
+.rs-footer{text-align:center;padding:6px 0 2px;font-size:8px;font-family:monospace;color:rgba(168,213,181,.25);}
+
+/* scissor cut button */
+.scissors-btn{
+  position:absolute;top:-16px;right:-20px;
+  background:var(--moss);border:1px solid var(--garden);
+  border-radius:50%;width:36px;height:36px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;cursor:none;transition:all .2s;
+}
+.scissors-btn:hover{background:var(--rose);border-color:var(--rose);transform:rotate(-20deg);}
+
+.result-actions-col{display:flex;flex-direction:column;gap:12px;min-width:180px;padding-top:40px;}
+.result-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--cream);line-height:1.2;margin-bottom:4px;}
+.result-title em{font-style:italic;color:var(--petal);}
+.result-sub{font-size:13px;color:var(--fern);line-height:1.6;margin-bottom:16px;font-weight:300;}
+
+.share-row{display:flex;gap:8px;align-items:center;margin-top:4px;}
+.share-label{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--garden);font-family:monospace;}
+.social-btn{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--moss);border:1px solid rgba(74,140,106,.35);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;cursor:none;transition:all .15s;text-decoration:none;
+}
+.social-btn:hover{background:var(--rose);border-color:var(--rose);}
+
+/* MODALS */
+.modal-overlay{
+  position:fixed;inset:0;z-index:800;
+  background:rgba(15,36,25,.85);backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .25s;
+}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{
+  background:var(--moss);border:1px solid rgba(74,140,106,.4);
+  border-radius:20px;padding:28px;max-width:520px;width:calc(100% - 48px);
+  transform:translateY(20px);transition:transform .25s;
+}
+.modal-overlay.open .modal{transform:translateY(0);}
+.modal-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--cream);margin-bottom:4px;}
+.modal-sub{font-size:12px;color:var(--fern);margin-bottom:20px;}
+.modal-close{
+  position:absolute;top:16px;right:16px;
+  background:transparent;border:none;color:var(--fern);
+  font-size:20px;cursor:none;padding:4px;
+}
+.modal{position:relative;}
+
+/* filter modal grid */
+.filter-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.filter-card{
+  border-radius:12px;overflow:hidden;border:2px solid transparent;
+  cursor:none;transition:all .2s;background:var(--forest);
+}
+.filter-card:hover,.filter-card.active{border-color:var(--gold);}
+.filter-card.active{box-shadow:0 0 20px rgba(232,200,74,.25);}
+.filter-thumb{aspect-ratio:1;background:var(--dark);display:flex;align-items:center;justify-content:center;font-size:28px;}
+.filter-thumb.bw-prev{filter:grayscale(1);}
+.filter-thumb.sepia-prev{filter:sepia(.85);}
+.filter-thumb.fade-prev{filter:contrast(.85) brightness(1.1) saturate(.7);}
+.filter-thumb.vivid-prev{filter:saturate(1.5) contrast(1.1);}
+.filter-thumb.noir-prev{filter:grayscale(1) contrast(1.4);}
+.filter-name{font-size:11px;text-align:center;padding:6px;color:var(--mint);font-family:'DM Sans',sans-serif;}
+
+/* template modal */
+.template-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.template-card{
+  border-radius:10px;overflow:hidden;border:2px solid transparent;
+  cursor:none;transition:all .2s;background:var(--forest);padding:8px 6px;
+}
+.template-card:hover,.template-card.active{border-color:var(--gold);}
+.template-card.active{box-shadow:0 0 20px rgba(232,200,74,.2);}
+.tc-strip{display:flex;flex-direction:column;gap:2px;margin-bottom:6px;}
+.tc-frame{width:100%;aspect-ratio:3/4;border-radius:2px;}
+.template-name{font-size:10px;text-align:center;color:var(--mint);font-family:'DM Sans',sans-serif;}
+
+/* upload choice modal */
+.choice-btns{display:flex;gap:12px;flex-wrap:wrap;}
+.choice-card{
+  flex:1;min-width:140px;
+  background:var(--forest);border:1.5px solid rgba(74,140,106,.35);
+  border-radius:14px;padding:24px 16px;text-align:center;
+  cursor:none;transition:all .2s;
+}
+.choice-card:hover{border-color:var(--gold);background:var(--dark);}
+.choice-icon{font-size:36px;margin-bottom:10px;}
+.choice-title{font-family:'Playfair Display',serif;font-size:16px;color:var(--cream);margin-bottom:4px;}
+.choice-sub{font-size:11px;color:var(--fern);line-height:1.5;}
+
+/* upload input */
+#upload-input{display:none;}
+
+/* animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.4;}  }
+@keyframes pulse{0%,100%{box-shadow:0 8px 24px rgba(166,61,92,.35);}50%{box-shadow:0 8px 32px rgba(166,61,92,.6);}}
+@keyframes printSlide{from{transform:translateY(-100%);}to{transform:translateY(20px);}}
+@keyframes shimmer{0%{opacity:.5;}50%{opacity:1;}100%{opacity:.5;}}
+
+/* status text */
+#status-txt{font-size:12px;color:var(--fern);font-family:monospace;letter-spacing:.08em;min-height:18px;text-align:center;}
+
+/* toast */
+.toast{
+  position:fixed;bottom:32px;left:50%;
+  transform:translateX(-50%) translateY(60px);
+  background:var(--dark);color:var(--cream);
+  font-size:12px;font-family:monospace;letter-spacing:.1em;
+  padding:10px 22px;border-radius:100px;
+  border:1px solid rgba(74,140,106,.3);
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+  z-index:9000;white-space:nowrap;
+}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+/* responsive */
+@media(max-width:680px){
+  #s2{flex-direction:column;}
+  .capture-sidebar{width:100%;flex-direction:row;flex-wrap:wrap;padding:70px 16px 12px;gap:8px;}
+  .strip-preview-panel{width:100%;flex-direction:row;padding:8px 16px;height:auto;}
+  #video{width:100%;aspect-ratio:4/3;}
+  .template-grid{grid-template-columns:repeat(3,1fr);}
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cur"></div>
+
+<!-- TOP BAR -->
+<div class="topbar" id="topbar">
+  <div class="logo">✦ Cutesy Booth</div>
+  <div class="step-dots">
+    <div class="dot active" id="d0"></div>
+    <div class="dot" id="d1"></div>
+    <div class="dot" id="d2"></div>
+    <div class="dot" id="d3"></div>
+  </div>
+  <div style="font-size:11px;color:var(--garden);font-family:monospace;letter-spacing:.1em;">FREE · 4 PICS</div>
+</div>
+
+<!-- ══════════════════════════════
+     SCREEN 1 — LANDING
+══════════════════════════════ -->
+<div class="screen active" id="s1">
+  <div class="blob blob1" style="width:500px;height:500px;background:var(--rose);top:-150px;right:-100px;"></div>
+  <div class="blob blob2" style="width:380px;height:380px;background:var(--garden);bottom:-80px;left:-60px;"></div>
+
+  <div class="hero-tag">✦ Free · Instant · No Sign Up</div>
+
+  <h1 class="hero-title">Your <em>vintage</em> strip,<br>anytime, anywhere.</h1>
+  <p class="hero-sub">Take 4 cute shots, pick your filter, choose a frame — and download your photo strip for free. 🎀</p>
+
+  <div class="hero-actions">
+    <button class="btn btn-primary" onclick="goTo(2)" style="font-size:15px;padding:14px 36px;animation:pulse 2.5s infinite;">
+      Enter Booth →
+    </button>
+    <button class="btn btn-outline" onclick="scrollInfo()">How it works</button>
+  </div>
+
+  <!-- Illustrated booth -->
+  <div class="booth-hero">
+    <svg viewBox="0 0 300 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="50" y="12" width="200" height="40" rx="6" fill="#2D5C42" stroke="#4A8C6A" stroke-width="1.2"/>
+      <text x="150" y="37" text-anchor="middle" font-family="Georgia,serif" font-size="14" font-weight="700" fill="#E8C84A" letter-spacing="3">CUTESY BOOTH</text>
+      <rect x="90" y="50" width="6" height="16" fill="#4A8C6A"/>
+      <rect x="204" y="50" width="6" height="16" fill="#4A8C6A"/>
+      <rect x="38" y="66" width="224" height="270" rx="10" fill="#2D5C42" stroke="#4A8C6A" stroke-width="1.2"/>
+      <!-- left panel -->
+      <rect x="52" y="80" width="108" height="130" rx="6" fill="#1B3A2D" stroke="#4A8C6A" stroke-width=".8"/>
+      <rect x="62" y="90" width="22" height="110" rx="2" fill="#111"/>
+      <rect x="63" y="91" width="20" height="24" rx="1" fill="#2D5C42" opacity=".9"/>
+      <rect x="63" y="119" width="20" height="24" rx="1" fill="#A63D5C" opacity=".7"/>
+      <rect x="63" y="147" width="20" height="24" rx="1" fill="#4A8C6A" opacity=".8"/>
+      <rect x="63" y="175" width="20" height="22" rx="1" fill="#E8C84A" opacity=".5"/>
+      <rect x="90" y="90" width="22" height="110" rx="2" fill="#111"/>
+      <rect x="91" y="91" width="20" height="24" rx="1" fill="#A63D5C" opacity=".8"/>
+      <rect x="91" y="119" width="20" height="24" rx="1" fill="#2D5C42" opacity=".9"/>
+      <rect x="91" y="147" width="20" height="24" rx="1" fill="#E8C84A" opacity=".5"/>
+      <rect x="91" y="175" width="20" height="22" rx="1" fill="#4A8C6A" opacity=".7"/>
+      <text x="110" y="226" text-anchor="middle" font-family="Georgia,serif" font-size="8" font-style="italic" fill="#A8D5B5">featured strips ✦</text>
+      <!-- divider -->
+      <line x1="165" y1="70" x2="165" y2="332" stroke="#4A8C6A" stroke-width="1.2"/>
+      <!-- right curtain -->
+      <rect x="169" y="72" width="84" height="5" rx="2.5" fill="#4A8C6A"/>
+      <path d="M174 77 Q183 110 175 150 Q167 190 178 230 Q189 265 175 300" stroke="#3D7A5C" stroke-width="10" stroke-linecap="round" fill="none" opacity=".7"/>
+      <path d="M190 77 Q199 108 191 148 Q183 188 194 228 Q205 263 191 298" stroke="#4A8C6A" stroke-width="8" stroke-linecap="round" fill="none"/>
+      <path d="M236 77 Q227 110 235 150 Q243 190 232 230 Q221 265 235 300" stroke="#3D7A5C" stroke-width="8" stroke-linecap="round" fill="none" opacity=".7"/>
+      <!-- stool -->
+      <ellipse cx="210" cy="296" rx="18" ry="5" fill="#1B3A2D" stroke="#4A8C6A" stroke-width=".8"/>
+      <rect x="207" y="268" width="6" height="28" rx="3" fill="#3D7A5C"/>
+      <ellipse cx="210" cy="270" rx="14" ry="4" fill="#2D5C42" stroke="#4A8C6A" stroke-width=".8"/>
+      <!-- dots -->
+      <circle cx="50" cy="74" r="4" fill="#A63D5C" opacity=".8"/>
+      <circle cx="250" cy="74" r="4" fill="#A63D5C" opacity=".8"/>
+      <circle cx="50" cy="330" r="4" fill="#E8C84A" opacity=".6"/>
+      <circle cx="250" cy="330" r="4" fill="#E8C84A" opacity=".6"/>
+      <rect x="38" y="332" width="224" height="12" rx="4" fill="#2D5C42" stroke="#4A8C6A" stroke-width=".8"/>
+    </svg>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     SCREEN 2 — CAPTURE
+══════════════════════════════ -->
+<div class="screen" id="s2">
+
+  <!-- Sidebar -->
+  <div class="capture-sidebar">
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Filter</div>
+      <div class="filter-chips">
+        <button class="chip active" data-filter="" onclick="setFilter(this,'')">Normal</button>
+        <button class="chip" data-filter="bw" onclick="setFilter(this,'bw')">B&W</button>
+        <button class="chip" data-filter="sepia" onclick="setFilter(this,'sepia')">Sepia</button>
+        <button class="chip" data-filter="fade" onclick="setFilter(this,'fade')">Fade</button>
+        <button class="chip" data-filter="vivid" onclick="setFilter(this,'vivid')">Vivid</button>
+        <button class="chip" data-filter="noir" onclick="setFilter(this,'noir')">Noir</button>
+      </div>
+      <button class="btn btn-secondary" style="width:100%;margin-top:8px;font-size:11px;padding:8px;" onclick="openFilterModal()">
+        ✦ All Filters
+      </button>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Frame</div>
+      <div class="template-nav">
+        <button class="t-arr" onclick="prevTemplate()">‹</button>
+        <div class="template-preview active" id="tmpl-prev">
+          <div class="t-frame" style="background:var(--forest);"></div>
+          <div class="t-frame" style="background:var(--forest);"></div>
+          <div class="t-frame" style="background:var(--forest);"></div>
+          <div class="t-frame" style="background:var(--forest);"></div>
+        </div>
+        <button class="t-arr" onclick="nextTemplate()">›</button>
+      </div>
+      <button class="btn btn-secondary" style="width:100%;margin-top:8px;font-size:11px;padding:8px;" onclick="openTemplateModal()">
+        ✦ All Frames
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Main capture area -->
+  <div class="capture-main">
+
+    <div class="viewfinder-wrap">
+      <video id="video" autoplay playsinline muted></video>
+      <div class="vf-corners">
+        <div class="c tl"></div><div class="c tr"></div>
+        <div class="c bl"></div><div class="c br"></div>
+      </div>
+      <div class="led-wrap">
+        <div class="led" id="led"></div>
+        <span class="led-txt" id="led-txt">STANDBY</span>
+      </div>
+      <div id="countdown"></div>
+      <div id="flash"></div>
+    </div>
+
+    <div class="shot-indicators" id="shot-indicators">
+      <div class="shot-ind" id="si0">1</div>
+      <div class="shot-ind" id="si1">2</div>
+      <div class="shot-ind" id="si2">3</div>
+      <div class="shot-ind" id="si3">4</div>
+    </div>
+
+    <div id="status-txt">ready to shoot!</div>
+
+    <div class="capture-actions">
+      <button class="btn btn-secondary btn-icon" title="Back" onclick="goTo(1)">←</button>
+      <button class="btn btn-primary" id="shoot-btn" onclick="openChoiceModal()" style="font-size:15px;padding:13px 32px;">
+        📸 Start Shooting
+      </button>
+      <button class="btn btn-secondary btn-icon" title="Reset" onclick="resetShots()">↺</button>
+    </div>
+  </div>
+
+  <!-- Strip preview panel -->
+  <div class="strip-preview-panel">
+    <div class="strip-preview-label">Your Strip</div>
+    <div class="sp-film" id="sp-film">
+      <div class="sp-perf"><div class="sp-hole"></div><div class="sp-hole"></div><div class="sp-hole"></div><div class="sp-hole"></div><div class="sp-hole"></div></div>
+      <div class="sp-num">01</div>
+      <div class="sp-frame empty" id="sp0">○</div>
+      <div class="sp-perf"><div class="sp-hole"></div><div class="sp-hole"></div><div class="sp-hole"></div><div class="sp-hole"></div><div class="sp-hole"></div></div>
+      <div class="sp-num">02</div>
+      <div class="sp-frame empty" id="sp1">○</div>
+      <div class="sp-perf"><div class="sp-hole"></div><div class="sp-hole"></div><div class="sp-hole"></div><div class="sp-hole"></div><div class="sp-hole"></div></div>
+      <div class="sp-num">03</div>
+      <div class="sp-frame empty" id="sp2">○</div>
+      <div class="sp-perf"><div class="sp-hole"></div><div class="sp-hole"></div><div class="sp-hole"></div><div class="sp-hole"></div><div class="sp-hole"></div></div>
+      <div class="sp-num">04</div>
+      <div class="sp-frame empty" id="sp3">○</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════
+     SCREEN 3 — PRINTING
+══════════════════════════════ -->
+<div class="screen" id="s3">
+  <div class="blob" style="width:400px;height:400px;background:var(--rose);top:0;right:0;opacity:.06;"></div>
+  <div class="blob" style="width:350px;height:350px;background:var(--garden);bottom:0;left:0;opacity:.06;"></div>
+
+  <div class="print-machine">
+    <div class="print-sign">
+      <div class="print-sign-title">✦ PHOTOS DELIVERING ✦</div>
+      <div class="print-countdown-num" id="print-num">5</div>
+      <div class="print-sign-sub">seconds</div>
+    </div>
+
+    <div class="print-slot">
+      <div class="print-slot-inner" id="print-inner">
+        <div class="ps-frame" id="ps0"><div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:20px;opacity:.2;">○</div></div>
+        <div class="ps-frame" id="ps1"><div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:20px;opacity:.2;">○</div></div>
+        <div class="ps-frame" id="ps2"><div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:20px;opacity:.2;">○</div></div>
+        <div class="ps-frame" id="ps3"><div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:20px;opacity:.2;">○</div></div>
+      </div>
+      <div class="slot-lines">
+        <div class="slot-line"></div><div class="slot-line"></div><div class="slot-line"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pickup-btn-wrap" id="pickup-wrap">
+    <p style="color:var(--fern);font-size:13px;margin-bottom:16px;font-family:monospace;letter-spacing:.06em;">✦ Your strip is ready!</p>
+    <button class="btn btn-gold" style="font-size:15px;padding:14px 40px;" onclick="goTo(4)">
+      Pick Up Your Strip →
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     SCREEN 4 — RESULT / PICKUP
+══════════════════════════════ -->
+<div class="screen" id="s4">
+  <div class="blob" style="width:450px;height:450px;background:var(--petal);top:-100px;right:-100px;opacity:.06;"></div>
+  <div class="blob" style="width:350px;height:350px;background:var(--garden);bottom:-80px;left:-60px;opacity:.07;"></div>
+
+  <div class="result-layout">
+
+    <!-- Strip -->
+    <div class="result-strip-wrap">
+      <div class="result-label">✦ your photostrip!</div>
+      <div class="result-strip" id="result-strip">
+        <div class="rs-header">
+          <div class="rs-brand">✦ Cutesy Booth</div>
+          <div class="rs-date" id="rs-date"></div>
+        </div>
+        <div class="rs-frame empty" id="rs0">○</div>
+        <div class="rs-frame empty" id="rs1">○</div>
+        <div class="rs-frame empty" id="rs2">○</div>
+        <div class="rs-frame empty" id="rs3">○</div>
+        <div class="rs-footer">cutesyphotobooth.com</div>
+      </div>
+      <button class="scissors-btn" title="Cut a single photo" onclick="showToast('✂ Snip feature — coming soon!')">✂</button>
+    </div>
+
+    <!-- Actions -->
+    <div class="result-actions-col">
+      <div class="result-title">Here's your<br><em>cute strip!</em> 🎀</div>
+      <p class="result-sub">Download it, print it, or share it with your barkada. Totally free, always.</p>
+
+      <button class="btn btn-primary" onclick="downloadStrip()" style="font-size:14px;">
+        ↓ Download Strip
+      </button>
+      <button class="btn btn-secondary" onclick="printStrip()" style="font-size:13px;">
+        🖨 Print
+      </button>
+      <button class="btn btn-outline" onclick="goTo(2);resetShots();" style="font-size:13px;">
+        ↺ Take New Strip
+      </button>
+      <button class="btn btn-outline" onclick="goTo(1)" style="font-size:12px;margin-top:4px;">
+        ← Back to Home
+      </button>
+
+      <div class="share-row">
+        <span class="share-label">Tag us</span>
+        <a class="social-btn" href="#" title="TikTok" onclick="showToast('🎵 Tag @cutesybooth on TikTok!')">🎵</a>
+        <a class="social-btn" href="#" title="Instagram" onclick="showToast('📸 Tag @cutesybooth on Instagram!')">📸</a>
+        <a class="social-btn" href="#" title="Facebook" onclick="showToast('💙 Share on Facebook!')">💙</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ MODALS ══════ -->
+
+<!-- Choice modal -->
+<div class="modal-overlay" id="choice-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('choice-modal')">✕</button>
+    <div class="modal-title">How would you like to add photos?</div>
+    <div class="modal-sub">Choose to use your camera live or upload from gallery.</div>
+    <div class="choice-btns">
+      <div class="choice-card" onclick="startCamera();closeModal('choice-modal')">
+        <div class="choice-icon">📸</div>
+        <div class="choice-title">Take Photos</div>
+        <div class="choice-sub">Use your camera — 3 second countdown per shot</div>
+      </div>
+      <div class="choice-card" onclick="triggerUpload();closeModal('choice-modal')">
+        <div class="choice-icon">🖼</div>
+        <div class="choice-title">Upload Photos</div>
+        <div class="choice-sub">Pick 4 photos from your gallery or device</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Filter modal -->
+<div class="modal-overlay" id="filter-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('filter-modal')">✕</button>
+    <div class="modal-title">Choose a Filter</div>
+    <div class="modal-sub">Live preview updates as you pick.</div>
+    <div class="filter-grid">
+      <div class="filter-card active" onclick="setFilterFromModal(this,'')">
+        <div class="filter-thumb">🌿</div>
+        <div class="filter-name">Normal</div>
+      </div>
+      <div class="filter-card" onclick="setFilterFromModal(this,'bw')">
+        <div class="filter-thumb bw-prev">🌿</div>
+        <div class="filter-name">B&W</div>
+      </div>
+      <div class="filter-card" onclick="setFilterFromModal(this,'sepia')">
+        <div class="filter-thumb sepia-prev">🌿</div>
+        <div class="filter-name">Sepia</div>
+      </div>
+      <div class="filter-card" onclick="setFilterFromModal(this,'fade')">
+        <div class="filter-thumb fade-prev">🌿</div>
+        <div class="filter-name">Fade</div>
+      </div>
+      <div class="filter-card" onclick="setFilterFromModal(this,'vivid')">
+        <div class="filter-thumb vivid-prev">🌿</div>
+        <div class="filter-name">Vivid</div>
+      </div>
+      <div class="filter-card" onclick="setFilterFromModal(this,'noir')">
+        <div class="filter-thumb noir-prev">🌿</div>
+        <div class="filter-name">Noir</div>
+      </div>
+    </div>
+    <button class="btn btn-primary" style="width:100%;margin-top:16px;" onclick="closeModal('filter-modal')">Apply Filter ✓</button>
+  </div>
+</div>
+
+<!-- Template modal -->
+<div class="modal-overlay" id="template-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('template-modal')">✕</button>
+    <div class="modal-title">Choose a Frame</div>
+    <div class="modal-sub">Pick your strip style — updates live on screen.</div>
+    <div class="template-grid" id="template-grid"></div>
+    <button class="btn btn-primary" style="width:100%;margin-top:16px;" onclick="closeModal('template-modal')">Apply Frame ✓</button>
+  </div>
+</div>
+
+<input type="file" id="upload-input" accept="image/*" multiple>
+<canvas id="cap-canvas" style="display:none;"></canvas>
+<div class="toast" id="toast"></div>
+
+<script>
+// ── CURSOR ──
+const cur = document.getElementById('cur');
+document.addEventListener('mousemove', e => {
+  cur.style.left = e.clientX+'px';
+  cur.style.top  = e.clientY+'px';
+});
+document.querySelectorAll('button,a,.choice-card,.filter-card,.template-card,.chip,.t-arr,.social-btn,.scissors-btn').forEach(el => {
+  el.addEventListener('mouseenter', () => cur.classList.add('big'));
+  el.addEventListener('mouseleave', () => cur.classList.remove('big'));
+});
+
+// ── STATE ──
+let currentScreen = 1;
+let shots = [];
+let stream = null;
+let shooting = false;
+let currentFilter = '';
+let currentTemplate = 0;
+const TEMPLATES = [
+  {name:'Classic', colors:['#1B3A2D','#1B3A2D','#1B3A2D','#1B3A2D']},
+  {name:'Rosy',    colors:['#A63D5C','#1B3A2D','#A63D5C','#1B3A2D']},
+  {name:'Garden',  colors:['#2D5C42','#1B3A2D','#2D5C42','#1B3A2D']},
+  {name:'Gold',    colors:['#E8C84A','#1B3A2D','#E8C84A','#1B3A2D']},
+  {name:'Blush',   colors:['#FDE8EF','#A63D5C','#FDE8EF','#A63D5C']},
+  {name:'Forest',  colors:['#0F2419','#2D5C42','#0F2419','#2D5C42']},
+  {name:'Petal',   colors:['#F0A0B8','#1B3A2D','#F0A0B8','#1B3A2D']},
+  {name:'Moody',   colors:['#1a1a1a','#1B3A2D','#1a1a1a','#1B3A2D']},
+];
+
+// ── SCREEN NAV ──
+function goTo(n) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  currentScreen = n;
+  // dots
+  for(let i=0;i<4;i++){
+    const d = document.getElementById('d'+i);
+    d.classList.remove('active','done');
+    if(i+1 < n) d.classList.add('done');
+    if(i+1 === n) d.classList.add('active');
+  }
+  if(n===3) startPrinting();
+  if(n===4) populateResult();
+}
+
+// ── FILTER ──
+function setFilter(el, f) {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  currentFilter = f;
+  const v = document.getElementById('video');
+  v.className = f ? f : '';
+  // sync filter modal
+  document.querySelectorAll('.filter-card').forEach(c => {
+    c.classList.toggle('active', c.onclick && c.getAttribute('onclick').includes("'"+f+"'"));
+  });
+}
+
+function openFilterModal() {
+  document.getElementById('filter-modal').classList.add('open');
+}
+function setFilterFromModal(el, f) {
+  document.querySelectorAll('.filter-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  currentFilter = f;
+  const v = document.getElementById('video');
+  v.className = f ? f : '';
+  // sync chips
+  document.querySelectorAll('.chip').forEach(c => {
+    c.classList.toggle('active', c.dataset.filter === f);
+  });
+}
+
+// ── TEMPLATES ──
+(function buildTemplates() {
+  const grid = document.getElementById('template-grid');
+  TEMPLATES.forEach((t, i) => {
+    const card = document.createElement('div');
+    card.className = 'template-card' + (i===0?' active':'');
+    card.onclick = () => selectTemplate(i);
+    card.innerHTML = `<div class="tc-strip">
+      ${t.colors.map(c=>`<div class="tc-frame" style="background:${c};aspect-ratio:3/4;border-radius:2px;"></div>`).join('')}
+    </div><div class="template-name">${t.name}</div>`;
+    grid.appendChild(card);
+  });
+})();
+
+function selectTemplate(i) {
+  currentTemplate = i;
+  document.querySelectorAll('.template-card').forEach((c,j) => c.classList.toggle('active', j===i));
+  updateTemplatePrev();
+  updateStripPreviewColors();
+}
+
+function updateTemplatePrev() {
+  const t = TEMPLATES[currentTemplate];
+  const frames = document.querySelectorAll('#tmpl-prev .t-frame');
+  frames.forEach((f,i) => f.style.background = t.colors[i]);
+}
+
+function updateStripPreviewColors() {
+  const t = TEMPLATES[currentTemplate];
+  for(let i=0;i<4;i++){
+    const sp = document.getElementById('sp'+i);
+    if(!sp.querySelector('img')) sp.style.background = t.colors[i];
+  }
+}
+
+function prevTemplate() {
+  currentTemplate = (currentTemplate - 1 + TEMPLATES.length) % TEMPLATES.length;
+  updateTemplatePrev();
+  updateStripPreviewColors();
+}
+function nextTemplate() {
+  currentTemplate = (currentTemplate + 1) % TEMPLATES.length;
+  updateTemplatePrev();
+  updateStripPreviewColors();
+}
+
+function openTemplateModal() {
+  document.getElementById('template-modal').classList.add('open');
+}
+
+// ── MODALS ──
+function openChoiceModal() { document.getElementById('choice-modal').classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if(e.target===m) m.classList.remove('open'); });
+});
+
+// ── CAMERA ──
+async function startCamera() {
+  if(stream) return beginShooting();
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false});
+    const v = document.getElementById('video');
+    v.srcObject = stream;
+    const led = document.getElementById('led');
+    led.className = 'led green';
+    document.getElementById('led-txt').textContent = 'LIVE';
+    setStatus('Camera ready! Press Start Shooting 🎀');
+    await new Promise(r => setTimeout(r, 800));
+    beginShooting();
+  } catch(e) {
+    const led = document.getElementById('led');
+    led.className = 'led red';
+    document.getElementById('led-txt').textContent = 'NO CAM';
+    setStatus('Camera blocked — try Upload Photos instead.');
+  }
+}
+
+async function beginShooting() {
+  if(shooting) return;
+  if(shots.length >= 4) { showToast('Already have 4 shots! Reset first.'); return; }
+  shooting = true;
+  document.getElementById('shoot-btn').disabled = true;
+
+  for(let i = shots.length; i < 4; i++) {
+    updateIndicator(i, 'current');
+    setStatus(`Shot ${i+1} of 4 — get ready! 🎀`);
+    await countdown(3);
+    flash();
+    const data = capture();
+    shots.push(data);
+    updateStripPreview(i, data);
+    updateIndicator(i, 'done');
+    setStatus(`✓ Shot ${i+1} captured!`);
+    if(i < 3) await sleep(700);
+  }
+
+  shooting = false;
+  document.getElementById('shoot-btn').disabled = false;
+  setStatus('All 4 shots done! 🎉');
+  document.getElementById('shoot-btn').textContent = '🎞 Print My Strip!';
+  document.getElementById('shoot-btn').onclick = () => goTo(3);
+  showToast('4 shots done! Click Print My Strip 🎀');
+}
+
+function capture() {
+  const v = document.getElementById('video');
+  const c = document.getElementById('cap-canvas');
+  const w = v.videoWidth || 640;
+  const h = v.videoHeight || 480;
+  c.width = w; c.height = h;
+  const ctx = c.getContext('2d');
+  ctx.save();
+  ctx.translate(w,0); ctx.scale(-1,1);
+  ctx.drawImage(v,0,0,w,h);
+  ctx.restore();
+  applyFilter(ctx, w, h);
+  return c.toDataURL('image/jpeg', .9);
+}
+
+function applyFilter(ctx, w, h) {
+  if(!currentFilter) return;
+  const d = ctx.getImageData(0,0,w,h);
+  const px = d.data;
+  for(let i=0;i<px.length;i+=4){
+    let r=px[i],g=px[i+1],b=px[i+2];
+    if(currentFilter==='bw'||currentFilter==='noir'){
+      const gr = .299*r+.587*g+.114*b;
+      px[i]=px[i+1]=px[i+2]= currentFilter==='noir'? Math.min(255,gr*1.4*.9):gr;
+    } else if(currentFilter==='sepia'){
+      px[i]  =Math.min(255,r*.393+g*.769+b*.189);
+      px[i+1]=Math.min(255,r*.349+g*.686+b*.168);
+      px[i+2]=Math.min(255,r*.272+g*.534+b*.131);
+    } else if(currentFilter==='fade'){
+      px[i]  =Math.min(255,r*.85+30);
+      px[i+1]=Math.min(255,g*.82+28);
+      px[i+2]=Math.min(255,b*.78+35);
+    } else if(currentFilter==='vivid'){
+      const avg=(r+g+b)/3;
+      px[i]  =Math.min(255,avg+(r-avg)*1.5);
+      px[i+1]=Math.min(255,avg+(g-avg)*1.5);
+      px[i+2]=Math.min(255,avg+(b-avg)*1.5);
+    }
+  }
+  ctx.putImageData(d,0,0);
+}
+
+async function countdown(sec) {
+  const el = document.getElementById('countdown');
+  let s = sec;
+  el.style.opacity = '1';
+  return new Promise(res => {
+    el.textContent = s;
+    const t = setInterval(() => {
+      s--;
+      if(s <= 0){ clearInterval(t); el.style.opacity='0'; el.textContent=''; res(); }
+      else el.textContent = s;
+    }, 1000);
+  });
+}
+
+function flash() {
+  const f = document.getElementById('flash');
+  f.style.opacity='1';
+  setTimeout(()=>f.style.opacity='0',120);
+}
+
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+// ── UPLOAD ──
+function triggerUpload() {
+  document.getElementById('upload-input').click();
+}
+document.getElementById('upload-input').addEventListener('change', function() {
+  const files = Array.from(this.files).slice(0,4);
+  shots = [];
+  for(let i=0;i<4;i++){
+    const sp=document.getElementById('sp'+i);
+    sp.innerHTML='○'; sp.className='sp-frame empty';
+    updateIndicator(i,'');
+  }
+  let loaded = 0;
+  files.forEach((file,i)=>{
+    const r=new FileReader();
+    r.onload=e=>{
+      const img=new Image();
+      img.onload=()=>{
+        const c=document.getElementById('cap-canvas');
+        c.width=img.width; c.height=img.height;
+        const ctx=c.getContext('2d');
+        ctx.drawImage(img,0,0);
+        applyFilter(ctx,img.width,img.height);
+        const data=c.toDataURL('image/jpeg',.9);
+        shots[i]=data;
+        updateStripPreview(i,data);
+        updateIndicator(i,'done');
+        loaded++;
+        if(loaded===files.length){
+          setStatus(`${files.length} photos loaded! 🎀`);
+          if(files.length===4){
+            document.getElementById('shoot-btn').textContent='🎞 Print My Strip!';
+            document.getElementById('shoot-btn').onclick=()=>goTo(3);
+            showToast('4 photos ready! Click Print 🎀');
+          }
+        }
+      };
+      img.src=e.target.result;
+    };
+    r.readAsDataURL(file);
+  });
+  this.value='';
+});
+
+// ── UI HELPERS ──
+function updateStripPreview(i, src) {
+  const sp = document.getElementById('sp'+i);
+  sp.className = 'sp-frame';
+  sp.innerHTML = `<img src="${src}" alt="shot ${i+1}">`;
+}
+
+function updateIndicator(i, state) {
+  const el = document.getElementById('si'+i);
+  el.className = 'shot-ind';
+  if(state==='done') el.classList.add('done');
+  if(state==='current') el.classList.add('current');
+}
+
+function setStatus(msg) { document.getElementById('status-txt').textContent = msg; }
+
+function resetShots() {
+  shots=[];
+  shooting=false;
+  for(let i=0;i<4;i++){
+    const sp=document.getElementById('sp'+i);
+    sp.innerHTML='○'; sp.className='sp-frame empty';
+    updateIndicator(i,'');
+  }
+  const btn=document.getElementById('shoot-btn');
+  btn.textContent='📸 Start Shooting';
+  btn.onclick=openChoiceModal;
+  btn.disabled=false;
+  setStatus('ready to shoot!');
+}
+
+// ── PRINTING SCREEN ──
+function startPrinting() {
+  // populate print slot
+  for(let i=0;i<4;i++){
+    const ps=document.getElementById('ps'+i);
+    if(shots[i]){ ps.innerHTML=`<img src="${shots[i]}" style="width:100%;height:100%;object-fit:cover;">`; }
+  }
+  // animate strip sliding out
+  setTimeout(()=>{ document.getElementById('print-inner').classList.add('printing'); }, 300);
+  // countdown
+  let n=5;
+  document.getElementById('print-num').textContent=n;
+  const t=setInterval(()=>{
+    n--;
+    document.getElementById('print-num').textContent=n;
+    if(n<=0){
+      clearInterval(t);
+      document.getElementById('print-num').textContent='✓';
+      document.getElementById('pickup-wrap').classList.add('show');
+    }
+  },1000);
+}
+
+// ── RESULT SCREEN ──
+function populateResult() {
+  document.getElementById('rs-date').textContent = new Date().toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'});
+  for(let i=0;i<4;i++){
+    const rf=document.getElementById('rs'+i);
+    if(shots[i]){
+      rf.className='rs-frame';
+      rf.innerHTML=`<img src="${shots[i]}" alt="photo ${i+1}">`;
+    }
+  }
+  // apply template colors to result strip
+  const t=TEMPLATES[currentTemplate];
+  for(let i=0;i<4;i++){
+    if(!shots[i]) document.getElementById('rs'+i).style.background=t.colors[i];
+  }
+}
+
+// ── DOWNLOAD ──
+function downloadStrip() {
+  if(shots.length===0){ showToast('No photos yet! Take some shots first.'); return; }
+  const W=500,H=720;
+  const c=document.createElement('canvas');
+  c.width=W; c.height=H;
+  const ctx=c.getContext('2d');
+  const t=TEMPLATES[currentTemplate];
+
+  ctx.fillStyle='#0F2419';
+  ctx.roundRect(0,0,W,H,12);
+  ctx.fill();
+
+  // header
+  ctx.fillStyle='#E8C84A';
+  ctx.font='bold 18px Georgia,serif';
+  ctx.textAlign='center';
+  ctx.fillText('✦ Cutesy Booth ✦',W/2,28);
+  ctx.fillStyle='rgba(168,213,181,.4)';
+  ctx.font='10px monospace';
+  ctx.fillText(new Date().toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'}),W/2,44);
+
+  const ph=(H-90)/4-10;
+  const promises=shots.map((src,i)=>new Promise(res=>{
+    const img=new Image();
+    img.onload=()=>{
+      const py=54+i*(ph+10);
+      ctx.fillStyle=t.colors[i];
+      ctx.roundRect(20,py,W-40,ph,4);
+      ctx.fill();
+      const sc=Math.min((W-40)/img.width,ph/img.height);
+      const dx=20+((W-40)-img.width*sc)/2;
+      const dy=py+(ph-img.height*sc)/2;
+      ctx.drawImage(img,dx,dy,img.width*sc,img.height*sc);
+      ctx.fillStyle='rgba(168,213,181,.3)';
+      ctx.font='9px monospace';
+      ctx.textAlign='right';
+      ctx.fillText('0'+(i+1),W-26,py+14);
+      res();
+    };
+    img.src=src;
+  }));
+
+  Promise.all(promises).then(()=>{
+    ctx.fillStyle='rgba(168,213,181,.2)';
+    ctx.font='9px monospace';
+    ctx.textAlign='center';
+    ctx.fillText('cutesyphotobooth.com',W/2,H-8);
+    const a=document.createElement('a');
+    a.download=`cutesybooth-${Date.now()}.jpg`;
+    a.href=c.toDataURL('image/jpeg',.92);
+    a.click();
+    showToast('Strip saved! Tag us @cutesybooth 🎀');
+  });
+}
+
+function printStrip() {
+  showToast('Opening print dialog... 🖨');
+  setTimeout(()=>window.print(),500);
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ── INIT ──
+updateTemplatePrev();
+</script>
+</body>
+</html>
