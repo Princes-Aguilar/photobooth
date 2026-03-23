@@ -114,16 +114,21 @@ a {
   pointer-events: auto;
 }
 
-/* ── THE ONE TRUE FIX ──
-   .screen uses flex + align-items:center + justify-content:center
-   which shrinks #s2 to content size instead of filling the screen.
-   This override forces #s2 to be a full-fill grid instead. */
+/* #s2 needs to fill the fixed screen area as a 3-column grid.
+   position:fixed + inset replaces height:100% which breaks on fixed elements. */
 #s2.screen {
+  position: fixed;
+  top: var(--topbar-h);
+  left: 0;
+  right: 0;
+  bottom: var(--footer-h);
   display: grid;
   grid-template-columns: 220px minmax(0, 1fr) 118px;
   align-items: stretch;
-  justify-items: stretch;
+  align-content: stretch;
   flex-direction: unset;
+  justify-content: unset;
+  padding: 0;
 }
 
 .topbar {
@@ -663,15 +668,6 @@ a {
 @media (max-width: 980px) {
   #s2.screen {
     grid-template-columns: 196px minmax(0, 1fr) 108px;
-  }
-}
-
-@media (max-width: 760px) {
-  #s2.screen {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
   }
 }
 

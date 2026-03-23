@@ -724,22 +724,66 @@ function downloadStrip() {
   }
 
   const t = TEMPLATES[State.currentTemplate];
+
+  // Strip dimensions — portrait, matching on-screen proportions.
+  // On screen: result-strip is 230px wide, each rs-frame is ~3:4 aspect.
+  // Canvas: 500px wide strip with 4 portrait frames stacked vertically.
   const W = 500;
-  const H = 720;
+  const PAD = 18; // padding on left/right and between frames
+  const TOP_PAD = 48; // space at top for brand label
+  const BOT_PAD = 28; // space at bottom for footer
+  const GAP = 10; // gap between frames
+  const FRAME_W = W - PAD * 2; // 464px
+  const FRAME_H = Math.round(FRAME_W * (3 / 4)); // 3:4 portrait = 348px
+  const H = TOP_PAD + 4 * FRAME_H + 3 * GAP + BOT_PAD; // ~1494px tall
 
   const c = document.createElement("canvas");
   c.width = W;
   c.height = H;
 
   const ctx = c.getContext("2d");
-  ctx.fillStyle = t.colors?.[0] || "#0F2419";
-  ctx.fillRect(0, 0, W, H);
 
+  // Background — use per-frame colors or solid
+  if (!t.frame) {
+    for (let i = 0; i < 4; i++) {
+      ctx.fillStyle = t.colors?.[i] || t.colors?.[0] || "#0F2419";
+      const frameY = TOP_PAD + i * (FRAME_H + GAP);
+      // Fill the strip section for this frame including gaps
+      ctx.fillRect(
+        0,
+        i === 0 ? 0 : frameY - GAP / 2,
+        W,
+        i === 0 ? frameY + FRAME_H + GAP / 2 : FRAME_H + GAP,
+      );
+    }
+    // Fill top and bottom padding with first/last color
+    ctx.fillStyle = t.colors?.[0] || "#0F2419";
+    ctx.fillRect(0, 0, W, TOP_PAD);
+    ctx.fillStyle = t.colors?.[3] || t.colors?.[0] || "#0F2419";
+    ctx.fillRect(0, TOP_PAD + 4 * FRAME_H + 3 * GAP, W, BOT_PAD);
+  } else {
+    ctx.fillStyle = "#0F2419";
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  // Brand label at top
+  ctx.fillStyle = "rgba(255,255,255,0.55)";
+  ctx.font = "bold 15px Georgia, serif";
+  ctx.textAlign = "center";
+  ctx.fillText("✦ Cutesy Booth", W / 2, 30);
+
+  // Footer text at bottom
+  ctx.fillStyle = "rgba(255,255,255,0.3)";
+  ctx.font = "11px monospace";
+  ctx.textAlign = "center";
+  ctx.fillText("cutesyphotobooth.com", W / 2, H - 10);
+
+  // Build frame positions
   const positions = Array.from({ length: 4 }, (_, i) => ({
-    x: 20,
-    y: 54 + i * 164,
-    w: 460,
-    h: 150,
+    x: PAD,
+    y: TOP_PAD + i * (FRAME_H + GAP),
+    w: FRAME_W,
+    h: FRAME_H,
   }));
 
   const promises = State.shots.map(
@@ -751,10 +795,11 @@ function downloadStrip() {
 
           ctx.save();
           ctx.beginPath();
-          if (ctx.roundRect) ctx.roundRect(x, y, w, h, 16);
+          if (ctx.roundRect) ctx.roundRect(x, y, w, h, 12);
           else ctx.rect(x, y, w, h);
           ctx.clip();
 
+          // Cover-fit: fill frame while maintaining photo aspect ratio
           const scale = Math.max(w / img.width, h / img.height);
           const dx = x + (w - img.width * scale) / 2;
           const dy = y + (h - img.height * scale) / 2;
