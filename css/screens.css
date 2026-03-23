@@ -403,12 +403,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
+  gap: 0;
 }
 
 .print-sign {
-  width: 230px;
-  min-height: 108px;
+  width: 214px;
+  min-height: 80px;
   border-radius: 20px 20px 0 0;
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
@@ -417,20 +417,21 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: 8px 12px;
 }
 
 .print-sign-title {
-  color: var(--accent-yellow);
+  color: var(--accent-primary);
   font-family: var(--font-display, Georgia, serif);
-  font-size: 14px;
+  font-size: 13px;
   font-style: italic;
   font-weight: 700;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .print-num {
   font-family: var(--font-display, Georgia, serif);
-  font-size: 64px;
+  font-size: 48px;
   line-height: 1;
   color: var(--text-primary);
 }
@@ -438,7 +439,7 @@
 .print-sign-sub {
   color: var(--text-secondary);
   font-family: var(--font-mono, monospace);
-  font-size: 11px;
+  font-size: 10px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -446,7 +447,9 @@
 .print-slot {
   position: relative;
   width: 214px;
-  height: 298px;
+  height: calc(100vh - var(--topbar-h) - var(--footer-h) - 220px);
+  max-height: 320px;
+  min-height: 200px;
   border-radius: 0 0 22px 22px;
   background: #0a1610;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
@@ -456,21 +459,21 @@
 .print-inner {
   position: absolute;
   left: 50%;
-  top: -265px;
+  top: -100%;
   transform: translateX(-50%);
   width: 160px;
-  height: 620px;
-  padding: 14px 10px;
+  height: 200%;
+  padding: 10px 8px;
   border-radius: 8px;
   background: var(--film-bg);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   transition: top 4.6s ease;
 }
 
 .print-inner.printing {
-  top: 22px;
+  top: 10px;
 }
 
 .ps-frame {
@@ -506,7 +509,7 @@
 }
 
 .pickup-wrap {
-  margin-top: 20px;
+  margin-top: 12px;
   text-align: center;
   opacity: 0;
   transition: opacity 0.35s ease;

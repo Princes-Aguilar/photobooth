@@ -717,113 +717,109 @@ function populateResult() {
 /* ──────────────────────────────────────────
    DOWNLOAD / PRINT
 ────────────────────────────────────────── */
+/* ── Shared helper: builds the strip canvas ── */
+function buildStripCanvas() {
+  return new Promise((resolve) => {
+    const t = TEMPLATES[State.currentTemplate];
+
+    const W = 500;
+    const PAD = 18;
+    const TOP_PAD = 48;
+    const BOT_PAD = 28;
+    const GAP = 10;
+    const FRAME_W = W - PAD * 2;
+    const FRAME_H = Math.round(FRAME_W * (3 / 4));
+    const H = TOP_PAD + 4 * FRAME_H + 3 * GAP + BOT_PAD;
+
+    const c = document.createElement("canvas");
+    c.width = W;
+    c.height = H;
+    const ctx = c.getContext("2d");
+
+    // Background per frame color
+    if (!t.frame) {
+      for (let i = 0; i < 4; i++) {
+        ctx.fillStyle = t.colors?.[i] || t.colors?.[0] || "#0F2419";
+        const fy = TOP_PAD + i * (FRAME_H + GAP);
+        ctx.fillRect(
+          0,
+          i === 0 ? 0 : fy - GAP / 2,
+          W,
+          i === 0 ? fy + FRAME_H + GAP / 2 : FRAME_H + GAP,
+        );
+      }
+      ctx.fillStyle = t.colors?.[0] || "#0F2419";
+      ctx.fillRect(0, 0, W, TOP_PAD);
+      ctx.fillStyle = t.colors?.[3] || t.colors?.[0] || "#0F2419";
+      ctx.fillRect(0, TOP_PAD + 4 * FRAME_H + 3 * GAP, W, BOT_PAD);
+    } else {
+      ctx.fillStyle = "#0F2419";
+      ctx.fillRect(0, 0, W, H);
+    }
+
+    // Brand label
+    ctx.fillStyle = "rgba(255,255,255,0.55)";
+    ctx.font = "bold 15px Georgia, serif";
+    ctx.textAlign = "center";
+    ctx.fillText("✦ Cutesy Booth", W / 2, 30);
+
+    // Footer
+    ctx.fillStyle = "rgba(255,255,255,0.3)";
+    ctx.font = "11px monospace";
+    ctx.textAlign = "center";
+    ctx.fillText("cutesyphotobooth.com", W / 2, H - 10);
+
+    const positions = Array.from({ length: 4 }, (_, i) => ({
+      x: PAD,
+      y: TOP_PAD + i * (FRAME_H + GAP),
+      w: FRAME_W,
+      h: FRAME_H,
+    }));
+
+    const promises = State.shots.map(
+      (src, i) =>
+        new Promise((res) => {
+          const img = new Image();
+          img.onload = () => {
+            const { x, y, w, h } = positions[i];
+            ctx.save();
+            ctx.beginPath();
+            if (ctx.roundRect) ctx.roundRect(x, y, w, h, 12);
+            else ctx.rect(x, y, w, h);
+            ctx.clip();
+            const scale = Math.max(w / img.width, h / img.height);
+            const dx = x + (w - img.width * scale) / 2;
+            const dy = y + (h - img.height * scale) / 2;
+            ctx.drawImage(img, dx, dy, img.width * scale, img.height * scale);
+            ctx.restore();
+            res();
+          };
+          img.src = src;
+        }),
+    );
+
+    Promise.all(promises).then(() => {
+      if (t.frame) {
+        const frameImg = new Image();
+        frameImg.onload = () => {
+          ctx.drawImage(frameImg, 0, 0, W, H);
+          resolve(c);
+        };
+        frameImg.onerror = () => resolve(c);
+        frameImg.src = t.frame;
+      } else {
+        resolve(c);
+      }
+    });
+  });
+}
+
 function downloadStrip() {
   if (!State.shots.length) {
     showToast("No photos yet! Shoot first 📸");
     return;
   }
-
-  const t = TEMPLATES[State.currentTemplate];
-
-  // Strip dimensions — portrait, matching on-screen proportions.
-  // On screen: result-strip is 230px wide, each rs-frame is ~3:4 aspect.
-  // Canvas: 500px wide strip with 4 portrait frames stacked vertically.
-  const W = 500;
-  const PAD = 18; // padding on left/right and between frames
-  const TOP_PAD = 48; // space at top for brand label
-  const BOT_PAD = 28; // space at bottom for footer
-  const GAP = 10; // gap between frames
-  const FRAME_W = W - PAD * 2; // 464px
-  const FRAME_H = Math.round(FRAME_W * (3 / 4)); // 3:4 portrait = 348px
-  const H = TOP_PAD + 4 * FRAME_H + 3 * GAP + BOT_PAD; // ~1494px tall
-
-  const c = document.createElement("canvas");
-  c.width = W;
-  c.height = H;
-
-  const ctx = c.getContext("2d");
-
-  // Background — use per-frame colors or solid
-  if (!t.frame) {
-    for (let i = 0; i < 4; i++) {
-      ctx.fillStyle = t.colors?.[i] || t.colors?.[0] || "#0F2419";
-      const frameY = TOP_PAD + i * (FRAME_H + GAP);
-      // Fill the strip section for this frame including gaps
-      ctx.fillRect(
-        0,
-        i === 0 ? 0 : frameY - GAP / 2,
-        W,
-        i === 0 ? frameY + FRAME_H + GAP / 2 : FRAME_H + GAP,
-      );
-    }
-    // Fill top and bottom padding with first/last color
-    ctx.fillStyle = t.colors?.[0] || "#0F2419";
-    ctx.fillRect(0, 0, W, TOP_PAD);
-    ctx.fillStyle = t.colors?.[3] || t.colors?.[0] || "#0F2419";
-    ctx.fillRect(0, TOP_PAD + 4 * FRAME_H + 3 * GAP, W, BOT_PAD);
-  } else {
-    ctx.fillStyle = "#0F2419";
-    ctx.fillRect(0, 0, W, H);
-  }
-
-  // Brand label at top
-  ctx.fillStyle = "rgba(255,255,255,0.55)";
-  ctx.font = "bold 15px Georgia, serif";
-  ctx.textAlign = "center";
-  ctx.fillText("✦ Cutesy Booth", W / 2, 30);
-
-  // Footer text at bottom
-  ctx.fillStyle = "rgba(255,255,255,0.3)";
-  ctx.font = "11px monospace";
-  ctx.textAlign = "center";
-  ctx.fillText("cutesyphotobooth.com", W / 2, H - 10);
-
-  // Build frame positions
-  const positions = Array.from({ length: 4 }, (_, i) => ({
-    x: PAD,
-    y: TOP_PAD + i * (FRAME_H + GAP),
-    w: FRAME_W,
-    h: FRAME_H,
-  }));
-
-  const promises = State.shots.map(
-    (src, i) =>
-      new Promise((resolve) => {
-        const img = new Image();
-        img.onload = () => {
-          const { x, y, w, h } = positions[i];
-
-          ctx.save();
-          ctx.beginPath();
-          if (ctx.roundRect) ctx.roundRect(x, y, w, h, 12);
-          else ctx.rect(x, y, w, h);
-          ctx.clip();
-
-          // Cover-fit: fill frame while maintaining photo aspect ratio
-          const scale = Math.max(w / img.width, h / img.height);
-          const dx = x + (w - img.width * scale) / 2;
-          const dy = y + (h - img.height * scale) / 2;
-          ctx.drawImage(img, dx, dy, img.width * scale, img.height * scale);
-          ctx.restore();
-          resolve();
-        };
-        img.src = src;
-      }),
-  );
-
-  Promise.all(promises).then(() => {
-    if (t.frame) {
-      const frameImg = new Image();
-      frameImg.onload = () => {
-        ctx.drawImage(frameImg, 0, 0, W, H);
-        saveCanvas(c);
-      };
-      frameImg.onerror = () => saveCanvas(c);
-      frameImg.src = t.frame;
-    } else {
-      saveCanvas(c);
-    }
-  });
+  buildStripCanvas().then((c) => saveCanvas(c));
 }
 
 function saveCanvas(c) {
@@ -835,8 +831,52 @@ function saveCanvas(c) {
 }
 
 function printStrip() {
-  showToast("Opening print dialog 🖨");
-  setTimeout(() => window.print(), 400);
+  if (!State.shots.length) {
+    showToast("No photos yet! Shoot first 📸");
+    return;
+  }
+
+  showToast("Preparing print... 🖨");
+
+  buildStripCanvas().then((c) => {
+    const dataUrl = c.toDataURL("image/jpeg", 0.95);
+
+    // Open a minimal print window with just the strip image
+    const win = window.open("", "_blank", "width=600,height=900");
+    win.document.write(`<!DOCTYPE html>
+<html>
+<head>
+  <title>Cutesy Booth — Print Strip</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; background: #fff; }
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    img {
+      max-width: 100%;
+      max-height: 100vh;
+      display: block;
+    }
+    @media print {
+      body { margin: 0; }
+      img { width: auto; height: 100vh; max-height: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <img src="${dataUrl}" alt="Cutesy Booth Strip">
+  <script>
+    window.onload = function() {
+      setTimeout(function() { window.print(); }, 300);
+    };
+  <\/script>
+</body>
+</html>`);
+    win.document.close();
+  });
 }
 
 /* ──────────────────────────────────────────
