@@ -3,19 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cutesy Photobooth — Free Vintage Photo Strips Philippines</title>
+    <title>
+      Free Online Photobooth Philippines — Cute Photo Strips Instantly
+    </title>
     <meta
       name="description"
-      content="Free online photobooth Philippines. Take 4 cute vintage photo strips instantly — no sign up needed. Perfect for debuts, weddings, and parties."
+      content="Free online photobooth Philippines. Take 4 cute photo strips instantly — no sign up needed. Perfect for debuts, weddings, and parties."
     />
     <meta
       name="keywords"
-      content="free online photobooth philippines, vintage photo strip, photobooth free, photo strip maker, photobooth debut wedding"
+      content="free online photobooth philippines, photo strip maker, cute photo strips, photobooth for debut, photobooth for wedding, free photo strip philippines, vintage photobooth online"
     />
     <meta name="author" content="Cutesy Photobooth" />
     <meta
       property="og:title"
-      content="Cutesy Photobooth — Free Vintage Photo Strips"
+      content="Free Online Photobooth Philippines — Cute Photo Strips Instantly"
     />
     <meta
       property="og:description"
@@ -27,7 +29,9 @@
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/themes.css" />
     <link rel="stylesheet" href="css/screens.css" />
+    <!-- FIX 1: Removed duplicate <script> that was between </head> and <body> -->
   </head>
+
   <body>
     <!-- Custom cursor -->
     <div class="cursor" id="cur"></div>
@@ -36,12 +40,11 @@
     <div class="grain"></div>
 
     <!-- ══════════════════════════════
-     TOP NAVIGATION BAR
-══════════════════════════════ -->
+         TOP NAVIGATION BAR
+    ══════════════════════════════ -->
     <nav class="topbar">
-      <div class="logo">✦ Cutesy Booth</div>
+      <button class="logo" onclick="goTo(1)">✦ Cutesy Booth</button>
 
-      <!-- Step progress dots -->
       <div class="step-dots">
         <div class="dot active" id="d0"></div>
         <div class="dot" id="d1"></div>
@@ -49,7 +52,6 @@
         <div class="dot" id="d3"></div>
       </div>
 
-      <!-- Theme switcher -->
       <div class="theme-switcher">
         <button
           class="theme-btn"
@@ -65,371 +67,323 @@
         >
           🌸 <span>Cutesy</span>
         </button>
-        <button
+        <!-- <button
           class="theme-btn"
           data-theme="artsy"
           onclick="setTheme('artsy')"
         >
           🌿 <span>Artsy</span>
-        </button>
+        </button> -->
       </div>
     </nav>
 
     <!-- ══════════════════════════════
-     SCREEN 1 — LANDING
-══════════════════════════════ -->
+         SCREEN 1 — LANDING
+    ══════════════════════════════ -->
     <section class="screen active" id="s1" role="main">
       <div class="hero-tag">✦ Free · Instant · No Sign Up · Philippines</div>
 
-      <h1 class="hero-title">
-        Your <em>vintage</em> strip,<br />anywhere you are.
-      </h1>
-
-      <p class="hero-sub">
-        Take 4 cute shots, pick your filter, choose a frame — download your
-        photo strip for free. 🎀
-      </p>
-
-      <div class="hero-actions">
-        <button
-          class="btn btn-primary anim-pulse"
-          onclick="goTo(2)"
-          style="font-size: 15px; padding: 14px 36px"
-          aria-label="Enter the photobooth"
-        >
-          Enter Booth →
-        </button>
-        <button
-          class="btn btn-outline"
-          onclick="
-            document
-              .getElementById('how-it-works')
-              .scrollIntoView({ behavior: 'smooth' })
-          "
-        >
-          How it works
-        </button>
-      </div>
-
-      <!-- Illustrated booth -->
-      <div class="booth-hero" aria-hidden="true">
-        <svg
-          viewBox="0 0 300 360"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          role="img"
-          aria-label="Illustrated photobooth machine"
-        >
-          <!-- Sign -->
-          <rect
-            x="50"
-            y="12"
-            width="200"
-            height="40"
-            rx="6"
-            fill="var(--bg-secondary)"
-            stroke="var(--accent-green)"
-            stroke-width="1.2"
-          />
-          <text
-            x="150"
-            y="37"
-            text-anchor="middle"
-            font-family="Georgia,serif"
-            font-size="13"
-            font-weight="700"
-            fill="var(--accent-yellow)"
-            letter-spacing="3"
+      <!-- Two-column layout: booth left, text right -->
+      <div class="hero-layout">
+        <!-- Left: booth illustration -->
+        <div class="booth-hero" aria-hidden="true">
+          <svg
+            viewBox="0 0 300 360"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            role="img"
+            aria-label="Illustrated photobooth machine"
           >
-            CUTESY BOOTH
-          </text>
-          <rect
-            x="90"
-            y="50"
-            width="6"
-            height="16"
-            fill="var(--accent-green)"
-          />
-          <rect
-            x="204"
-            y="50"
-            width="6"
-            height="16"
-            fill="var(--accent-green)"
-          />
-          <!-- Main body -->
-          <rect
-            x="38"
-            y="66"
-            width="224"
-            height="270"
-            rx="10"
-            fill="var(--bg-secondary)"
-            stroke="var(--accent-green)"
-            stroke-width="1.2"
-          />
-          <!-- Left panel — strip display -->
-          <rect
-            x="52"
-            y="80"
-            width="108"
-            height="130"
-            rx="6"
-            fill="var(--film-bg)"
-            stroke="var(--accent-green)"
-            stroke-width=".8"
-          />
-          <rect x="62" y="90" width="22" height="110" rx="2" fill="#111" />
-          <rect
-            x="63"
-            y="91"
-            width="20"
-            height="24"
-            rx="1"
-            fill="var(--bg-secondary)"
-            opacity=".9"
-          />
-          <rect
-            x="63"
-            y="119"
-            width="20"
-            height="24"
-            rx="1"
-            fill="var(--accent-pink)"
-            opacity=".7"
-          />
-          <rect
-            x="63"
-            y="147"
-            width="20"
-            height="24"
-            rx="1"
-            fill="var(--accent-green)"
-            opacity=".8"
-          />
-          <rect
-            x="63"
-            y="175"
-            width="20"
-            height="22"
-            rx="1"
-            fill="var(--accent-yellow)"
-            opacity=".5"
-          />
-          <rect x="90" y="90" width="22" height="110" rx="2" fill="#111" />
-          <rect
-            x="91"
-            y="91"
-            width="20"
-            height="24"
-            rx="1"
-            fill="var(--accent-pink)"
-            opacity=".8"
-          />
-          <rect
-            x="91"
-            y="119"
-            width="20"
-            height="24"
-            rx="1"
-            fill="var(--bg-secondary)"
-            opacity=".9"
-          />
-          <rect
-            x="91"
-            y="147"
-            width="20"
-            height="24"
-            rx="1"
-            fill="var(--accent-yellow)"
-            opacity=".5"
-          />
-          <rect
-            x="91"
-            y="175"
-            width="20"
-            height="22"
-            rx="1"
-            fill="var(--accent-green)"
-            opacity=".7"
-          />
-          <text
-            x="110"
-            y="226"
-            text-anchor="middle"
-            font-family="Georgia,serif"
-            font-size="8"
-            font-style="italic"
-            fill="var(--text-secondary)"
-          >
-            featured strips ✦
-          </text>
-          <!-- Divider -->
-          <line
-            x1="165"
-            y1="70"
-            x2="165"
-            y2="332"
-            stroke="var(--accent-green)"
-            stroke-width="1.2"
-          />
-          <!-- Curtains -->
-          <rect
-            x="169"
-            y="72"
-            width="84"
-            height="5"
-            rx="2.5"
-            fill="var(--accent-green)"
-          />
-          <path
-            d="M174 77 Q183 110 175 150 Q167 190 178 230 Q189 265 175 300"
-            stroke="var(--accent-green)"
-            stroke-width="10"
-            stroke-linecap="round"
-            fill="none"
-            opacity=".7"
-          />
-          <path
-            d="M190 77 Q199 108 191 148 Q183 188 194 228 Q205 263 191 298"
-            stroke="var(--accent-green)"
-            stroke-width="8"
-            stroke-linecap="round"
-            fill="none"
-          />
-          <path
-            d="M236 77 Q227 110 235 150 Q243 190 232 230 Q221 265 235 300"
-            stroke="var(--accent-green)"
-            stroke-width="8"
-            stroke-linecap="round"
-            fill="none"
-            opacity=".7"
-          />
-          <!-- Stool -->
-          <ellipse
-            cx="210"
-            cy="296"
-            rx="18"
-            ry="5"
-            fill="var(--film-bg)"
-            stroke="var(--accent-green)"
-            stroke-width=".8"
-          />
-          <rect
-            x="207"
-            y="268"
-            width="6"
-            height="28"
-            rx="3"
-            fill="var(--accent-green)"
-          />
-          <ellipse
-            cx="210"
-            cy="270"
-            rx="14"
-            ry="4"
-            fill="var(--bg-secondary)"
-            stroke="var(--accent-green)"
-            stroke-width=".8"
-          />
-          <!-- Corner dots -->
-          <circle
-            cx="50"
-            cy="74"
-            r="4"
-            fill="var(--accent-pink)"
-            opacity=".8"
-          />
-          <circle
-            cx="250"
-            cy="74"
-            r="4"
-            fill="var(--accent-pink)"
-            opacity=".8"
-          />
-          <circle
-            cx="50"
-            cy="330"
-            r="4"
-            fill="var(--accent-yellow)"
-            opacity=".6"
-          />
-          <circle
-            cx="250"
-            cy="330"
-            r="4"
-            fill="var(--accent-yellow)"
-            opacity=".6"
-          />
-          <!-- Base -->
-          <rect
-            x="38"
-            y="332"
-            width="224"
-            height="12"
-            rx="4"
-            fill="var(--bg-secondary)"
-            stroke="var(--accent-green)"
-            stroke-width=".8"
-          />
-        </svg>
-      </div>
+            <!-- Sign -->
+            <rect
+              x="50"
+              y="12"
+              width="200"
+              height="40"
+              rx="6"
+              fill="var(--bg-secondary)"
+              stroke="var(--accent-green)"
+              stroke-width="1.2"
+            />
+            <text
+              x="150"
+              y="37"
+              text-anchor="middle"
+              font-family="Georgia,serif"
+              font-size="13"
+              font-weight="700"
+              fill="var(--accent-yellow)"
+              letter-spacing="3"
+            >
+              CUTESY BOOTH
+            </text>
+            <rect
+              x="90"
+              y="50"
+              width="6"
+              height="16"
+              fill="var(--accent-green)"
+            />
+            <rect
+              x="204"
+              y="50"
+              width="6"
+              height="16"
+              fill="var(--accent-green)"
+            />
+            <!-- Main body -->
+            <rect
+              x="38"
+              y="66"
+              width="224"
+              height="270"
+              rx="10"
+              fill="var(--bg-secondary)"
+              stroke="var(--accent-green)"
+              stroke-width="1.2"
+            />
+            <!-- Left panel strip display -->
+            <rect
+              x="52"
+              y="80"
+              width="108"
+              height="130"
+              rx="6"
+              fill="var(--film-bg)"
+              stroke="var(--accent-green)"
+              stroke-width=".8"
+            />
+            <rect x="62" y="90" width="22" height="110" rx="2" fill="#111" />
+            <rect
+              x="63"
+              y="91"
+              width="20"
+              height="24"
+              rx="1"
+              fill="var(--bg-secondary)"
+              opacity=".9"
+            />
+            <rect
+              x="63"
+              y="119"
+              width="20"
+              height="24"
+              rx="1"
+              fill="var(--accent-pink)"
+              opacity=".7"
+            />
+            <rect
+              x="63"
+              y="147"
+              width="20"
+              height="24"
+              rx="1"
+              fill="var(--accent-green)"
+              opacity=".8"
+            />
+            <rect
+              x="63"
+              y="175"
+              width="20"
+              height="22"
+              rx="1"
+              fill="var(--accent-yellow)"
+              opacity=".5"
+            />
+            <rect x="90" y="90" width="22" height="110" rx="2" fill="#111" />
+            <rect
+              x="91"
+              y="91"
+              width="20"
+              height="24"
+              rx="1"
+              fill="var(--accent-pink)"
+              opacity=".8"
+            />
+            <rect
+              x="91"
+              y="119"
+              width="20"
+              height="24"
+              rx="1"
+              fill="var(--bg-secondary)"
+              opacity=".9"
+            />
+            <rect
+              x="91"
+              y="147"
+              width="20"
+              height="24"
+              rx="1"
+              fill="var(--accent-yellow)"
+              opacity=".5"
+            />
+            <rect
+              x="91"
+              y="175"
+              width="20"
+              height="22"
+              rx="1"
+              fill="var(--accent-green)"
+              opacity=".7"
+            />
+            <text
+              x="110"
+              y="226"
+              text-anchor="middle"
+              font-family="Georgia,serif"
+              font-size="8"
+              font-style="italic"
+              fill="var(--text-secondary)"
+            >
+              featured strips ✦
+            </text>
+            <!-- Divider -->
+            <line
+              x1="165"
+              y1="70"
+              x2="165"
+              y2="332"
+              stroke="var(--accent-green)"
+              stroke-width="1.2"
+            />
+            <!-- Curtains -->
+            <rect
+              x="169"
+              y="72"
+              width="84"
+              height="5"
+              rx="2.5"
+              fill="var(--accent-green)"
+            />
+            <path
+              d="M174 77 Q183 110 175 150 Q167 190 178 230 Q189 265 175 300"
+              stroke="var(--accent-green)"
+              stroke-width="10"
+              stroke-linecap="round"
+              fill="none"
+              opacity=".7"
+            />
+            <path
+              d="M190 77 Q199 108 191 148 Q183 188 194 228 Q205 263 191 298"
+              stroke="var(--accent-green)"
+              stroke-width="8"
+              stroke-linecap="round"
+              fill="none"
+            />
+            <path
+              d="M236 77 Q227 110 235 150 Q243 190 232 230 Q221 265 235 300"
+              stroke="var(--accent-green)"
+              stroke-width="8"
+              stroke-linecap="round"
+              fill="none"
+              opacity=".7"
+            />
+            <!-- Stool -->
+            <ellipse
+              cx="210"
+              cy="296"
+              rx="18"
+              ry="5"
+              fill="var(--film-bg)"
+              stroke="var(--accent-green)"
+              stroke-width=".8"
+            />
+            <rect
+              x="207"
+              y="268"
+              width="6"
+              height="28"
+              rx="3"
+              fill="var(--accent-green)"
+            />
+            <ellipse
+              cx="210"
+              cy="270"
+              rx="14"
+              ry="4"
+              fill="var(--bg-secondary)"
+              stroke="var(--accent-green)"
+              stroke-width=".8"
+            />
+            <!-- Corner dots -->
+            <circle
+              cx="50"
+              cy="74"
+              r="4"
+              fill="var(--accent-pink)"
+              opacity=".8"
+            />
+            <circle
+              cx="250"
+              cy="74"
+              r="4"
+              fill="var(--accent-pink)"
+              opacity=".8"
+            />
+            <circle
+              cx="50"
+              cy="330"
+              r="4"
+              fill="var(--accent-yellow)"
+              opacity=".6"
+            />
+            <circle
+              cx="250"
+              cy="330"
+              r="4"
+              fill="var(--accent-yellow)"
+              opacity=".6"
+            />
+            <!-- Base -->
+            <rect
+              x="38"
+              y="332"
+              width="224"
+              height="12"
+              rx="4"
+              fill="var(--bg-secondary)"
+              stroke="var(--accent-green)"
+              stroke-width=".8"
+            />
+          </svg>
+        </div>
 
-      <!-- How it works -->
-      <div class="steps-section" id="how-it-works">
-        <div class="eyebrow">✦ How it works</div>
-        <h2 class="section-title">Four shots. One <em>perfect</em> strip.</h2>
-        <div class="steps-grid">
-          <div class="step card">
-            <div class="step-num">01</div>
-            <span class="step-icon">📸</span>
-            <h3>Choose your source</h3>
-            <p>
-              Use your live camera with a countdown, or upload up to 4 photos
-              from your gallery.
-            </p>
-          </div>
-          <div class="step card">
-            <div class="step-num">02</div>
-            <span class="step-icon">🎨</span>
-            <h3>Pick filter & frame</h3>
-            <p>
-              Choose from 6 filters (B&W, Sepia, Vivid...) and 12 frame
-              templates. Updates live!
-            </p>
-          </div>
-          <div class="step card">
-            <div class="step-num">03</div>
-            <span class="step-icon">🎞</span>
-            <h3>Watch it print</h3>
-            <p>
-              A satisfying printing animation delivers your 4-shot strip. Feels
-              just like a real booth!
-            </p>
-          </div>
-          <div class="step card">
-            <div class="step-num">04</div>
-            <span class="step-icon">💾</span>
-            <h3>Download & share</h3>
-            <p>
-              Save your strip instantly — no account needed. Print it, frame it,
-              or post on TikTok.
-            </p>
+        <!-- FIX 5: was class="hero-right", corrected to class="hero-copy" -->
+        <div class="hero-copy">
+          <h1 class="hero-title">
+            Free Online <em>Photobooth</em> —<br />
+            Cute Photo Strips Instantly
+          </h1>
+          <p class="hero-sub">
+            No sign up. No download. Just take 4 shots and get your vintage
+            photo strip for free — perfect for debuts, weddings, and parties in
+            the Philippines. 🎀
+          </p>
+          <div class="hero-actions">
+            <button
+              class="btn btn-primary anim-pulse"
+              onclick="goTo(2)"
+              style="font-size: 15px; padding: 14px 36px"
+              aria-label="Enter the photobooth"
+            >
+              Enter Booth →
+            </button>
           </div>
         </div>
       </div>
+      <!-- end .hero-layout -->
     </section>
 
     <!-- ══════════════════════════════
-     SCREEN 2 — CAPTURE
-══════════════════════════════ -->
+         SCREEN 2 — CAPTURE
+    ══════════════════════════════ -->
     <section
       class="screen"
       id="s2"
       role="main"
       aria-label="Photo capture screen"
     >
-      <!-- Left sidebar: Filter + Frame controls -->
       <aside class="capture-sidebar" aria-label="Controls">
         <div>
           <div class="sidebar-label">Filter</div>
@@ -520,13 +474,25 @@
         </div>
       </aside>
 
-      <!-- Center: Camera viewfinder -->
       <main class="capture-main">
         <div
           class="viewfinder-wrap"
           role="region"
           aria-label="Camera viewfinder"
         >
+          <!-- Frame overlay shown on camera -->
+          <div
+            id="frame-overlay"
+            style="
+              position: absolute;
+              inset: 0;
+              background-size: 100% 100%;
+              background-repeat: no-repeat;
+              pointer-events: none;
+              display: none;
+              z-index: 10;
+            "
+          ></div>
           <video
             id="video"
             autoplay
@@ -534,47 +500,30 @@
             muted
             aria-label="Live camera feed"
           ></video>
-
-          <!-- Corner brackets -->
           <div class="vf-corners" aria-hidden="true">
             <div class="c tl"></div>
             <div class="c tr"></div>
             <div class="c bl"></div>
             <div class="c br"></div>
           </div>
-
-          <!-- LED status -->
           <div class="vf-led-bar" aria-live="polite">
             <div class="led" id="led" aria-hidden="true"></div>
             <span class="led-txt" id="led-txt">STANDBY</span>
           </div>
-
-          <!-- Countdown overlay -->
           <div
             id="countdown"
             role="timer"
             aria-live="assertive"
             aria-label="Countdown"
           ></div>
-
-          <!-- Flash effect -->
           <div id="flash" aria-hidden="true"></div>
         </div>
 
-        <!-- Shot progress -->
         <div class="shot-indicators" role="list" aria-label="Shot progress">
-          <div class="shot-ind" id="si0" role="listitem" aria-label="Shot 1">
-            1
-          </div>
-          <div class="shot-ind" id="si1" role="listitem" aria-label="Shot 2">
-            2
-          </div>
-          <div class="shot-ind" id="si2" role="listitem" aria-label="Shot 3">
-            3
-          </div>
-          <div class="shot-ind" id="si3" role="listitem" aria-label="Shot 4">
-            4
-          </div>
+          <div class="shot-ind" id="si0" role="listitem">1</div>
+          <div class="shot-ind" id="si1" role="listitem">2</div>
+          <div class="shot-ind" id="si2" role="listitem">3</div>
+          <div class="shot-ind" id="si3" role="listitem">4</div>
         </div>
 
         <p id="status-txt" aria-live="polite">ready to shoot!</p>
@@ -606,9 +555,9 @@
         </div>
       </main>
 
-      <!-- Right: Live film strip preview -->
       <aside class="strip-preview-panel" aria-label="Strip preview">
-        <div class="strip-preview-label">Your Strip</div>
+        <!-- FIX 4: was class="strip-preview-label", corrected to class="strip-panel-label" -->
+        <div class="strip-panel-label">Your Strip</div>
         <div
           class="sp-film"
           id="sp-film"
@@ -656,8 +605,8 @@
     </section>
 
     <!-- ══════════════════════════════
-     SCREEN 3 — PRINTING
-══════════════════════════════ -->
+         SCREEN 3 — PRINTING
+    ══════════════════════════════ -->
     <section class="screen" id="s3" role="main" aria-label="Printing screen">
       <div class="print-machine" role="region" aria-label="Printing animation">
         <div class="print-sign">
@@ -667,7 +616,6 @@
           </div>
           <div class="print-sign-sub">seconds</div>
         </div>
-
         <div class="print-slot" role="img" aria-label="Strip printing slot">
           <div class="print-inner" id="print-inner">
             <div class="ps-frame" id="ps0">○</div>
@@ -682,7 +630,6 @@
           </div>
         </div>
       </div>
-
       <div class="pickup-wrap" id="pickup-wrap">
         <p class="pickup-hint">✦ Your strip is ready!</p>
         <button
@@ -696,14 +643,12 @@
     </section>
 
     <!-- ══════════════════════════════
-     SCREEN 4 — RESULT / PICKUP
-══════════════════════════════ -->
+         SCREEN 4 — RESULT
+    ══════════════════════════════ -->
     <section class="screen" id="s4" role="main" aria-label="Your photo strip">
       <div class="result-layout">
-        <!-- Strip display -->
         <div class="result-strip-wrap">
           <div class="result-label">✦ your photostrip!</div>
-
           <div
             class="result-strip"
             id="result-strip"
@@ -720,7 +665,6 @@
             <div class="rs-frame" id="rs3">○</div>
             <div class="rs-footer">cutesyphotobooth.com</div>
           </div>
-
           <button
             class="scissors-btn"
             onclick="showToast('✂ Snip feature coming soon!')"
@@ -730,13 +674,11 @@
           </button>
         </div>
 
-        <!-- Action buttons -->
         <div class="result-actions-col">
           <h2 class="result-title">Here's your<br /><em>cute strip!</em> 🎀</h2>
           <p class="result-sub">
             Download it, print it, or share it with your barkada. Free forever.
           </p>
-
           <button
             class="btn btn-primary"
             onclick="downloadStrip()"
@@ -768,27 +710,26 @@
           >
             ← Home
           </button>
-
           <div class="share-row">
             <span class="share-label">Tag us</span>
             <button
               class="social-btn"
               onclick="showToast('🎵 Tag @cutesybooth on TikTok!')"
-              aria-label="Share on TikTok"
+              aria-label="TikTok"
             >
               🎵
             </button>
             <button
               class="social-btn"
               onclick="showToast('📸 Tag @cutesybooth on IG!')"
-              aria-label="Share on Instagram"
+              aria-label="Instagram"
             >
               📸
             </button>
             <button
               class="social-btn"
               onclick="showToast('💙 Share on Facebook!')"
-              aria-label="Share on Facebook"
+              aria-label="Facebook"
             >
               💙
             </button>
@@ -798,18 +739,21 @@
     </section>
 
     <!-- ══════════════════════════════
-     MODALS
-══════════════════════════════ -->
+         MODALS
+    ══════════════════════════════ -->
 
-    <!-- Choice: Camera or Upload -->
+    <!-- FIX 2: All modals restructured — outer div = .modal (the overlay),
+         inner div = .modal-card (the box). Was: .modal-overlay > .modal -->
+
+    <!-- Choice -->
     <div
-      class="modal-overlay"
+      class="modal"
       id="choice-modal"
       role="dialog"
       aria-modal="true"
       aria-labelledby="choice-title"
     >
-      <div class="modal">
+      <div class="modal-card">
         <button
           class="modal-close"
           onclick="closeModal('choice-modal')"
@@ -821,7 +765,8 @@
         <p class="modal-sub">
           Use your camera live, or upload from your gallery.
         </p>
-        <div class="choice-btns">
+        <!-- FIX 6: was class="choice-btns", corrected to class="choice-grid" -->
+        <div class="choice-grid">
           <div
             class="choice-card"
             onclick="
@@ -856,15 +801,15 @@
       </div>
     </div>
 
-    <!-- Filter picker -->
+    <!-- Filter -->
     <div
-      class="modal-overlay"
+      class="modal"
       id="filter-modal"
       role="dialog"
       aria-modal="true"
       aria-labelledby="filter-title"
     >
-      <div class="modal">
+      <div class="modal-card">
         <button
           class="modal-close"
           onclick="closeModal('filter-modal')"
@@ -934,15 +879,15 @@
       </div>
     </div>
 
-    <!-- Template picker -->
+    <!-- Template -->
     <div
-      class="modal-overlay"
+      class="modal"
       id="template-modal"
       role="dialog"
       aria-modal="true"
       aria-labelledby="template-title"
     >
-      <div class="modal">
+      <div class="modal-card">
         <button
           class="modal-close"
           onclick="closeModal('template-modal')"
@@ -954,9 +899,7 @@
         <p class="modal-sub">
           Pick your strip style — updates live as you select.
         </p>
-        <div class="template-grid" id="template-grid">
-          <!-- Built by JS -->
-        </div>
+        <div class="template-grid" id="template-grid"></div>
         <button
           class="btn btn-primary"
           style="width: 100%; margin-top: 16px"
@@ -967,7 +910,7 @@
       </div>
     </div>
 
-    <!-- Hidden elements -->
+    <!-- Hidden -->
     <input
       type="file"
       id="upload-input"
@@ -976,11 +919,31 @@
       aria-label="Upload photos"
     />
     <canvas id="cap-canvas" aria-hidden="true"></canvas>
-
-    <!-- Toast notification -->
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-    <!-- JavaScript -->
+    <!-- Footer -->
+    <footer class="site-footer">
+      <button
+        class="footer-link"
+        onclick="showToast('Privacy Policy coming soon!')"
+      >
+        Privacy Policy
+      </button>
+      <span class="footer-dot">·</span>
+      <button class="footer-link" onclick="showToast('FAQ coming soon!')">
+        FAQ
+      </button>
+      <span class="footer-dot">·</span>
+      <button class="footer-link" onclick="showToast('About coming soon!')">
+        About Me
+      </button>
+      <span class="footer-dot">·</span>
+      <button class="footer-link" onclick="showToast('Contact coming soon!')">
+        Contact Me
+      </button>
+    </footer>
+
+    <!-- FIX 1 & 7: Only ONE script tag, placed correctly before </body> -->
     <script src="js/app.js"></script>
   </body>
 </html>
