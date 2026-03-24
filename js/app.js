@@ -81,17 +81,9 @@ const TEMPLATES = [
 function setTheme(theme) {
   State.currentTheme = theme;
   document.documentElement.setAttribute("data-theme", theme);
-
-  // Sync toggle checkbox
-  const toggle = document.getElementById("theme-toggle");
-  if (toggle) toggle.checked = theme === "cutesy";
-
-  // Dim inactive label, highlight active
-  const labelMinimal = document.getElementById("toggle-label-minimal");
-  const labelCutesy  = document.getElementById("toggle-label-cutesy");
-  if (labelMinimal) labelMinimal.style.opacity = theme === "minimalist" ? "1" : "0.45";
-  if (labelCutesy)  labelCutesy.style.opacity  = theme === "cutesy"     ? "1" : "0.45";
-
+  document.querySelectorAll(".theme-btn").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.theme === theme);
+  });
   localStorage.setItem("cb-theme", theme);
 }
 
@@ -103,12 +95,7 @@ function goTo(n) {
     .querySelectorAll(".screen")
     .forEach((s) => s.classList.remove("active"));
   const next = document.getElementById("s" + n);
-  if (next) {
-    next.classList.add("active");
-    // Scroll screen to top every time
-    next.scrollTop = 0;
-    window.scrollTo(0, 0);
-  }
+  if (next) next.classList.add("active");
   State.currentScreen = n;
 
   for (let i = 0; i < 4; i++) {
@@ -119,44 +106,8 @@ function goTo(n) {
     if (i + 1 === n) d.classList.add("active");
   }
 
-  if (n === 2) initMobileS2();
   if (n === 3) startPrinting();
   if (n === 4) populateResult();
-}
-
-/* ──────────────────────────────────────────
-   MOBILE STEP SYSTEM
-────────────────────────────────────────── */
-function isMobile() {
-  return window.innerWidth <= 600;
-}
-
-function mobileProceedToCamera() {
-  const s2 = document.getElementById("s2");
-  if (!s2) return;
-  s2.classList.remove("mobile-step-1");
-  s2.classList.add("mobile-step-2");
-  // Scroll to top of s2
-  s2.scrollTop = 0;
-}
-
-function mobileBackToFilters() {
-  const s2 = document.getElementById("s2");
-  if (!s2) return;
-  s2.classList.remove("mobile-step-2");
-  s2.classList.add("mobile-step-1");
-  s2.scrollTop = 0;
-}
-
-function initMobileS2() {
-  const s2 = document.getElementById("s2");
-  if (!s2) return;
-  if (isMobile()) {
-    s2.classList.add("mobile-step-1");
-    s2.classList.remove("mobile-step-2");
-  } else {
-    s2.classList.remove("mobile-step-1", "mobile-step-2");
-  }
 }
 
 /* ──────────────────────────────────────────
@@ -344,12 +295,12 @@ function applyTemplateToPrintPreview() {
     inner.style.backgroundColor = "transparent";
   } else {
     inner.style.backgroundImage = "none";
-    inner.style.setProperty("background-color", t.colors?.[0] || "#0F2419", "important");
+    inner.style.backgroundColor = t.colors?.[0] || "#0F2419";
 
     for (let i = 0; i < 4; i++) {
       const frame = document.getElementById("ps" + i);
       if (frame) {
-        frame.style.setProperty("background", t.colors?.[i] || t.colors?.[0] || "#1B3A2D", "important");
+        frame.style.background = t.colors?.[i] || t.colors?.[0] || "#1B3A2D";
       }
     }
   }
@@ -364,28 +315,15 @@ function applyTemplateToResultStrip() {
     strip.style.backgroundImage = `url('${t.frame}')`;
     strip.style.backgroundSize = "100% 100%";
     strip.style.backgroundRepeat = "no-repeat";
-    strip.style.setProperty("background-color", "transparent", "important");
-    for (let i = 0; i < 4; i++) {
-      const frame = document.getElementById("rs" + i);
-      if (frame) {
-        frame.style.removeProperty("border");
-        frame.style.removeProperty("outline");
-      }
-    }
+    strip.style.backgroundColor = "transparent";
   } else {
     strip.style.backgroundImage = "none";
-    // Strip background = color[0] (shows as padding/gap between frames)
-    strip.style.setProperty("background", t.colors?.[0] || "#0F2419", "important");
+    strip.style.backgroundColor = t.colors?.[0] || "#0F2419";
 
     for (let i = 0; i < 4; i++) {
       const frame = document.getElementById("rs" + i);
       if (frame) {
-        const frameColor = t.colors?.[i] || t.colors?.[0] || "#1B3A2D";
-        // Set frame background (visible if no photo, or at edges)
-        frame.style.setProperty("background", frameColor, "important");
-        // Add thick outline so color shows even with photo covering frame
-        frame.style.setProperty("outline", `4px solid ${frameColor}`, "important");
-        frame.style.setProperty("outline-offset", "-1px", "important");
+        frame.style.background = t.colors?.[i] || t.colors?.[0] || "#1B3A2D";
       }
     }
   }
@@ -397,6 +335,14 @@ function applyTemplateToResultStrip() {
 function openModal(id) {
   const el = document.getElementById(id);
   if (el) el.classList.add("open");
+
+  // Reset suggestions modal to form state when reopened
+  if (id === "suggestions-modal") {
+    const form = document.getElementById("suggestion-form");
+    const success = document.getElementById("suggestion-success");
+    if (form) form.style.display = "block";
+    if (success) success.style.display = "none";
+  }
 }
 
 function closeModal(id) {
@@ -711,8 +657,6 @@ function startPrinting() {
   const inner = document.getElementById("print-inner");
   if (inner) inner.classList.remove("printing");
 
-  const t = TEMPLATES[State.currentTemplate];
-
   for (let i = 0; i < 4; i++) {
     const ps = document.getElementById("ps" + i);
     if (!ps) continue;
@@ -722,11 +666,6 @@ function startPrinting() {
     } else {
       ps.innerHTML =
         '<div style="display:flex;align-items:center;justify-content:center;height:100%;opacity:.2;font-size:20px;">○</div>';
-    }
-
-    // Apply frame color immediately
-    if (!t.frame) {
-      ps.style.setProperty("background", t.colors?.[i] || t.colors?.[0] || "#1B3A2D", "important");
     }
   }
 
@@ -767,8 +706,6 @@ function populateResult() {
     });
   }
 
-  const t = TEMPLATES[State.currentTemplate];
-
   for (let i = 0; i < 4; i++) {
     const rf = document.getElementById("rs" + i);
     if (!rf) continue;
@@ -780,14 +717,6 @@ function populateResult() {
       rf.className = "rs-frame";
       rf.innerHTML = "○";
     }
-
-    // Apply frame color immediately after setting content
-    if (!t.frame) {
-      const frameColor = t.colors?.[i] || t.colors?.[0] || "#1B3A2D";
-      rf.style.setProperty("background", frameColor, "important");
-      rf.style.setProperty("outline", `4px solid ${frameColor}`, "important");
-      rf.style.setProperty("outline-offset", "-1px", "important");
-    }
   }
 
   applyTemplateToResultStrip();
@@ -796,105 +725,68 @@ function populateResult() {
 /* ──────────────────────────────────────────
    DOWNLOAD / PRINT
 ────────────────────────────────────────── */
-/* ── Shared helper: builds the portrait strip canvas ── */
-function buildStripCanvas() {
-  return new Promise((resolve) => {
-    const t = TEMPLATES[State.currentTemplate];
-
-    const W = 500;
-    const PAD = 18;
-    const TOP_PAD = 48;
-    const BOT_PAD = 28;
-    const GAP = 10;
-    const FRAME_W = W - PAD * 2;              // 464px wide
-    // aspect-ratio: 3/4 means width:height = 3:4, so height = width * (4/3)
-    // This matches the viewfinder which uses aspect-ratio: 3/4
-    const FRAME_H = Math.round(FRAME_W * (4 / 3)); // 464 * 4/3 = 619px tall
-    const H = TOP_PAD + 4 * FRAME_H + 3 * GAP + BOT_PAD;
-
-    const c = document.createElement("canvas");
-    c.width = W;
-    c.height = H;
-    const ctx = c.getContext("2d");
-
-    // Background
-    if (!t.frame) {
-      for (let i = 0; i < 4; i++) {
-        ctx.fillStyle = t.colors?.[i] || t.colors?.[0] || "#0F2419";
-        const fy = TOP_PAD + i * (FRAME_H + GAP);
-        ctx.fillRect(0, i === 0 ? 0 : fy - GAP / 2, W,
-          i === 0 ? fy + FRAME_H + GAP / 2 : FRAME_H + GAP);
-      }
-      ctx.fillStyle = t.colors?.[0] || "#0F2419";
-      ctx.fillRect(0, 0, W, TOP_PAD);
-      ctx.fillStyle = t.colors?.[3] || t.colors?.[0] || "#0F2419";
-      ctx.fillRect(0, TOP_PAD + 4 * FRAME_H + 3 * GAP, W, BOT_PAD);
-    } else {
-      ctx.fillStyle = "#0F2419";
-      ctx.fillRect(0, 0, W, H);
-    }
-
-    // Brand label top
-    ctx.fillStyle = "rgba(255,255,255,0.55)";
-    ctx.font = "bold 15px Georgia, serif";
-    ctx.textAlign = "center";
-    ctx.fillText("✦ Cutesy Booth", W / 2, 30);
-
-    // Footer
-    ctx.fillStyle = "rgba(255,255,255,0.3)";
-    ctx.font = "11px monospace";
-    ctx.textAlign = "center";
-    ctx.fillText("cutesyphotobooth.com", W / 2, H - 10);
-
-    const positions = Array.from({ length: 4 }, (_, i) => ({
-      x: PAD,
-      y: TOP_PAD + i * (FRAME_H + GAP),
-      w: FRAME_W,
-      h: FRAME_H,
-    }));
-
-    const promises = State.shots.map(
-      (src, i) =>
-        new Promise((res) => {
-          const img = new Image();
-          img.onload = () => {
-            const { x, y, w, h } = positions[i];
-            ctx.save();
-            ctx.beginPath();
-            if (ctx.roundRect) ctx.roundRect(x, y, w, h, 12);
-            else ctx.rect(x, y, w, h);
-            ctx.clip();
-            // cover-fit: fill frame while maintaining photo aspect ratio
-            const scale = Math.max(w / img.width, h / img.height);
-            const dx = x + (w - img.width * scale) / 2;
-            const dy = y + (h - img.height * scale) / 2;
-            ctx.drawImage(img, dx, dy, img.width * scale, img.height * scale);
-            ctx.restore();
-            res();
-          };
-          img.src = src;
-        }),
-    );
-
-    Promise.all(promises).then(() => {
-      if (t.frame) {
-        const frameImg = new Image();
-        frameImg.onload = () => { ctx.drawImage(frameImg, 0, 0, W, H); resolve(c); };
-        frameImg.onerror = () => resolve(c);
-        frameImg.src = t.frame;
-      } else {
-        resolve(c);
-      }
-    });
-  });
-}
-
 function downloadStrip() {
   if (!State.shots.length) {
     showToast("No photos yet! Shoot first 📸");
     return;
   }
-  buildStripCanvas().then((c) => saveCanvas(c));
+
+  const t = TEMPLATES[State.currentTemplate];
+  const W = 500;
+  const H = 720;
+
+  const c = document.createElement("canvas");
+  c.width = W;
+  c.height = H;
+
+  const ctx = c.getContext("2d");
+  ctx.fillStyle = t.colors?.[0] || "#0F2419";
+  ctx.fillRect(0, 0, W, H);
+
+  const positions = Array.from({ length: 4 }, (_, i) => ({
+    x: 20,
+    y: 54 + i * 164,
+    w: 460,
+    h: 150,
+  }));
+
+  const promises = State.shots.map(
+    (src, i) =>
+      new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+          const { x, y, w, h } = positions[i];
+
+          ctx.save();
+          ctx.beginPath();
+          if (ctx.roundRect) ctx.roundRect(x, y, w, h, 16);
+          else ctx.rect(x, y, w, h);
+          ctx.clip();
+
+          const scale = Math.max(w / img.width, h / img.height);
+          const dx = x + (w - img.width * scale) / 2;
+          const dy = y + (h - img.height * scale) / 2;
+          ctx.drawImage(img, dx, dy, img.width * scale, img.height * scale);
+          ctx.restore();
+          resolve();
+        };
+        img.src = src;
+      }),
+  );
+
+  Promise.all(promises).then(() => {
+    if (t.frame) {
+      const frameImg = new Image();
+      frameImg.onload = () => {
+        ctx.drawImage(frameImg, 0, 0, W, H);
+        saveCanvas(c);
+      };
+      frameImg.onerror = () => saveCanvas(c);
+      frameImg.src = t.frame;
+    } else {
+      saveCanvas(c);
+    }
+  });
 }
 
 function saveCanvas(c) {
@@ -906,98 +798,66 @@ function saveCanvas(c) {
 }
 
 function printStrip() {
-  if (!State.shots.length) {
-    showToast("No photos yet! Shoot first 📸");
+  showToast("Opening print dialog 🖨");
+  setTimeout(() => window.print(), 400);
+}
+
+/* ──────────────────────────────────────────
+   SUGGESTIONS
+────────────────────────────────────────── */
+let suggestionRating = 0;
+
+function rateSuggestion(value) {
+  suggestionRating = value;
+  document.querySelectorAll(".star-btn").forEach((btn) => {
+    btn.classList.toggle("active", parseInt(btn.dataset.value) <= value);
+  });
+}
+
+function submitSuggestion() {
+  const name = document.getElementById("suggestion-name")?.value.trim();
+  const text = document.getElementById("suggestion-text")?.value.trim();
+
+  if (!text) {
+    showToast("Please write your suggestion first 🎀");
     return;
   }
-  showToast("Preparing print... 🖨");
-  buildStripCanvas().then((c) => {
-    const dataUrl = c.toDataURL("image/jpeg", 0.95);
-    // Open portrait-sized popup
-    const win = window.open("", "_blank", "width=420,height=900");
-    win.document.write(`<!DOCTYPE html>
-<html>
-<head>
-  <title>Cutesy Booth — Print Strip</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    html, body {
-      width: 100%;
-      height: 100%;
-      background: #ffffff;
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-    }
-
-    .strip-container {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 12px;
-    }
-
-    img {
-      display: block;
-      width: auto;
-      height: auto;
-      max-width: 100%;
-      max-height: 100vh;
-      object-fit: contain;
-    }
-
-    @media print {
-      @page {
-        /* Portrait page orientation */
-        size: A4 portrait;
-        margin: 10mm;
-      }
-
-      html, body {
-        width: 100%;
-        height: 100%;
-        background: #fff;
-        display: flex;
-        align-items: flex-start;
-        justify-content: center;
-      }
-
-      .strip-container {
-        padding: 0;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: flex-start;
-        justify-content: center;
-      }
-
-      img {
-        width: auto;
-        height: 100%;
-        max-height: 277mm; /* A4 height minus margins */
-        max-width: 190mm;  /* A4 width minus margins */
-        /* Strip is W=500, H = 48 + 4*(619) + 3*(10) + 28 = 2554px
-           So ratio = 500:2554 ≈ 1:5.1 */
-        object-fit: contain;
-        display: block;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="strip-container">
-    <img src="${dataUrl}" alt="Cutesy Booth Strip">
-  </div>
-  <script>
-    window.onload = function() {
-      setTimeout(function() { window.print(); }, 400);
-    };
-  <\/script>
-</body>
-</html>`);
-    win.document.close();
+  // Save to localStorage so suggestions persist
+  const suggestions = JSON.parse(
+    localStorage.getItem("cb-suggestions") || "[]",
+  );
+  suggestions.push({
+    name: name || "Anonymous",
+    text,
+    rating: suggestionRating,
+    date: new Date().toLocaleDateString("en-PH", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    }),
   });
+  localStorage.setItem("cb-suggestions", JSON.stringify(suggestions));
+
+  // Show success state
+  const form = document.getElementById("suggestion-form");
+  const success = document.getElementById("suggestion-success");
+  if (form) form.style.display = "none";
+  if (success) success.style.display = "block";
+
+  // Reset form for next time
+  setTimeout(() => {
+    const nameEl = document.getElementById("suggestion-name");
+    const textEl = document.getElementById("suggestion-text");
+    const charsEl = document.getElementById("suggestion-chars");
+    if (nameEl) nameEl.value = "";
+    if (textEl) textEl.value = "";
+    if (charsEl) charsEl.textContent = "0";
+    suggestionRating = 0;
+    document
+      .querySelectorAll(".star-btn")
+      .forEach((b) => b.classList.remove("active"));
+  }, 500);
 }
 
 /* ──────────────────────────────────────────
@@ -1022,12 +882,6 @@ function sleep(ms) {
 /* ──────────────────────────────────────────
    INIT
 ────────────────────────────────────────── */
-window.addEventListener("resize", () => {
-  if (State.currentScreen === 2) {
-    initMobileS2();
-  }
-});
-
 document.addEventListener("DOMContentLoaded", () => {
   const cursorEl = document.getElementById("cur");
   if (cursorEl) {
@@ -1046,6 +900,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const saved = localStorage.getItem("cb-theme") || "cutesy";
   setTheme(saved);
+
+  // Suggestion textarea character counter
+  const suggestionText = document.getElementById("suggestion-text");
+  const suggestionChars = document.getElementById("suggestion-chars");
+  if (suggestionText && suggestionChars) {
+    suggestionText.addEventListener("input", () => {
+      suggestionChars.textContent = suggestionText.value.length;
+    });
+  }
+
+  // Reset suggestion modal when closed
+  const suggModal = document.getElementById("suggestions-modal");
+  if (suggModal) {
+    suggModal.addEventListener("click", (e) => {
+      if (e.target === suggModal) closeModal("suggestions-modal");
+    });
+  }
 
   setupUploadHandler();
   updateTemplateMini();

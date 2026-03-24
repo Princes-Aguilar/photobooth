@@ -53,19 +53,27 @@
       </div>
 
       <div class="theme-switcher">
-        <span class="toggle-label" id="toggle-label-minimal">◻ Minimal</span>
-        <label class="toggle-switch" aria-label="Toggle theme">
-          <input
-            type="checkbox"
-            id="theme-toggle"
-            checked
-            onchange="setTheme(this.checked ? 'cutesy' : 'minimalist')"
-          />
-          <span class="toggle-track">
-            <span class="toggle-thumb"></span>
-          </span>
-        </label>
-        <span class="toggle-label" id="toggle-label-cutesy">🌸 Cutesy</span>
+        <button
+          class="theme-btn"
+          data-theme="minimalist"
+          onclick="setTheme('minimalist')"
+        >
+          ◻ <span>Minimal</span>
+        </button>
+        <button
+          class="theme-btn active"
+          data-theme="cutesy"
+          onclick="setTheme('cutesy')"
+        >
+          🌸 <span>Cutesy</span>
+        </button>
+        <!-- <button
+          class="theme-btn"
+          data-theme="artsy"
+          onclick="setTheme('artsy')"
+        >
+          🌿 <span>Artsy</span>
+        </button> -->
       </div>
     </nav>
 
@@ -361,6 +369,14 @@
             >
               Enter Booth →
             </button>
+            <button
+              class="btn btn-outline"
+              onclick="openModal('suggestions-modal')"
+              style="font-size: 14px; padding: 14px 24px"
+              aria-label="Give suggestions"
+            >
+              🎀 Suggestions
+            </button>
           </div>
         </div>
       </div>
@@ -464,15 +480,6 @@
             ✦ All Frames
           </button>
         </div>
-
-        <!-- Mobile only: proceed to camera after choosing filters/frames -->
-        <button
-          class="btn btn-primary mobile-start-btn"
-          onclick="mobileProceedToCamera()"
-          style="font-size: 14px;"
-        >
-          Continue →
-        </button>
       </aside>
 
       <main class="capture-main">
@@ -519,15 +526,6 @@
           ></div>
           <div id="flash" aria-hidden="true"></div>
         </div>
-
-        <!-- Mobile only: back to filters -->
-        <button
-          class="btn btn-secondary mobile-back-btn"
-          onclick="mobileBackToFilters()"
-          style="font-size: 12px; min-height: 34px; margin-bottom: 4px; align-self: flex-start;"
-        >
-          ← Filters
-        </button>
 
         <div class="shot-indicators" role="list" aria-label="Shot progress">
           <div class="shot-ind" id="si0" role="listitem">1</div>
@@ -917,6 +915,154 @@
         >
           Apply Frame ✓
         </button>
+      </div>
+    </div>
+
+    <!-- Suggestions Modal -->
+    <div
+      class="modal"
+      id="suggestions-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="suggestions-title"
+    >
+      <div class="modal-card">
+        <button
+          class="modal-close"
+          onclick="closeModal('suggestions-modal')"
+          aria-label="Close"
+        >
+          ✕
+        </button>
+
+        <h2 class="modal-title" id="suggestions-title">
+          🎀 Share Your Suggestions
+        </h2>
+        <p class="modal-sub">
+          Help us make Cutesy Booth even better! We'd love to hear your ideas,
+          feedback, or anything you'd like to see improved.
+        </p>
+
+        <div id="suggestion-form">
+          <div class="suggestion-field">
+            <label class="suggestion-label"
+              >Your Name <span style="opacity: 0.5">(optional)</span></label
+            >
+            <input
+              type="text"
+              id="suggestion-name"
+              class="suggestion-input"
+              placeholder="e.g. Princess"
+              maxlength="50"
+            />
+          </div>
+
+          <div class="suggestion-field">
+            <label class="suggestion-label"
+              >What would you like to suggest? ✦</label
+            >
+            <textarea
+              id="suggestion-text"
+              class="suggestion-textarea"
+              placeholder="e.g. I'd love more filter options, a timer countdown sound, or a feature to add stickers to my strip..."
+              maxlength="500"
+              rows="5"
+            ></textarea>
+            <div class="suggestion-count">
+              <span id="suggestion-chars">0</span>/500
+            </div>
+          </div>
+
+          <div class="suggestion-field">
+            <label class="suggestion-label"
+              >How would you rate your experience? ✦</label
+            >
+            <div class="suggestion-stars" id="suggestion-stars">
+              <button
+                class="star-btn"
+                data-value="1"
+                onclick="rateSuggestion(1)"
+                aria-label="1 star"
+              >
+                ★
+              </button>
+              <button
+                class="star-btn"
+                data-value="2"
+                onclick="rateSuggestion(2)"
+                aria-label="2 stars"
+              >
+                ★
+              </button>
+              <button
+                class="star-btn"
+                data-value="3"
+                onclick="rateSuggestion(3)"
+                aria-label="3 stars"
+              >
+                ★
+              </button>
+              <button
+                class="star-btn"
+                data-value="4"
+                onclick="rateSuggestion(4)"
+                aria-label="4 stars"
+              >
+                ★
+              </button>
+              <button
+                class="star-btn"
+                data-value="5"
+                onclick="rateSuggestion(5)"
+                aria-label="5 stars"
+              >
+                ★
+              </button>
+            </div>
+          </div>
+
+          <button
+            class="btn btn-primary"
+            style="width: 100%; margin-top: 8px; font-size: 14px"
+            onclick="submitSuggestion()"
+          >
+            Send Suggestion 🎀
+          </button>
+        </div>
+
+        <!-- Success state -->
+        <div
+          id="suggestion-success"
+          style="display: none; text-align: center; padding: 24px 0"
+        >
+          <div style="font-size: 48px; margin-bottom: 12px">🎀</div>
+          <h3
+            style="
+              font-family: var(--font-display);
+              font-size: 22px;
+              margin-bottom: 8px;
+            "
+          >
+            Thank you so much!
+          </h3>
+          <p
+            style="
+              color: var(--text-secondary);
+              font-size: 14px;
+              line-height: 1.6;
+            "
+          >
+            Your suggestion has been received. We truly appreciate you helping
+            us make Cutesy Booth better for everyone! ✦
+          </p>
+          <button
+            class="btn btn-outline"
+            style="margin-top: 20px; font-size: 13px"
+            onclick="closeModal('suggestions-modal')"
+          >
+            Close
+          </button>
+        </div>
       </div>
     </div>
 

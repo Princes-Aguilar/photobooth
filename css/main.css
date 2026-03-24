@@ -9,8 +9,8 @@
 }
 
 :root {
-  --topbar-h: clamp(52px, 7vh, 80px);
-  --footer-h: clamp(36px, 4vh, 44px);
+  --topbar-h: 80px;
+  --footer-h: 44px;
 }
 
 html,
@@ -132,11 +132,10 @@ a {
   background: none;
   color: var(--logo-color);
   font-family: var(--font-display, Georgia, serif);
-  font-size: clamp(12px, 1.6vw, 24px);
+  font-size: 30px;
   font-weight: 700;
   padding: 0;
   cursor: none;
-  white-space: nowrap;
 }
 
 .step-dots {
@@ -146,15 +145,15 @@ a {
 }
 
 .dot {
-  width: clamp(5px, 0.8vw, 8px);
-  height: clamp(5px, 0.8vw, 8px);
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--dot-inactive);
   transition: all 0.25s ease;
 }
 
 .dot.active {
-  width: clamp(14px, 2vw, 24px);
+  width: 24px;
   border-radius: 999px;
   background: var(--dot-active);
 }
@@ -198,80 +197,6 @@ a {
   border-color: var(--accent-primary);
 }
 
-/* ──────────────────────────────────────────
-   THEME TOGGLE SWITCH
-────────────────────────────────────────── */
-.theme-switcher {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.toggle-label {
-  font-family: var(--font-mono, monospace);
-  font-size: clamp(8px, 1vw, 11px);
-  letter-spacing: 0.08em;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  white-space: nowrap;
-  cursor: none;
-  transition: opacity 0.2s ease;
-}
-
-#toggle-label-cutesy {
-  color: var(--accent-pink, #f0a0b8);
-}
-
-.toggle-switch {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  cursor: none;
-}
-
-.toggle-switch input {
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
-  pointer-events: none;
-}
-
-.toggle-track {
-  display: block;
-  width: 44px;
-  height: 24px;
-  border-radius: 999px;
-  background: var(--bg-tertiary, #ebebeb);
-  border: 1.5px solid var(--border-color);
-  position: relative;
-  transition: background 0.25s ease, border-color 0.25s ease;
-  cursor: pointer;
-}
-
-.toggle-switch input:checked + .toggle-track {
-  background: var(--btn-primary-bg);
-  border-color: var(--btn-primary-bg);
-}
-
-.toggle-thumb {
-  position: absolute;
-  top: 50%;
-  left: 3px;
-  transform: translateY(-50%);
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
-  transition: left 0.25s ease;
-  pointer-events: none;
-}
-
-.toggle-switch input:checked + .toggle-track .toggle-thumb {
-  left: calc(100% - 19px);
-}
-
 .site-footer {
   position: fixed;
   inset: auto 0 0 0;
@@ -312,8 +237,8 @@ a {
    BUTTONS
 ────────────────────────────────────────── */
 .btn {
-  min-height: clamp(36px, 5vh, 48px);
-  padding: 0 clamp(14px, 2vw, 22px);
+  min-height: 48px;
+  padding: 0 22px;
   border-radius: var(--btn-radius, 999px);
   display: inline-flex;
   align-items: center;
@@ -390,16 +315,16 @@ a {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: clamp(26px, 3vh, 34px);
-  padding: 0 clamp(8px, 1.5vw, 14px);
+  min-height: 34px;
+  padding: 0 14px;
   border-radius: 999px;
   border: 1px solid var(--border-color);
   color: var(--accent-yellow);
   font-family: var(--font-mono, monospace);
-  font-size: clamp(8px, 1.1vw, 11px);
-  letter-spacing: 0.06em;
+  font-size: 11px;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  margin-bottom: clamp(8px, 1.5vh, 18px);
+  margin-bottom: 18px;
 }
 
 .hero-layout {
@@ -432,8 +357,8 @@ a {
 .hero-title {
   margin: 0;
   font-family: var(--font-display, Georgia, serif);
-  font-size: clamp(22px, 4.5vw, 62px);
-  line-height: 1.1;
+  font-size: clamp(34px, 4vw, 62px);
+  line-height: 1.05;
   font-weight: 700;
 }
 
@@ -446,8 +371,8 @@ a {
   margin: 0;
   max-width: 680px;
   color: var(--text-secondary);
-  font-size: clamp(12px, 1.6vw, 16px);
-  line-height: 1.6;
+  font-size: 16px;
+  line-height: 1.7;
 }
 
 .hero-actions {
@@ -668,6 +593,86 @@ a {
 }
 
 /* ──────────────────────────────────────────
+   SUGGESTIONS FORM
+────────────────────────────────────────── */
+.suggestion-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.suggestion-label {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-primary);
+  font-weight: 600;
+}
+
+.suggestion-input,
+.suggestion-textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: var(--btn-radius, 12px);
+  border: 1.5px solid var(--border-color);
+  background: var(--bg-tertiary, #f5f5f5);
+  color: var(--text-primary);
+  font-family: var(--font-body, Arial, sans-serif);
+  font-size: 14px;
+  line-height: 1.5;
+  transition: border-color 0.2s ease;
+  resize: none;
+  outline: none;
+}
+
+.suggestion-input:focus,
+.suggestion-textarea:focus {
+  border-color: var(--accent-primary);
+}
+
+.suggestion-input::placeholder,
+.suggestion-textarea::placeholder {
+  color: var(--text-tertiary, #999);
+  font-size: 13px;
+}
+
+.suggestion-count {
+  text-align: right;
+  font-family: var(--font-mono, monospace);
+  font-size: 10px;
+  color: var(--text-secondary);
+  opacity: 0.6;
+  margin-top: 2px;
+}
+
+.suggestion-stars {
+  display: flex;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.star-btn {
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: var(--border-color);
+  cursor: none;
+  padding: 0 2px;
+  transition:
+    color 0.15s ease,
+    transform 0.15s ease;
+  line-height: 1;
+}
+
+.star-btn:hover,
+.star-btn.active {
+  color: var(--accent-yellow);
+  transform: scale(1.15);
+}
+
+/* ──────────────────────────────────────────
    TOAST
 ────────────────────────────────────────── */
 .toast {
@@ -704,25 +709,18 @@ a {
 }
 
 /* ──────────────────────────────────────────
-   RESPONSIVE — FLUID (no abrupt jumps)
+   RESPONSIVE
 ────────────────────────────────────────── */
-
-/* Tablet — stack hero layout */
 @media (max-width: 1100px) {
   .hero-layout {
     grid-template-columns: 1fr;
     justify-items: center;
     text-align: center;
-    gap: clamp(12px, 2vh, 24px);
-    height: auto;
+    gap: 24px;
   }
 
   .hero-copy {
     align-items: center;
-  }
-
-  .booth-hero svg {
-    width: min(100%, 280px);
   }
 
   .steps {
@@ -730,73 +728,24 @@ a {
   }
 }
 
-/* Small tablet / large phone */
-@media (max-width: 860px) {
-  .topbar {
-    padding: 0 16px;
-  }
-
-  .booth-hero svg {
-    width: min(100%, 220px);
-  }
-}
-
-/* Mobile */
-@media (max-width: 600px) {
+@media (max-width: 700px) {
   :root {
-    --topbar-h: clamp(48px, 8vh, 60px);
-    --footer-h: clamp(32px, 5vh, 40px);
+    --topbar-h: 70px;
+    --footer-h: 40px;
   }
 
   .topbar {
-    padding: 0 10px;
+    padding: 0 14px;
   }
 
-  /* Toggle smaller on mobile */
-  .toggle-label {
-    font-size: clamp(7px, 2vw, 9px);
-    letter-spacing: 0.03em;
+  .theme-btn span {
+    display: none;
   }
 
-  .toggle-track {
-    width: clamp(30px, 8vw, 38px);
-    height: clamp(17px, 4.5vw, 22px);
+  .logo {
+    font-size: 24px;
   }
 
-  .toggle-thumb {
-    width: clamp(11px, 3vw, 15px);
-    height: clamp(11px, 3vw, 15px);
-  }
-
-  .toggle-switch input:checked + .toggle-track .toggle-thumb {
-    left: calc(100% - clamp(14px, 4vw, 18px));
-  }
-
-  /* S1 layout stacked, centered, no scroll */
-  #s1 {
-    padding: clamp(8px, 2vh, 20px) clamp(12px, 4vw, 24px);
-    justify-content: center;
-  }
-
-  .hero-layout {
-    gap: clamp(8px, 1.5vh, 16px);
-  }
-
-  .booth-hero svg {
-    width: min(100%, clamp(140px, 45vw, 200px));
-  }
-
-  .hero-copy {
-    gap: clamp(6px, 1.2vh, 12px);
-  }
-
-  .hero-actions .btn {
-    min-height: clamp(34px, 5vh, 44px);
-    font-size: clamp(12px, 3.5vw, 15px) !important;
-    padding: 0 clamp(16px, 5vw, 28px) !important;
-  }
-
-  /* Modals */
   .choice-grid,
   .filter-grid,
   .template-grid,
@@ -805,61 +754,14 @@ a {
   }
 
   .modal-card {
-    padding: clamp(14px, 3vw, 20px);
-    border-radius: 16px;
+    padding: 18px;
   }
 
-  .modal-title {
-    font-size: clamp(20px, 5vw, 28px);
-  }
-
-  /* Footer links smaller */
-  .footer-link {
-    font-size: clamp(8px, 2vw, 10px);
-  }
-
-  .footer-dot {
-    font-size: clamp(8px, 2vw, 10px);
-  }
-
-  /* Hide cursor on touch devices */
   .cursor {
     display: none;
   }
 
   body {
     cursor: auto;
-  }
-}
-
-/* Very small phones (iPhone SE, Galaxy A series) */
-@media (max-width: 380px) {
-  .hero-tag {
-    font-size: 7px;
-    padding: 0 8px;
-  }
-
-  .booth-hero svg {
-    width: min(100%, 130px);
-  }
-
-  .toggle-label {
-    font-size: 7px;
-  }
-}
-
-/* Hide toggle text labels on very narrow screens,
-   keep only the toggle track + thumb visible */
-@media (max-width: 480px) {
-  #toggle-label-minimal {
-    display: none;
-  }
-
-  #toggle-label-cutesy {
-    font-size: clamp(8px, 2.5vw, 10px);
-  }
-
-  .step-dots {
-    display: none;
   }
 }
