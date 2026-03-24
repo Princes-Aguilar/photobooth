@@ -749,16 +749,19 @@
     width: 100%;
     height: calc(100vh - var(--topbar-h) - var(--footer-h));
     border: 0;
-    padding: 16px;
+    padding: 16px 16px 20px;
     justify-content: flex-start;
     overflow-y: auto;
     box-sizing: border-box;
   }
 
-  /* Continue button always at bottom of sidebar */
+  /* Continue button — pushed up from footer */
   #s2.mobile-step-1 .mobile-start-btn {
     margin-top: auto;
-    padding-top: 16px;
+    margin-bottom: 16px;
+    width: 100%;
+    min-height: 50px;
+    font-size: 15px;
   }
 
   #s2.mobile-step-1 .capture-main {
@@ -778,11 +781,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     flex: 1;
-    padding: 10px 10px 6px;
+    padding: 8px 10px 16px;
     min-height: 0;
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
   #s2.mobile-step-2 .strip-preview-panel {
@@ -823,12 +827,12 @@
     display: flex;
   }
 
-  /* Viewfinder fills available space in step 2 */
+  /* Viewfinder — clamped so buttons below are always visible */
   #s2.mobile-step-2 .viewfinder-wrap {
     width: calc(100vw - 72px - 20px);
-    max-width: 340px;
+    max-width: 320px;
     aspect-ratio: 3 / 4;
-    max-height: calc(100vh - var(--topbar-h) - var(--footer-h) - 130px);
+    max-height: calc(100vh - var(--topbar-h) - var(--footer-h) - 200px);
   }
 
   #s3,
