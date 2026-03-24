@@ -130,8 +130,18 @@
 
 @media (max-width: 600px) {
   .template-mini {
-    min-height: 160px;
+    width: 60%;
+    min-height: 180px;
+    aspect-ratio: 3 / 4;
+    align-self: center;
+    flex-direction: column;
+    flex: unset;
+  }
+
+  /* Make t-frame-mini taller */
+  .template-mini .t-frame-mini {
     flex: 1;
+    min-height: 30px;
   }
 }
 
@@ -771,11 +781,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     flex: 1;
-    padding: 8px calc(72px + 8px) 70px 8px;
+    padding: 20px calc(72px + 8px) 16px 8px;
     overflow: hidden;
-    gap: clamp(6px, 1.5vh, 10px);
+    gap: clamp(8px, 1.8vh, 14px);
   }
   #s2.mobile-step-2 .strip-preview-panel {
     display: flex;
@@ -804,9 +814,9 @@
     max-height: none;
   }
   #s2.mobile-step-2 .viewfinder-wrap {
-    width: min(calc(100vw - 72px - 16px), clamp(220px, 62vw, 340px));
+    width: min(calc(100vw - 72px - 12px), clamp(240px, 70vw, 360px));
     aspect-ratio: 3 / 4;
-    max-height: calc(100vh - var(--topbar-h) - var(--footer-h) - 180px);
+    max-height: calc(100vh - var(--topbar-h) - var(--footer-h) - 160px);
   }
 
   /* Strip panel stops exactly at footer */
