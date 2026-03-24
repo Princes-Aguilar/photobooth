@@ -615,7 +615,7 @@ a {
 .suggestion-textarea {
   width: 100%;
   padding: 12px 14px;
-  border-radius: var(--btn-radius, 12px);
+  border-radius: 8px;
   border: 1.5px solid var(--border-color);
   background: var(--bg-tertiary, #f5f5f5);
   color: var(--text-primary);
