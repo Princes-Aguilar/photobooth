@@ -132,10 +132,11 @@ a {
   background: none;
   color: var(--logo-color);
   font-family: var(--font-display, Georgia, serif);
-  font-size: 30px;
+  font-size: 24px;
   font-weight: 700;
   padding: 0;
   cursor: none;
+  white-space: nowrap;
 }
 
 .step-dots {
@@ -195,6 +196,80 @@ a {
   background: var(--accent-primary);
   color: var(--btn-text);
   border-color: var(--accent-primary);
+}
+
+/* ──────────────────────────────────────────
+   THEME TOGGLE SWITCH
+────────────────────────────────────────── */
+.theme-switcher {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toggle-label {
+  font-family: var(--font-mono, monospace);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: none;
+  transition: opacity 0.2s ease;
+}
+
+#toggle-label-cutesy {
+  color: var(--accent-pink, #f0a0b8);
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: none;
+}
+
+.toggle-switch input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.toggle-track {
+  display: block;
+  width: 44px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--bg-tertiary, #ebebeb);
+  border: 1.5px solid var(--border-color);
+  position: relative;
+  transition: background 0.25s ease, border-color 0.25s ease;
+  cursor: pointer;
+}
+
+.toggle-switch input:checked + .toggle-track {
+  background: var(--btn-primary-bg);
+  border-color: var(--btn-primary-bg);
+}
+
+.toggle-thumb {
+  position: absolute;
+  top: 50%;
+  left: 3px;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+  transition: left 0.25s ease;
+  pointer-events: none;
+}
+
+.toggle-switch input:checked + .toggle-track .toggle-thumb {
+  left: calc(100% - 19px);
 }
 
 .site-footer {
@@ -668,19 +743,14 @@ a {
   }
 
   .logo {
-    font-size: 16px;
+    font-size: 14px;
     white-space: nowrap;
   }
 
-  /* Keep both toggle labels visible but smaller */
+  /* Smaller toggle on mobile */
   .toggle-label {
     font-size: 8px;
     letter-spacing: 0.04em;
-  }
-
-  #toggle-label-minimal,
-  #toggle-label-cutesy {
-    display: inline;
   }
 
   .toggle-track {
