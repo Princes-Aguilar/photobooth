@@ -81,9 +81,17 @@ const TEMPLATES = [
 function setTheme(theme) {
   State.currentTheme = theme;
   document.documentElement.setAttribute("data-theme", theme);
-  document.querySelectorAll(".theme-btn").forEach((btn) => {
-    btn.classList.toggle("active", btn.dataset.theme === theme);
-  });
+
+  // Sync toggle checkbox
+  const toggle = document.getElementById("theme-toggle");
+  if (toggle) toggle.checked = theme === "cutesy";
+
+  // Dim inactive label, highlight active
+  const labelMinimal = document.getElementById("toggle-label-minimal");
+  const labelCutesy  = document.getElementById("toggle-label-cutesy");
+  if (labelMinimal) labelMinimal.style.opacity = theme === "minimalist" ? "1" : "0.45";
+  if (labelCutesy)  labelCutesy.style.opacity  = theme === "cutesy"     ? "1" : "0.45";
+
   localStorage.setItem("cb-theme", theme);
 }
 
