@@ -128,6 +128,12 @@
   overflow: hidden;
 }
 
+@media (max-width: 600px) {
+  .template-mini {
+    min-height: 120px;
+  }
+}
+
 .t-frame-mini {
   flex: 1;
   border-radius: 5px;
@@ -797,9 +803,15 @@
     max-height: none;
   }
   #s2.mobile-step-2 .viewfinder-wrap {
-    width: min(calc(100vw - 72px - 20px), clamp(200px, 55vw, 310px));
+    width: min(calc(100vw - 72px - 16px), clamp(220px, 62vw, 340px));
     aspect-ratio: 3 / 4;
-    max-height: calc(100vh - var(--topbar-h) - var(--footer-h) - 200px);
+    max-height: calc(100vh - var(--topbar-h) - var(--footer-h) - 180px);
+  }
+
+  /* Strip panel stops before footer */
+  #s2.mobile-step-2 .strip-preview-panel {
+    height: calc(100vh - var(--topbar-h) - var(--footer-h));
+    bottom: var(--footer-h);
   }
 
   .mobile-start-btn,
