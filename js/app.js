@@ -729,68 +729,101 @@ function populateResult() {
 /* ──────────────────────────────────────────
    DOWNLOAD / PRINT
 ────────────────────────────────────────── */
+/* ── Build portrait strip canvas matching 3:4 viewfinder ratio ── */
+function buildStripCanvas() {
+  return new Promise((resolve) => {
+    const t = TEMPLATES[State.currentTemplate];
+    const W = 500;
+    const PAD = 18;
+    const TOP_PAD = 48;
+    const BOT_PAD = 28;
+    const GAP = 10;
+    const FRAME_W = W - PAD * 2; // 464px
+    const FRAME_H = Math.round(FRAME_W * (4 / 3)); // 619px — matches 3:4 viewfinder
+    const H = TOP_PAD + 4 * FRAME_H + 3 * GAP + BOT_PAD;
+
+    const c = document.createElement("canvas");
+    c.width = W;
+    c.height = H;
+    const ctx = c.getContext("2d");
+
+    // Background — alternating colors per frame section
+    if (!t.frame) {
+      ctx.fillStyle = t.colors?.[0] || "#0F2419";
+      ctx.fillRect(0, 0, W, H);
+      for (let i = 0; i < 4; i++) {
+        const fy = TOP_PAD + i * (FRAME_H + GAP);
+        ctx.fillStyle = t.colors?.[i] || t.colors?.[0] || "#0F2419";
+        ctx.fillRect(PAD, fy, FRAME_W, FRAME_H);
+      }
+    } else {
+      ctx.fillStyle = "#0F2419";
+      ctx.fillRect(0, 0, W, H);
+    }
+
+    // Brand label
+    ctx.fillStyle = "rgba(255,255,255,0.55)";
+    ctx.font = "bold 15px Georgia, serif";
+    ctx.textAlign = "center";
+    ctx.fillText("✦ Cutesy Booth", W / 2, 30);
+
+    // Footer watermark
+    ctx.fillStyle = "rgba(255,255,255,0.3)";
+    ctx.font = "11px monospace";
+    ctx.fillText("cutesyphotobooth.com", W / 2, H - 10);
+
+    const positions = Array.from({ length: 4 }, (_, i) => ({
+      x: PAD,
+      y: TOP_PAD + i * (FRAME_H + GAP),
+      w: FRAME_W,
+      h: FRAME_H,
+    }));
+
+    const promises = State.shots.map(
+      (src, i) =>
+        new Promise((res) => {
+          const img = new Image();
+          img.onload = () => {
+            const { x, y, w, h } = positions[i];
+            ctx.save();
+            ctx.beginPath();
+            if (ctx.roundRect) ctx.roundRect(x, y, w, h, 12);
+            else ctx.rect(x, y, w, h);
+            ctx.clip();
+            // cover-fit — never stretch
+            const scale = Math.max(w / img.width, h / img.height);
+            const dx = x + (w - img.width * scale) / 2;
+            const dy = y + (h - img.height * scale) / 2;
+            ctx.drawImage(img, dx, dy, img.width * scale, img.height * scale);
+            ctx.restore();
+            res();
+          };
+          img.src = src;
+        }),
+    );
+
+    Promise.all(promises).then(() => {
+      if (t.frame) {
+        const frameImg = new Image();
+        frameImg.onload = () => {
+          ctx.drawImage(frameImg, 0, 0, W, H);
+          resolve(c);
+        };
+        frameImg.onerror = () => resolve(c);
+        frameImg.src = t.frame;
+      } else {
+        resolve(c);
+      }
+    });
+  });
+}
+
 function downloadStrip() {
   if (!State.shots.length) {
     showToast("No photos yet! Shoot first 📸");
     return;
   }
-
-  const t = TEMPLATES[State.currentTemplate];
-  const W = 500;
-  const H = 720;
-
-  const c = document.createElement("canvas");
-  c.width = W;
-  c.height = H;
-
-  const ctx = c.getContext("2d");
-  ctx.fillStyle = t.colors?.[0] || "#0F2419";
-  ctx.fillRect(0, 0, W, H);
-
-  const positions = Array.from({ length: 4 }, (_, i) => ({
-    x: 20,
-    y: 54 + i * 164,
-    w: 460,
-    h: 150,
-  }));
-
-  const promises = State.shots.map(
-    (src, i) =>
-      new Promise((resolve) => {
-        const img = new Image();
-        img.onload = () => {
-          const { x, y, w, h } = positions[i];
-
-          ctx.save();
-          ctx.beginPath();
-          if (ctx.roundRect) ctx.roundRect(x, y, w, h, 16);
-          else ctx.rect(x, y, w, h);
-          ctx.clip();
-
-          const scale = Math.max(w / img.width, h / img.height);
-          const dx = x + (w - img.width * scale) / 2;
-          const dy = y + (h - img.height * scale) / 2;
-          ctx.drawImage(img, dx, dy, img.width * scale, img.height * scale);
-          ctx.restore();
-          resolve();
-        };
-        img.src = src;
-      }),
-  );
-
-  Promise.all(promises).then(() => {
-    if (t.frame) {
-      const frameImg = new Image();
-      frameImg.onload = () => {
-        ctx.drawImage(frameImg, 0, 0, W, H);
-        saveCanvas(c);
-      };
-      frameImg.onerror = () => saveCanvas(c);
-      frameImg.src = t.frame;
-    } else {
-      saveCanvas(c);
-    }
-  });
+  buildStripCanvas().then((c) => saveCanvas(c));
 }
 
 function saveCanvas(c) {
@@ -802,8 +835,29 @@ function saveCanvas(c) {
 }
 
 function printStrip() {
-  showToast("Opening print dialog 🖨");
-  setTimeout(() => window.print(), 400);
+  if (!State.shots.length) {
+    showToast("No photos yet! Shoot first 📸");
+    return;
+  }
+  showToast("Preparing print... 🖨");
+  buildStripCanvas().then((c) => {
+    const dataUrl = c.toDataURL("image/jpeg", 0.95);
+    const win = window.open("", "_blank", "width=420,height=900");
+    win.document.write(`<!DOCTYPE html><html><head><title>Cutesy Booth</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+html,body { background:#fff; display:flex; justify-content:center; }
+img { display:block; width:auto; max-width:100%; max-height:100vh; object-fit:contain; }
+@media print {
+  @page { size: A4 portrait; margin: 10mm; }
+  img { height:100%; max-height:277mm; max-width:90mm; }
+}
+</style></head><body>
+<img src="${dataUrl}" alt="Cutesy Booth Strip">
+<script>window.onload=function(){ setTimeout(function(){ window.print(); },400); };<\/script>
+</body></html>`);
+    win.document.close();
+  });
 }
 
 /* ── MOBILE STEP SYSTEM ── */

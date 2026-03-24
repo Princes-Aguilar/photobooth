@@ -129,19 +129,25 @@
 }
 
 @media (max-width: 600px) {
+  .template-nav {
+    justify-content: center;
+    align-items: center;
+  }
+
   .template-mini {
-    width: 60%;
-    min-height: 180px;
-    aspect-ratio: 3 / 4;
+    width: 55%;
+    min-height: unset;
+    aspect-ratio: 3 / 5;
     align-self: center;
     flex-direction: column;
     flex: unset;
+    margin: 0 auto;
   }
 
-  /* Make t-frame-mini taller */
   .template-mini .t-frame-mini {
     flex: 1;
-    min-height: 30px;
+    min-height: 0;
+    width: 100%;
   }
 }
 
