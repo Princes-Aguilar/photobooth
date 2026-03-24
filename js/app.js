@@ -365,17 +365,27 @@ function applyTemplateToResultStrip() {
     strip.style.backgroundSize = "100% 100%";
     strip.style.backgroundRepeat = "no-repeat";
     strip.style.setProperty("background-color", "transparent", "important");
+    for (let i = 0; i < 4; i++) {
+      const frame = document.getElementById("rs" + i);
+      if (frame) {
+        frame.style.removeProperty("border");
+        frame.style.removeProperty("outline");
+      }
+    }
   } else {
     strip.style.backgroundImage = "none";
-    // Override both background and background-color with !important
+    // Strip background = color[0] (shows as padding/gap between frames)
     strip.style.setProperty("background", t.colors?.[0] || "#0F2419", "important");
-    strip.style.setProperty("background-color", t.colors?.[0] || "#0F2419", "important");
 
     for (let i = 0; i < 4; i++) {
       const frame = document.getElementById("rs" + i);
       if (frame) {
-        frame.style.setProperty("background", t.colors?.[i] || t.colors?.[0] || "#1B3A2D", "important");
-        frame.style.setProperty("background-color", t.colors?.[i] || t.colors?.[0] || "#1B3A2D", "important");
+        const frameColor = t.colors?.[i] || t.colors?.[0] || "#1B3A2D";
+        // Set frame background (visible if no photo, or at edges)
+        frame.style.setProperty("background", frameColor, "important");
+        // Add thick outline so color shows even with photo covering frame
+        frame.style.setProperty("outline", `4px solid ${frameColor}`, "important");
+        frame.style.setProperty("outline-offset", "-1px", "important");
       }
     }
   }
@@ -773,7 +783,10 @@ function populateResult() {
 
     // Apply frame color immediately after setting content
     if (!t.frame) {
-      rf.style.setProperty("background", t.colors?.[i] || t.colors?.[0] || "#1B3A2D", "important");
+      const frameColor = t.colors?.[i] || t.colors?.[0] || "#1B3A2D";
+      rf.style.setProperty("background", frameColor, "important");
+      rf.style.setProperty("outline", `4px solid ${frameColor}`, "important");
+      rf.style.setProperty("outline-offset", "-1px", "important");
     }
   }
 
