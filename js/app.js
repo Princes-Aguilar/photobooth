@@ -339,12 +339,12 @@ function applyTemplateToPrintPreview() {
     inner.style.backgroundColor = "transparent";
   } else {
     inner.style.backgroundImage = "none";
-    inner.style.backgroundColor = t.colors?.[0] || "#0F2419";
+    inner.style.setProperty("background-color", t.colors?.[0] || "#0F2419", "important");
 
     for (let i = 0; i < 4; i++) {
       const frame = document.getElementById("ps" + i);
       if (frame) {
-        frame.style.background = t.colors?.[i] || t.colors?.[0] || "#1B3A2D";
+        frame.style.setProperty("background", t.colors?.[i] || t.colors?.[0] || "#1B3A2D", "important");
       }
     }
   }
@@ -362,12 +362,12 @@ function applyTemplateToResultStrip() {
     strip.style.backgroundColor = "transparent";
   } else {
     strip.style.backgroundImage = "none";
-    strip.style.backgroundColor = t.colors?.[0] || "#0F2419";
+    strip.style.setProperty("background-color", t.colors?.[0] || "#0F2419", "important");
 
     for (let i = 0; i < 4; i++) {
       const frame = document.getElementById("rs" + i);
       if (frame) {
-        frame.style.background = t.colors?.[i] || t.colors?.[0] || "#1B3A2D";
+        frame.style.setProperty("background", t.colors?.[i] || t.colors?.[0] || "#1B3A2D", "important");
       }
     }
   }
@@ -693,6 +693,8 @@ function startPrinting() {
   const inner = document.getElementById("print-inner");
   if (inner) inner.classList.remove("printing");
 
+  const t = TEMPLATES[State.currentTemplate];
+
   for (let i = 0; i < 4; i++) {
     const ps = document.getElementById("ps" + i);
     if (!ps) continue;
@@ -702,6 +704,11 @@ function startPrinting() {
     } else {
       ps.innerHTML =
         '<div style="display:flex;align-items:center;justify-content:center;height:100%;opacity:.2;font-size:20px;">○</div>';
+    }
+
+    // Apply frame color immediately
+    if (!t.frame) {
+      ps.style.setProperty("background", t.colors?.[i] || t.colors?.[0] || "#1B3A2D", "important");
     }
   }
 
@@ -742,6 +749,8 @@ function populateResult() {
     });
   }
 
+  const t = TEMPLATES[State.currentTemplate];
+
   for (let i = 0; i < 4; i++) {
     const rf = document.getElementById("rs" + i);
     if (!rf) continue;
@@ -752,6 +761,11 @@ function populateResult() {
     } else {
       rf.className = "rs-frame";
       rf.innerHTML = "○";
+    }
+
+    // Apply frame color immediately after setting content
+    if (!t.frame) {
+      rf.style.setProperty("background", t.colors?.[i] || t.colors?.[0] || "#1B3A2D", "important");
     }
   }
 
