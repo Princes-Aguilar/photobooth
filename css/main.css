@@ -650,101 +650,53 @@ a {
 
 @media (max-width: 700px) {
   :root {
-    --topbar-h: 56px;
+    --topbar-h: 70px;
     --footer-h: 40px;
   }
 
-  /* Topbar */
   .topbar {
-    padding: 0 12px;
-    height: var(--topbar-h);
+    padding: 0 10px;
+    height: 54px;
   }
 
-  .logo {
-    font-size: 18px;
-    white-space: nowrap;
+  :root {
+    --topbar-h: 54px;
   }
 
-  .step-dots {
-    gap: 5px;
-  }
-
-  .dot {
-    width: 6px;
-    height: 6px;
-  }
-
-  .dot.active {
-    width: 18px;
-  }
-
-  /* Toggle labels shorter on mobile */
-  .toggle-label {
-    font-size: 9px;
-    letter-spacing: 0.06em;
-  }
-
-  #toggle-label-minimal {
+  .theme-btn span {
     display: none;
   }
 
-  /* S1 — Landing: no scroll, everything fits */
-  #s1 {
-    padding: 12px 16px 8px;
-    justify-content: center;
-    overflow: hidden;
+  .logo {
+    font-size: 16px;
+    white-space: nowrap;
   }
 
-  .hero-tag {
-    font-size: 9px;
-    padding: 0 10px;
-    min-height: 26px;
-    margin-bottom: 10px;
+  /* Keep both toggle labels visible but smaller */
+  .toggle-label {
+    font-size: 8px;
     letter-spacing: 0.04em;
   }
 
-  .hero-layout {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto;
-    gap: 10px;
-    height: auto;
-    width: 100%;
-    justify-items: center;
-    align-items: center;
+  #toggle-label-minimal,
+  #toggle-label-cutesy {
+    display: inline;
   }
 
-  .booth-hero svg {
-    width: min(100%, 180px);
+  .toggle-track {
+    width: 36px;
+    height: 20px;
   }
 
-  .hero-copy {
-    align-items: center;
-    text-align: center;
-    gap: 8px;
+  .toggle-thumb {
+    width: 13px;
+    height: 13px;
   }
 
-  .hero-title {
-    font-size: 26px;
-    line-height: 1.1;
+  .toggle-switch input:checked + .toggle-track .toggle-thumb {
+    left: calc(100% - 16px);
   }
 
-  .hero-sub {
-    font-size: 13px;
-    line-height: 1.5;
-  }
-
-  .hero-actions {
-    margin-top: 4px;
-    justify-content: center;
-  }
-
-  .hero-actions .btn {
-    font-size: 13px !important;
-    padding: 10px 24px !important;
-    min-height: 40px;
-  }
-
-  /* Modals */
   .choice-grid,
   .filter-grid,
   .template-grid,
@@ -753,10 +705,9 @@ a {
   }
 
   .modal-card {
-    padding: 16px;
+    padding: 18px;
   }
 
-  /* Hide cursor on touch */
   .cursor {
     display: none;
   }
