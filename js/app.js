@@ -81,9 +81,12 @@ const TEMPLATES = [
 function setTheme(theme) {
   State.currentTheme = theme;
   document.documentElement.setAttribute("data-theme", theme);
-  document.querySelectorAll(".theme-btn").forEach((btn) => {
-    btn.classList.toggle("active", btn.dataset.theme === theme);
-  });
+  const toggle = document.getElementById("theme-toggle");
+  if (toggle) toggle.checked = theme === "cutesy";
+  const lm = document.getElementById("toggle-label-minimal");
+  const lc = document.getElementById("toggle-label-cutesy");
+  if (lm) lm.style.opacity = theme === "minimalist" ? "1" : "0.45";
+  if (lc) lc.style.opacity = theme === "cutesy" ? "1" : "0.45";
   localStorage.setItem("cb-theme", theme);
 }
 
@@ -95,9 +98,12 @@ function goTo(n) {
     .querySelectorAll(".screen")
     .forEach((s) => s.classList.remove("active"));
   const next = document.getElementById("s" + n);
-  if (next) next.classList.add("active");
+  if (next) {
+    next.classList.add("active");
+    next.scrollTop = 0;
+    window.scrollTo(0, 0);
+  }
   State.currentScreen = n;
-
   for (let i = 0; i < 4; i++) {
     const d = document.getElementById("d" + i);
     if (!d) continue;
@@ -105,7 +111,7 @@ function goTo(n) {
     if (i + 1 < n) d.classList.add("done");
     if (i + 1 === n) d.classList.add("active");
   }
-
+  if (n === 2) initMobileS2();
   if (n === 3) startPrinting();
   if (n === 4) populateResult();
 }
@@ -335,8 +341,6 @@ function applyTemplateToResultStrip() {
 function openModal(id) {
   const el = document.getElementById(id);
   if (el) el.classList.add("open");
-
-  // Reset suggestions modal to form state when reopened
   if (id === "suggestions-modal") {
     const form = document.getElementById("suggestion-form");
     const success = document.getElementById("suggestion-success");
@@ -802,9 +806,39 @@ function printStrip() {
   setTimeout(() => window.print(), 400);
 }
 
-/* ──────────────────────────────────────────
-   SUGGESTIONS
-────────────────────────────────────────── */
+/* ── MOBILE STEP SYSTEM ── */
+function isMobile() {
+  return window.innerWidth <= 600;
+}
+
+function mobileProceedToCamera() {
+  const s2 = document.getElementById("s2");
+  if (!s2) return;
+  s2.classList.remove("mobile-step-1");
+  s2.classList.add("mobile-step-2");
+  s2.scrollTop = 0;
+}
+
+function mobileBackToFilters() {
+  const s2 = document.getElementById("s2");
+  if (!s2) return;
+  s2.classList.remove("mobile-step-2");
+  s2.classList.add("mobile-step-1");
+  s2.scrollTop = 0;
+}
+
+function initMobileS2() {
+  const s2 = document.getElementById("s2");
+  if (!s2) return;
+  if (isMobile()) {
+    s2.classList.add("mobile-step-1");
+    s2.classList.remove("mobile-step-2");
+  } else {
+    s2.classList.remove("mobile-step-1", "mobile-step-2");
+  }
+}
+
+/* ── SUGGESTIONS ── */
 let suggestionRating = 0;
 
 function rateSuggestion(value) {
@@ -815,15 +849,12 @@ function rateSuggestion(value) {
 }
 
 function submitSuggestion() {
-  const name = document.getElementById("suggestion-name")?.value.trim();
   const text = document.getElementById("suggestion-text")?.value.trim();
-
   if (!text) {
     showToast("Please write your suggestion first 🎀");
     return;
   }
-
-  // Save to localStorage so suggestions persist
+  const name = document.getElementById("suggestion-name")?.value.trim();
   const suggestions = JSON.parse(
     localStorage.getItem("cb-suggestions") || "[]",
   );
@@ -838,21 +869,17 @@ function submitSuggestion() {
     }),
   });
   localStorage.setItem("cb-suggestions", JSON.stringify(suggestions));
-
-  // Show success state
   const form = document.getElementById("suggestion-form");
   const success = document.getElementById("suggestion-success");
   if (form) form.style.display = "none";
   if (success) success.style.display = "block";
-
-  // Reset form for next time
   setTimeout(() => {
-    const nameEl = document.getElementById("suggestion-name");
-    const textEl = document.getElementById("suggestion-text");
-    const charsEl = document.getElementById("suggestion-chars");
-    if (nameEl) nameEl.value = "";
-    if (textEl) textEl.value = "";
-    if (charsEl) charsEl.textContent = "0";
+    const n = document.getElementById("suggestion-name");
+    const t = document.getElementById("suggestion-text");
+    const c = document.getElementById("suggestion-chars");
+    if (n) n.value = "";
+    if (t) t.value = "";
+    if (c) c.textContent = "0";
     suggestionRating = 0;
     document
       .querySelectorAll(".star-btn")
@@ -902,21 +929,25 @@ document.addEventListener("DOMContentLoaded", () => {
   setTheme(saved);
 
   // Suggestion textarea character counter
-  const suggestionText = document.getElementById("suggestion-text");
-  const suggestionChars = document.getElementById("suggestion-chars");
-  if (suggestionText && suggestionChars) {
-    suggestionText.addEventListener("input", () => {
-      suggestionChars.textContent = suggestionText.value.length;
+  const suggText = document.getElementById("suggestion-text");
+  const suggChars = document.getElementById("suggestion-chars");
+  if (suggText && suggChars) {
+    suggText.addEventListener("input", () => {
+      suggChars.textContent = suggText.value.length;
     });
   }
 
-  // Reset suggestion modal when closed
+  // Close suggestion modal on overlay click
   const suggModal = document.getElementById("suggestions-modal");
-  if (suggModal) {
+  if (suggModal)
     suggModal.addEventListener("click", (e) => {
       if (e.target === suggModal) closeModal("suggestions-modal");
     });
-  }
+
+  // Handle resize for mobile S2
+  window.addEventListener("resize", () => {
+    if (State.currentScreen === 2) initMobileS2();
+  });
 
   setupUploadHandler();
   updateTemplateMini();

@@ -53,27 +53,17 @@
       </div>
 
       <div class="theme-switcher">
-        <button
-          class="theme-btn"
-          data-theme="minimalist"
-          onclick="setTheme('minimalist')"
-        >
-          ◻ <span>Minimal</span>
-        </button>
-        <button
-          class="theme-btn active"
-          data-theme="cutesy"
-          onclick="setTheme('cutesy')"
-        >
-          🌸 <span>Cutesy</span>
-        </button>
-        <!-- <button
-          class="theme-btn"
-          data-theme="artsy"
-          onclick="setTheme('artsy')"
-        >
-          🌿 <span>Artsy</span>
-        </button> -->
+        <span class="toggle-label" id="toggle-label-minimal">◻ Minimal</span>
+        <label class="toggle-switch" aria-label="Toggle theme">
+          <input
+            type="checkbox"
+            id="theme-toggle"
+            checked
+            onchange="setTheme(this.checked ? 'cutesy' : 'minimalist')"
+          />
+          <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        </label>
+        <span class="toggle-label" id="toggle-label-cutesy">🌸 Cutesy</span>
       </div>
     </nav>
 
@@ -373,7 +363,6 @@
               class="btn btn-outline"
               onclick="openModal('suggestions-modal')"
               style="font-size: 14px; padding: 14px 24px"
-              aria-label="Give suggestions"
             >
               🎀 Suggestions
             </button>
@@ -480,6 +469,13 @@
             ✦ All Frames
           </button>
         </div>
+        <button
+          class="btn btn-primary mobile-start-btn"
+          onclick="mobileProceedToCamera()"
+          style="font-size: 14px"
+        >
+          Continue →
+        </button>
       </aside>
 
       <main class="capture-main">
@@ -527,6 +523,18 @@
           <div id="flash" aria-hidden="true"></div>
         </div>
 
+        <button
+          class="btn btn-secondary mobile-back-btn"
+          onclick="mobileBackToFilters()"
+          style="
+            font-size: 12px;
+            min-height: 34px;
+            margin-bottom: 4px;
+            align-self: flex-start;
+          "
+        >
+          ← Filters
+        </button>
         <div class="shot-indicators" role="list" aria-label="Shot progress">
           <div class="shot-ind" id="si0" role="listitem">1</div>
           <div class="shot-ind" id="si1" role="listitem">2</div>
@@ -934,7 +942,6 @@
         >
           ✕
         </button>
-
         <h2 class="modal-title" id="suggestions-title">
           🎀 Share Your Suggestions
         </h2>
@@ -942,7 +949,6 @@
           Help us make Cutesy Booth even better! We'd love to hear your ideas,
           feedback, or anything you'd like to see improved.
         </p>
-
         <div id="suggestion-form">
           <div class="suggestion-field">
             <label class="suggestion-label"
@@ -956,7 +962,6 @@
               maxlength="50"
             />
           </div>
-
           <div class="suggestion-field">
             <label class="suggestion-label"
               >What would you like to suggest? ✦</label
@@ -964,7 +969,7 @@
             <textarea
               id="suggestion-text"
               class="suggestion-textarea"
-              placeholder="e.g. I'd love more filter options, a timer countdown sound, or a feature to add stickers to my strip..."
+              placeholder="e.g. I'd love more filter options, a countdown sound, stickers..."
               maxlength="500"
               rows="5"
             ></textarea>
@@ -972,7 +977,6 @@
               <span id="suggestion-chars">0</span>/500
             </div>
           </div>
-
           <div class="suggestion-field">
             <label class="suggestion-label"
               >How would you rate your experience? ✦</label
@@ -982,7 +986,6 @@
                 class="star-btn"
                 data-value="1"
                 onclick="rateSuggestion(1)"
-                aria-label="1 star"
               >
                 ★
               </button>
@@ -990,7 +993,6 @@
                 class="star-btn"
                 data-value="2"
                 onclick="rateSuggestion(2)"
-                aria-label="2 stars"
               >
                 ★
               </button>
@@ -998,7 +1000,6 @@
                 class="star-btn"
                 data-value="3"
                 onclick="rateSuggestion(3)"
-                aria-label="3 stars"
               >
                 ★
               </button>
@@ -1006,7 +1007,6 @@
                 class="star-btn"
                 data-value="4"
                 onclick="rateSuggestion(4)"
-                aria-label="4 stars"
               >
                 ★
               </button>
@@ -1014,13 +1014,11 @@
                 class="star-btn"
                 data-value="5"
                 onclick="rateSuggestion(5)"
-                aria-label="5 stars"
               >
                 ★
               </button>
             </div>
           </div>
-
           <button
             class="btn btn-primary"
             style="width: 100%; margin-top: 8px; font-size: 14px"
@@ -1029,8 +1027,6 @@
             Send Suggestion 🎀
           </button>
         </div>
-
-        <!-- Success state -->
         <div
           id="suggestion-success"
           style="display: none; text-align: center; padding: 24px 0"
@@ -1052,8 +1048,8 @@
               line-height: 1.6;
             "
           >
-            Your suggestion has been received. We truly appreciate you helping
-            us make Cutesy Booth better for everyone! ✦
+            Your suggestion has been received. We truly appreciate your
+            feedback! ✦
           </p>
           <button
             class="btn btn-outline"

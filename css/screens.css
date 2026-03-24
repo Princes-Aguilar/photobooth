@@ -697,39 +697,28 @@
 /* ──────────────────────────────────────────
    RESPONSIVE
 ────────────────────────────────────────── */
-/* ── 980px: narrower columns ── */
+/* ── 980px ── */
 @media (max-width: 980px) {
-  #s2.screen {
-    grid-template-columns: 196px minmax(0, 1fr) 108px;
-  }
-
   .viewfinder-wrap {
     width: min(100%, 300px);
   }
-
   .sp-film {
     width: 82px;
   }
-
   .result-layout {
     gap: 24px;
   }
 }
 
-/* ── Hide mobile-only buttons on desktop ── */
+/* ── Mobile buttons hidden on desktop ── */
 .mobile-start-btn,
 .mobile-back-btn {
   display: none;
 }
 
-/* ── Mobile S2 step system + S3/S4 fixes (≤600px) ── */
+/* ── Mobile (≤600px) ── */
 @media (max-width: 600px) {
-  /* S1: no scroll, fixed, centered */
-  #s1.screen {
-    overflow: hidden !important;
-  }
-
-  /* S2 base */
+  /* S2 */
   #s2 {
     display: flex !important;
     flex-direction: column;
@@ -749,12 +738,10 @@
     overflow-y: auto;
     box-sizing: border-box;
   }
-
   #s2.mobile-step-1 .capture-main,
   #s2.mobile-step-1 .strip-preview-panel {
     display: none;
   }
-
   #s2.mobile-step-1 .mobile-start-btn {
     margin-top: auto;
     margin-bottom: 16px;
@@ -763,11 +750,10 @@
     font-size: 15px;
   }
 
-  /* STEP 2: camera + strip */
+  /* STEP 2: camera */
   #s2.mobile-step-2 .capture-sidebar {
     display: none;
   }
-
   #s2.mobile-step-2 .capture-main {
     display: flex;
     flex-direction: column;
@@ -778,7 +764,6 @@
     overflow: hidden;
     gap: clamp(6px, 1.5vh, 10px);
   }
-
   #s2.mobile-step-2 .strip-preview-panel {
     display: flex;
     position: fixed;
@@ -796,18 +781,15 @@
     justify-content: center;
     gap: 6px;
   }
-
   #s2.mobile-step-2 .strip-panel-label {
     font-size: 7px;
   }
-
   #s2.mobile-step-2 .sp-film {
     width: 56px;
     height: auto;
     flex: 1;
     max-height: none;
   }
-
   #s2.mobile-step-2 .viewfinder-wrap {
     width: min(calc(100vw - 72px - 20px), clamp(200px, 55vw, 310px));
     aspect-ratio: 3 / 4;
@@ -819,38 +801,33 @@
     display: flex;
   }
 
-  /* Shot indicators */
   .shot-ind {
     width: clamp(26px, 8vw, 34px);
     height: clamp(26px, 8vw, 34px);
     font-size: clamp(9px, 2.5vw, 12px);
   }
-
   #status-txt {
     font-size: clamp(9px, 2.5vw, 11px);
   }
-
   .capture-actions {
     gap: clamp(6px, 2vw, 12px);
     width: 100%;
   }
 
-  /* S3: centered, balanced */
+  /* S3 */
   #s3 {
     padding: 16px;
     overflow-y: auto;
     justify-content: center;
-    align-items: center;
   }
 
-  /* S4: starts from top, scrollable */
+  /* S4 */
   #s4 {
     padding: 16px 14px;
     overflow-y: auto;
     justify-content: flex-start;
     align-items: center;
   }
-
   .result-layout {
     flex-direction: column;
     height: auto;
@@ -859,18 +836,15 @@
     width: 100%;
     align-items: center;
   }
-
   .result-strip {
     width: clamp(200px, 80vw, 280px);
     min-height: unset;
   }
-
   .result-actions-col {
     max-width: 100%;
     min-width: 0;
     width: clamp(200px, 80vw, 280px);
   }
-
   .result-title {
     font-size: clamp(20px, 5vw, 30px);
   }
