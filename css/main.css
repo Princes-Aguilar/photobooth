@@ -114,35 +114,36 @@ a {
   pointer-events: auto;
 }
 
-/* S2: grid layout overrides .screen flex */
+/* S2: full-fill grid — position:fixed with explicit inset */
 #s2.screen {
+  position: fixed;
+  top: var(--topbar-h);
+  left: 0;
+  right: 0;
+  bottom: var(--footer-h);
   display: grid;
   grid-template-columns: 220px minmax(0, 1fr) 118px;
   grid-template-rows: 1fr;
   align-items: stretch;
   justify-items: stretch;
   flex-direction: unset;
-  /* Use inset so height fills exactly topbar→footer */
-  top: var(--topbar-h);
-  left: 0;
-  right: 0;
-  bottom: var(--footer-h);
   width: 100%;
   height: auto;
+  overflow: hidden;
 }
 
-/* All 3 columns fill full height */
-#s2.screen .capture-sidebar,
-#s2.screen .capture-main,
-#s2.screen .strip-preview-panel {
-  height: 100%;
-  box-sizing: border-box;
-  align-self: stretch;
+@media (max-width: 980px) {
+  #s2.screen {
+    grid-template-columns: 196px minmax(0, 1fr) 108px;
+  }
 }
 
-/* Background color fills any remaining gap */
-#s2.screen {
-  background: var(--bg-primary);
+@media (max-width: 600px) {
+  #s2.screen {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+  }
 }
 
 .topbar {
