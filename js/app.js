@@ -807,7 +807,9 @@ function buildStripCanvas() {
     const BOT_PAD = 28;
     const GAP = 10;
     const FRAME_W = W - PAD * 2;              // 464px wide
-    const FRAME_H = Math.round(FRAME_W * (3 / 4)); // portrait 3:4 = 348px tall
+    // aspect-ratio: 3/4 means width:height = 3:4, so height = width * (4/3)
+    // This matches the viewfinder which uses aspect-ratio: 3/4
+    const FRAME_H = Math.round(FRAME_W * (4 / 3)); // 464 * 4/3 = 619px tall
     const H = TOP_PAD + 4 * FRAME_H + 3 * GAP + BOT_PAD;
 
     const c = document.createElement("canvas");
@@ -911,18 +913,89 @@ function printStrip() {
   showToast("Preparing print... 🖨");
   buildStripCanvas().then((c) => {
     const dataUrl = c.toDataURL("image/jpeg", 0.95);
-    const win = window.open("", "_blank", "width=600,height=900");
+    // Open portrait-sized popup
+    const win = window.open("", "_blank", "width=420,height=900");
     win.document.write(`<!DOCTYPE html>
-<html><head><title>Cutesy Booth — Print Strip</title>
-<style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  html, body { width:100%; height:100%; background:#fff; display:flex; align-items:center; justify-content:center; }
-  img { max-width:100%; max-height:100vh; display:block; }
-  @media print { img { width:auto; height:100vh; } }
-</style></head>
-<body><img src="${dataUrl}" alt="Cutesy Booth Strip">
-<script>window.onload=function(){ setTimeout(function(){ window.print(); },300); };<\/script>
-</body></html>`);
+<html>
+<head>
+  <title>Cutesy Booth — Print Strip</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: #ffffff;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    .strip-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+    }
+
+    img {
+      display: block;
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: 100vh;
+      object-fit: contain;
+    }
+
+    @media print {
+      @page {
+        /* Portrait page orientation */
+        size: A4 portrait;
+        margin: 10mm;
+      }
+
+      html, body {
+        width: 100%;
+        height: 100%;
+        background: #fff;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+      }
+
+      .strip-container {
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+      }
+
+      img {
+        width: auto;
+        height: 100%;
+        max-height: 277mm; /* A4 height minus margins */
+        max-width: 190mm;  /* A4 width minus margins */
+        /* Strip is W=500, H = 48 + 4*(619) + 3*(10) + 28 = 2554px
+           So ratio = 500:2554 ≈ 1:5.1 */
+        object-fit: contain;
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="strip-container">
+    <img src="${dataUrl}" alt="Cutesy Booth Strip">
+  </div>
+  <script>
+    window.onload = function() {
+      setTimeout(function() { window.print(); }, 400);
+    };
+  <\/script>
+</body>
+</html>`);
     win.document.close();
   });
 }
