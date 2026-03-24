@@ -544,6 +544,9 @@
 ────────────────────────────────────────── */
 #s4 {
   padding: 22px 28px;
+  overflow-y: auto;
+  justify-content: flex-start;
+  align-items: flex-start;
 }
 
 .result-layout {
@@ -570,7 +573,7 @@
 }
 
 .result-strip {
-  width: 230px;
+  width: clamp(200px, 60vw, 230px);
   min-height: 620px;
   padding: 14px 12px;
   border-radius: 14px;
@@ -653,7 +656,7 @@
 .result-title {
   margin: 0 0 4px;
   font-family: var(--font-display, Georgia, serif);
-  font-size: 30px;
+  font-size: clamp(20px, 5vw, 30px);
   line-height: 1.15;
 }
 
@@ -843,11 +846,20 @@
     overflow-y: auto;
   }
 
+  #s4 {
+    justify-content: flex-start;
+    align-items: center;
+    overflow-y: auto;
+    padding: 16px 14px 24px;
+  }
+
   .result-layout {
     flex-direction: column;
     height: auto;
     gap: 16px;
     padding-bottom: 20px;
+    width: 100%;
+    align-items: center;
   }
 
   .result-actions-col {

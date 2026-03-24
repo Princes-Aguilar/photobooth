@@ -103,7 +103,12 @@ function goTo(n) {
     .querySelectorAll(".screen")
     .forEach((s) => s.classList.remove("active"));
   const next = document.getElementById("s" + n);
-  if (next) next.classList.add("active");
+  if (next) {
+    next.classList.add("active");
+    // Scroll screen to top every time
+    next.scrollTop = 0;
+    window.scrollTo(0, 0);
+  }
   State.currentScreen = n;
 
   for (let i = 0; i < 4; i++) {
@@ -359,15 +364,18 @@ function applyTemplateToResultStrip() {
     strip.style.backgroundImage = `url('${t.frame}')`;
     strip.style.backgroundSize = "100% 100%";
     strip.style.backgroundRepeat = "no-repeat";
-    strip.style.backgroundColor = "transparent";
+    strip.style.setProperty("background-color", "transparent", "important");
   } else {
     strip.style.backgroundImage = "none";
+    // Override both background and background-color with !important
+    strip.style.setProperty("background", t.colors?.[0] || "#0F2419", "important");
     strip.style.setProperty("background-color", t.colors?.[0] || "#0F2419", "important");
 
     for (let i = 0; i < 4; i++) {
       const frame = document.getElementById("rs" + i);
       if (frame) {
         frame.style.setProperty("background", t.colors?.[i] || t.colors?.[0] || "#1B3A2D", "important");
+        frame.style.setProperty("background-color", t.colors?.[i] || t.colors?.[0] || "#1B3A2D", "important");
       }
     }
   }
