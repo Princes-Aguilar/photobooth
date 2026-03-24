@@ -723,6 +723,12 @@
   }
 }
 
+/* Hide mobile-only buttons on desktop — must come BEFORE media query */
+.mobile-start-btn,
+.mobile-back-btn {
+  display: none;
+}
+
 @media (max-width: 600px) {
 
   /* ── MOBILE S2 STEP SYSTEM ──
@@ -737,15 +743,22 @@
     overflow-x: hidden;
   }
 
-  /* STEP 1 — only sidebar visible */
+  /* STEP 1 — only sidebar visible, fills full screen height */
   #s2.mobile-step-1 .capture-sidebar {
     display: flex;
     width: 100%;
-    height: auto;
+    height: calc(100vh - var(--topbar-h) - var(--footer-h));
     border: 0;
     padding: 16px;
     justify-content: flex-start;
     overflow-y: auto;
+    box-sizing: border-box;
+  }
+
+  /* Continue button always at bottom of sidebar */
+  #s2.mobile-step-1 .mobile-start-btn {
+    margin-top: auto;
+    padding-top: 16px;
   }
 
   #s2.mobile-step-1 .capture-main {
@@ -835,10 +848,4 @@
     max-width: 100%;
     min-width: 0;
   }
-}
-
-/* Hide mobile-only buttons on desktop */
-.mobile-start-btn,
-.mobile-back-btn {
-  display: none;
 }
