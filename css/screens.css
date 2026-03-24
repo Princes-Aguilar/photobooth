@@ -755,10 +755,10 @@
     box-sizing: border-box;
   }
 
-  /* Continue button — pushed up from footer */
+  /* Continue button — balanced position above footer */
   #s2.mobile-step-1 .mobile-start-btn {
     margin-top: auto;
-    margin-bottom: 16px;
+    margin-bottom: 60px;
     width: 100%;
     min-height: 50px;
     font-size: 15px;
@@ -781,12 +781,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     flex: 1;
-    padding: 8px 10px 16px;
+    padding: 16px 10px 24px;
     min-height: 0;
     overflow-y: auto;
     overflow-x: hidden;
+    gap: 10px;
   }
 
   #s2.mobile-step-2 .strip-preview-panel {
@@ -830,9 +831,9 @@
   /* Viewfinder — clamped so buttons below are always visible */
   #s2.mobile-step-2 .viewfinder-wrap {
     width: calc(100vw - 72px - 20px);
-    max-width: 320px;
+    max-width: 300px;
     aspect-ratio: 3 / 4;
-    max-height: calc(100vh - var(--topbar-h) - var(--footer-h) - 200px);
+    max-height: calc(100vh - var(--topbar-h) - var(--footer-h) - 240px);
   }
 
   #s3,
