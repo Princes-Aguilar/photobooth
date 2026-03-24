@@ -130,7 +130,8 @@
 
 @media (max-width: 600px) {
   .template-mini {
-    min-height: 120px;
+    min-height: 160px;
+    flex: 1;
   }
 }
 
@@ -808,10 +809,11 @@
     max-height: calc(100vh - var(--topbar-h) - var(--footer-h) - 180px);
   }
 
-  /* Strip panel stops before footer */
+  /* Strip panel stops exactly at footer */
   #s2.mobile-step-2 .strip-preview-panel {
-    height: calc(100vh - var(--topbar-h) - var(--footer-h));
+    top: var(--topbar-h);
     bottom: var(--footer-h);
+    height: auto;
   }
 
   .mobile-start-btn,
