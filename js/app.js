@@ -81,17 +81,9 @@ const TEMPLATES = [
 function setTheme(theme) {
   State.currentTheme = theme;
   document.documentElement.setAttribute("data-theme", theme);
-
-  // Sync toggle checkbox
-  const toggle = document.getElementById("theme-toggle");
-  if (toggle) toggle.checked = theme === "cutesy";
-
-  // Highlight active label
-  const labelMinimal = document.getElementById("toggle-label-minimal");
-  const labelCutesy  = document.getElementById("toggle-label-cutesy");
-  if (labelMinimal) labelMinimal.style.opacity = theme === "minimalist" ? "1" : "0.45";
-  if (labelCutesy)  labelCutesy.style.opacity  = theme === "cutesy"     ? "1" : "0.45";
-
+  document.querySelectorAll(".theme-btn").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.theme === theme);
+  });
   localStorage.setItem("cb-theme", theme);
 }
 
@@ -114,8 +106,44 @@ function goTo(n) {
     if (i + 1 === n) d.classList.add("active");
   }
 
+  if (n === 2) initMobileS2();
   if (n === 3) startPrinting();
   if (n === 4) populateResult();
+}
+
+/* ──────────────────────────────────────────
+   MOBILE STEP SYSTEM
+────────────────────────────────────────── */
+function isMobile() {
+  return window.innerWidth <= 600;
+}
+
+function mobileProceedToCamera() {
+  const s2 = document.getElementById("s2");
+  if (!s2) return;
+  s2.classList.remove("mobile-step-1");
+  s2.classList.add("mobile-step-2");
+  // Scroll to top of s2
+  s2.scrollTop = 0;
+}
+
+function mobileBackToFilters() {
+  const s2 = document.getElementById("s2");
+  if (!s2) return;
+  s2.classList.remove("mobile-step-2");
+  s2.classList.add("mobile-step-1");
+  s2.scrollTop = 0;
+}
+
+function initMobileS2() {
+  const s2 = document.getElementById("s2");
+  if (!s2) return;
+  if (isMobile()) {
+    s2.classList.add("mobile-step-1");
+    s2.classList.remove("mobile-step-2");
+  } else {
+    s2.classList.remove("mobile-step-1", "mobile-step-2");
+  }
 }
 
 /* ──────────────────────────────────────────
@@ -824,6 +852,12 @@ function sleep(ms) {
 /* ──────────────────────────────────────────
    INIT
 ────────────────────────────────────────── */
+window.addEventListener("resize", () => {
+  if (State.currentScreen === 2) {
+    initMobileS2();
+  }
+});
+
 document.addEventListener("DOMContentLoaded", () => {
   const cursorEl = document.getElementById("cur");
   if (cursorEl) {
