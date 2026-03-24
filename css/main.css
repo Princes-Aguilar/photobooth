@@ -132,7 +132,7 @@ a {
   background: none;
   color: var(--logo-color);
   font-family: var(--font-display, Georgia, serif);
-  font-size: clamp(14px, 2vw, 26px);
+  font-size: clamp(12px, 1.6vw, 24px);
   font-weight: 700;
   padding: 0;
   cursor: none;
@@ -845,5 +845,21 @@ a {
 
   .toggle-label {
     font-size: 7px;
+  }
+}
+
+/* Hide toggle text labels on very narrow screens,
+   keep only the toggle track + thumb visible */
+@media (max-width: 480px) {
+  #toggle-label-minimal {
+    display: none;
+  }
+
+  #toggle-label-cutesy {
+    font-size: clamp(8px, 2.5vw, 10px);
+  }
+
+  .step-dots {
+    display: none;
   }
 }
