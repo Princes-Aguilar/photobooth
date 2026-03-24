@@ -9,8 +9,8 @@
 }
 
 :root {
-  --topbar-h: 80px;
-  --footer-h: 44px;
+  --topbar-h: clamp(52px, 7vh, 80px);
+  --footer-h: clamp(36px, 4vh, 44px);
 }
 
 html,
@@ -132,7 +132,7 @@ a {
   background: none;
   color: var(--logo-color);
   font-family: var(--font-display, Georgia, serif);
-  font-size: 24px;
+  font-size: clamp(14px, 2vw, 26px);
   font-weight: 700;
   padding: 0;
   cursor: none;
@@ -146,15 +146,15 @@ a {
 }
 
 .dot {
-  width: 8px;
-  height: 8px;
+  width: clamp(5px, 0.8vw, 8px);
+  height: clamp(5px, 0.8vw, 8px);
   border-radius: 50%;
   background: var(--dot-inactive);
   transition: all 0.25s ease;
 }
 
 .dot.active {
-  width: 24px;
+  width: clamp(14px, 2vw, 24px);
   border-radius: 999px;
   background: var(--dot-active);
 }
@@ -209,8 +209,8 @@ a {
 
 .toggle-label {
   font-family: var(--font-mono, monospace);
-  font-size: 10px;
-  letter-spacing: 0.1em;
+  font-size: clamp(8px, 1vw, 11px);
+  letter-spacing: 0.08em;
   color: var(--text-secondary);
   text-transform: uppercase;
   white-space: nowrap;
@@ -312,8 +312,8 @@ a {
    BUTTONS
 ────────────────────────────────────────── */
 .btn {
-  min-height: 48px;
-  padding: 0 22px;
+  min-height: clamp(36px, 5vh, 48px);
+  padding: 0 clamp(14px, 2vw, 22px);
   border-radius: var(--btn-radius, 999px);
   display: inline-flex;
   align-items: center;
@@ -390,16 +390,16 @@ a {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 34px;
-  padding: 0 14px;
+  min-height: clamp(26px, 3vh, 34px);
+  padding: 0 clamp(8px, 1.5vw, 14px);
   border-radius: 999px;
   border: 1px solid var(--border-color);
   color: var(--accent-yellow);
   font-family: var(--font-mono, monospace);
-  font-size: 11px;
-  letter-spacing: 0.08em;
+  font-size: clamp(8px, 1.1vw, 11px);
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  margin-bottom: 18px;
+  margin-bottom: clamp(8px, 1.5vh, 18px);
 }
 
 .hero-layout {
@@ -432,8 +432,8 @@ a {
 .hero-title {
   margin: 0;
   font-family: var(--font-display, Georgia, serif);
-  font-size: clamp(34px, 4vw, 62px);
-  line-height: 1.05;
+  font-size: clamp(22px, 4.5vw, 62px);
+  line-height: 1.1;
   font-weight: 700;
 }
 
@@ -446,8 +446,8 @@ a {
   margin: 0;
   max-width: 680px;
   color: var(--text-secondary);
-  font-size: 16px;
-  line-height: 1.7;
+  font-size: clamp(12px, 1.6vw, 16px);
+  line-height: 1.6;
 }
 
 .hero-actions {
@@ -704,18 +704,25 @@ a {
 }
 
 /* ──────────────────────────────────────────
-   RESPONSIVE
+   RESPONSIVE — FLUID (no abrupt jumps)
 ────────────────────────────────────────── */
+
+/* Tablet — stack hero layout */
 @media (max-width: 1100px) {
   .hero-layout {
     grid-template-columns: 1fr;
     justify-items: center;
     text-align: center;
-    gap: 24px;
+    gap: clamp(12px, 2vh, 24px);
+    height: auto;
   }
 
   .hero-copy {
     align-items: center;
+  }
+
+  .booth-hero svg {
+    width: min(100%, 280px);
   }
 
   .steps {
@@ -723,50 +730,73 @@ a {
   }
 }
 
-@media (max-width: 700px) {
+/* Small tablet / large phone */
+@media (max-width: 860px) {
+  .topbar {
+    padding: 0 16px;
+  }
+
+  .booth-hero svg {
+    width: min(100%, 220px);
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
   :root {
-    --topbar-h: 70px;
-    --footer-h: 40px;
+    --topbar-h: clamp(48px, 8vh, 60px);
+    --footer-h: clamp(32px, 5vh, 40px);
   }
 
   .topbar {
     padding: 0 10px;
-    height: 54px;
   }
 
-  :root {
-    --topbar-h: 54px;
-  }
-
-  .theme-btn span {
-    display: none;
-  }
-
-  .logo {
-    font-size: 14px;
-    white-space: nowrap;
-  }
-
-  /* Smaller toggle on mobile */
+  /* Toggle smaller on mobile */
   .toggle-label {
-    font-size: 8px;
-    letter-spacing: 0.04em;
+    font-size: clamp(7px, 2vw, 9px);
+    letter-spacing: 0.03em;
   }
 
   .toggle-track {
-    width: 36px;
-    height: 20px;
+    width: clamp(30px, 8vw, 38px);
+    height: clamp(17px, 4.5vw, 22px);
   }
 
   .toggle-thumb {
-    width: 13px;
-    height: 13px;
+    width: clamp(11px, 3vw, 15px);
+    height: clamp(11px, 3vw, 15px);
   }
 
   .toggle-switch input:checked + .toggle-track .toggle-thumb {
-    left: calc(100% - 16px);
+    left: calc(100% - clamp(14px, 4vw, 18px));
   }
 
+  /* S1 layout stacked, centered, no scroll */
+  #s1 {
+    padding: clamp(8px, 2vh, 20px) clamp(12px, 4vw, 24px);
+    justify-content: center;
+  }
+
+  .hero-layout {
+    gap: clamp(8px, 1.5vh, 16px);
+  }
+
+  .booth-hero svg {
+    width: min(100%, clamp(140px, 45vw, 200px));
+  }
+
+  .hero-copy {
+    gap: clamp(6px, 1.2vh, 12px);
+  }
+
+  .hero-actions .btn {
+    min-height: clamp(34px, 5vh, 44px);
+    font-size: clamp(12px, 3.5vw, 15px) !important;
+    padding: 0 clamp(16px, 5vw, 28px) !important;
+  }
+
+  /* Modals */
   .choice-grid,
   .filter-grid,
   .template-grid,
@@ -775,14 +805,45 @@ a {
   }
 
   .modal-card {
-    padding: 18px;
+    padding: clamp(14px, 3vw, 20px);
+    border-radius: 16px;
   }
 
+  .modal-title {
+    font-size: clamp(20px, 5vw, 28px);
+  }
+
+  /* Footer links smaller */
+  .footer-link {
+    font-size: clamp(8px, 2vw, 10px);
+  }
+
+  .footer-dot {
+    font-size: clamp(8px, 2vw, 10px);
+  }
+
+  /* Hide cursor on touch devices */
   .cursor {
     display: none;
   }
 
   body {
     cursor: auto;
+  }
+}
+
+/* Very small phones (iPhone SE, Galaxy A series) */
+@media (max-width: 380px) {
+  .hero-tag {
+    font-size: 7px;
+    padding: 0 8px;
+  }
+
+  .booth-hero svg {
+    width: min(100%, 130px);
+  }
+
+  .toggle-label {
+    font-size: 7px;
   }
 }
