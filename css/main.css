@@ -131,11 +131,18 @@ a {
   height: auto;
 }
 
-/* Make sidebar and strip panel fill full height */
+/* All 3 columns fill full height */
 #s2.screen .capture-sidebar,
+#s2.screen .capture-main,
 #s2.screen .strip-preview-panel {
   height: 100%;
   box-sizing: border-box;
+  align-self: stretch;
+}
+
+/* Background color fills any remaining gap */
+#s2.screen {
+  background: var(--bg-primary);
 }
 
 .topbar {
