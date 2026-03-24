@@ -783,7 +783,7 @@
     align-items: center;
     justify-content: center;
     flex: 1;
-    padding: 16px 10px 24px;
+    padding: 6px 10px 80px;
     min-height: 0;
     overflow-y: auto;
     overflow-x: hidden;
