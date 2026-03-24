@@ -81,9 +81,17 @@ const TEMPLATES = [
 function setTheme(theme) {
   State.currentTheme = theme;
   document.documentElement.setAttribute("data-theme", theme);
-  document.querySelectorAll(".theme-btn").forEach((btn) => {
-    btn.classList.toggle("active", btn.dataset.theme === theme);
-  });
+
+  // Sync toggle checkbox
+  const toggle = document.getElementById("theme-toggle");
+  if (toggle) toggle.checked = theme === "cutesy";
+
+  // Highlight active label
+  const labelMinimal = document.getElementById("toggle-label-minimal");
+  const labelCutesy  = document.getElementById("toggle-label-cutesy");
+  if (labelMinimal) labelMinimal.style.opacity = theme === "minimalist" ? "1" : "0.45";
+  if (labelCutesy)  labelCutesy.style.opacity  = theme === "cutesy"     ? "1" : "0.45";
+
   localStorage.setItem("cb-theme", theme);
 }
 
@@ -717,109 +725,68 @@ function populateResult() {
 /* ──────────────────────────────────────────
    DOWNLOAD / PRINT
 ────────────────────────────────────────── */
-/* ── Shared helper: builds the strip canvas ── */
-function buildStripCanvas() {
-  return new Promise((resolve) => {
-    const t = TEMPLATES[State.currentTemplate];
-
-    const W = 500;
-    const PAD = 18;
-    const TOP_PAD = 48;
-    const BOT_PAD = 28;
-    const GAP = 10;
-    const FRAME_W = W - PAD * 2;
-    const FRAME_H = Math.round(FRAME_W * (3 / 4));
-    const H = TOP_PAD + 4 * FRAME_H + 3 * GAP + BOT_PAD;
-
-    const c = document.createElement("canvas");
-    c.width = W;
-    c.height = H;
-    const ctx = c.getContext("2d");
-
-    // Background per frame color
-    if (!t.frame) {
-      for (let i = 0; i < 4; i++) {
-        ctx.fillStyle = t.colors?.[i] || t.colors?.[0] || "#0F2419";
-        const fy = TOP_PAD + i * (FRAME_H + GAP);
-        ctx.fillRect(
-          0,
-          i === 0 ? 0 : fy - GAP / 2,
-          W,
-          i === 0 ? fy + FRAME_H + GAP / 2 : FRAME_H + GAP,
-        );
-      }
-      ctx.fillStyle = t.colors?.[0] || "#0F2419";
-      ctx.fillRect(0, 0, W, TOP_PAD);
-      ctx.fillStyle = t.colors?.[3] || t.colors?.[0] || "#0F2419";
-      ctx.fillRect(0, TOP_PAD + 4 * FRAME_H + 3 * GAP, W, BOT_PAD);
-    } else {
-      ctx.fillStyle = "#0F2419";
-      ctx.fillRect(0, 0, W, H);
-    }
-
-    // Brand label
-    ctx.fillStyle = "rgba(255,255,255,0.55)";
-    ctx.font = "bold 15px Georgia, serif";
-    ctx.textAlign = "center";
-    ctx.fillText("✦ Cutesy Booth", W / 2, 30);
-
-    // Footer
-    ctx.fillStyle = "rgba(255,255,255,0.3)";
-    ctx.font = "11px monospace";
-    ctx.textAlign = "center";
-    ctx.fillText("cutesyphotobooth.com", W / 2, H - 10);
-
-    const positions = Array.from({ length: 4 }, (_, i) => ({
-      x: PAD,
-      y: TOP_PAD + i * (FRAME_H + GAP),
-      w: FRAME_W,
-      h: FRAME_H,
-    }));
-
-    const promises = State.shots.map(
-      (src, i) =>
-        new Promise((res) => {
-          const img = new Image();
-          img.onload = () => {
-            const { x, y, w, h } = positions[i];
-            ctx.save();
-            ctx.beginPath();
-            if (ctx.roundRect) ctx.roundRect(x, y, w, h, 12);
-            else ctx.rect(x, y, w, h);
-            ctx.clip();
-            const scale = Math.max(w / img.width, h / img.height);
-            const dx = x + (w - img.width * scale) / 2;
-            const dy = y + (h - img.height * scale) / 2;
-            ctx.drawImage(img, dx, dy, img.width * scale, img.height * scale);
-            ctx.restore();
-            res();
-          };
-          img.src = src;
-        }),
-    );
-
-    Promise.all(promises).then(() => {
-      if (t.frame) {
-        const frameImg = new Image();
-        frameImg.onload = () => {
-          ctx.drawImage(frameImg, 0, 0, W, H);
-          resolve(c);
-        };
-        frameImg.onerror = () => resolve(c);
-        frameImg.src = t.frame;
-      } else {
-        resolve(c);
-      }
-    });
-  });
-}
-
 function downloadStrip() {
   if (!State.shots.length) {
     showToast("No photos yet! Shoot first 📸");
     return;
   }
-  buildStripCanvas().then((c) => saveCanvas(c));
+
+  const t = TEMPLATES[State.currentTemplate];
+  const W = 500;
+  const H = 720;
+
+  const c = document.createElement("canvas");
+  c.width = W;
+  c.height = H;
+
+  const ctx = c.getContext("2d");
+  ctx.fillStyle = t.colors?.[0] || "#0F2419";
+  ctx.fillRect(0, 0, W, H);
+
+  const positions = Array.from({ length: 4 }, (_, i) => ({
+    x: 20,
+    y: 54 + i * 164,
+    w: 460,
+    h: 150,
+  }));
+
+  const promises = State.shots.map(
+    (src, i) =>
+      new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+          const { x, y, w, h } = positions[i];
+
+          ctx.save();
+          ctx.beginPath();
+          if (ctx.roundRect) ctx.roundRect(x, y, w, h, 16);
+          else ctx.rect(x, y, w, h);
+          ctx.clip();
+
+          const scale = Math.max(w / img.width, h / img.height);
+          const dx = x + (w - img.width * scale) / 2;
+          const dy = y + (h - img.height * scale) / 2;
+          ctx.drawImage(img, dx, dy, img.width * scale, img.height * scale);
+          ctx.restore();
+          resolve();
+        };
+        img.src = src;
+      }),
+  );
+
+  Promise.all(promises).then(() => {
+    if (t.frame) {
+      const frameImg = new Image();
+      frameImg.onload = () => {
+        ctx.drawImage(frameImg, 0, 0, W, H);
+        saveCanvas(c);
+      };
+      frameImg.onerror = () => saveCanvas(c);
+      frameImg.src = t.frame;
+    } else {
+      saveCanvas(c);
+    }
+  });
 }
 
 function saveCanvas(c) {
@@ -831,52 +798,8 @@ function saveCanvas(c) {
 }
 
 function printStrip() {
-  if (!State.shots.length) {
-    showToast("No photos yet! Shoot first 📸");
-    return;
-  }
-
-  showToast("Preparing print... 🖨");
-
-  buildStripCanvas().then((c) => {
-    const dataUrl = c.toDataURL("image/jpeg", 0.95);
-
-    // Open a minimal print window with just the strip image
-    const win = window.open("", "_blank", "width=600,height=900");
-    win.document.write(`<!DOCTYPE html>
-<html>
-<head>
-  <title>Cutesy Booth — Print Strip</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { width: 100%; height: 100%; background: #fff; }
-    body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    img {
-      max-width: 100%;
-      max-height: 100vh;
-      display: block;
-    }
-    @media print {
-      body { margin: 0; }
-      img { width: auto; height: 100vh; max-height: 100%; }
-    }
-  </style>
-</head>
-<body>
-  <img src="${dataUrl}" alt="Cutesy Booth Strip">
-  <script>
-    window.onload = function() {
-      setTimeout(function() { window.print(); }, 300);
-    };
-  <\/script>
-</body>
-</html>`);
-    win.document.close();
-  });
+  showToast("Opening print dialog 🖨");
+  setTimeout(() => window.print(), 400);
 }
 
 /* ──────────────────────────────────────────

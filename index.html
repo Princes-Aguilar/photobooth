@@ -53,27 +53,19 @@
       </div>
 
       <div class="theme-switcher">
-        <button
-          class="theme-btn"
-          data-theme="minimalist"
-          onclick="setTheme('minimalist')"
-        >
-          ◻ <span>Minimal</span>
-        </button>
-        <button
-          class="theme-btn active"
-          data-theme="cutesy"
-          onclick="setTheme('cutesy')"
-        >
-          🌸 <span>Cutesy</span>
-        </button>
-        <!-- <button
-          class="theme-btn"
-          data-theme="artsy"
-          onclick="setTheme('artsy')"
-        >
-          🌿 <span>Artsy</span>
-        </button> -->
+        <span class="toggle-label" id="toggle-label-minimal">◻ Minimal</span>
+        <label class="toggle-switch" aria-label="Toggle theme">
+          <input
+            type="checkbox"
+            id="theme-toggle"
+            checked
+            onchange="setTheme(this.checked ? 'cutesy' : 'minimalist')"
+          />
+          <span class="toggle-track">
+            <span class="toggle-thumb"></span>
+          </span>
+        </label>
+        <span class="toggle-label" id="toggle-label-cutesy">🌸 Cutesy</span>
       </div>
     </nav>
 
