@@ -94,9 +94,7 @@ function setTheme(theme) {
    SCREEN NAVIGATION
 ────────────────────────────────────────── */
 function goTo(n) {
-  document
-    .querySelectorAll(".screen")
-    .forEach((s) => s.classList.remove("active"));
+  document.querySelectorAll(".screen").forEach((s) => s.classList.remove("active"));
   const next = document.getElementById("s" + n);
   if (next) {
     next.classList.add("active");
@@ -729,88 +727,140 @@ function populateResult() {
 /* ──────────────────────────────────────────
    DOWNLOAD / PRINT
 ────────────────────────────────────────── */
-/* ── Build portrait strip canvas matching 3:4 viewfinder ratio ── */
+/* ── Build canvas — layout aware ── */
+function drawPhoto(ctx, src, x, y, w, h, radius) {
+  return new Promise((res) => {
+    const img = new Image();
+    img.onload = () => {
+      ctx.save();
+      ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(x, y, w, h, radius);
+      else ctx.rect(x, y, w, h);
+      ctx.clip();
+      const scale = Math.max(w / img.width, h / img.height);
+      const dx = x + (w - img.width * scale) / 2;
+      const dy = y + (h - img.height * scale) / 2;
+      ctx.drawImage(img, dx, dy, img.width * scale, img.height * scale);
+      ctx.restore();
+      res();
+    };
+    img.onerror = () => res();
+    img.src = src;
+  });
+}
+
 function buildStripCanvas() {
   return new Promise((resolve) => {
     const t = TEMPLATES[State.currentTemplate];
-    const W = 500;
-    const PAD = 18;
-    const TOP_PAD = 48;
-    const BOT_PAD = 28;
-    const GAP = 10;
-    const FRAME_W = W - PAD * 2; // 464px
-    const FRAME_H = Math.round(FRAME_W * (4 / 3)); // 619px — matches 3:4 viewfinder
-    const H = TOP_PAD + 4 * FRAME_H + 3 * GAP + BOT_PAD;
+    const layout = State.currentLayout || "A";
+    let c, ctx, W, H, positions, bgColor, radius = 10;
 
-    const c = document.createElement("canvas");
-    c.width = W;
-    c.height = H;
-    const ctx = c.getContext("2d");
+    bgColor = t.colors?.[0] || "#0F2419";
 
-    // Background — alternating colors per frame section
-    if (!t.frame) {
-      ctx.fillStyle = t.colors?.[0] || "#0F2419";
-      ctx.fillRect(0, 0, W, H);
-      for (let i = 0; i < 4; i++) {
-        const fy = TOP_PAD + i * (FRAME_H + GAP);
-        ctx.fillStyle = t.colors?.[i] || t.colors?.[0] || "#0F2419";
-        ctx.fillRect(PAD, fy, FRAME_W, FRAME_H);
-      }
-    } else {
-      ctx.fillStyle = "#0F2419";
-      ctx.fillRect(0, 0, W, H);
+    if (layout === "A") {
+      // Classic vertical strip — 4 stacked portrait frames
+      W = 500; 
+      const PAD = 18, TOP = 48, BOT = 28, GAP = 10;
+      const FW = W - PAD * 2;
+      const FH = Math.round(FW * (4 / 3));
+      H = TOP + 4 * FH + 3 * GAP + BOT;
+      c = document.createElement("canvas"); c.width = W; c.height = H;
+      ctx = c.getContext("2d");
+      ctx.fillStyle = bgColor; ctx.fillRect(0, 0, W, H);
+      positions = Array.from({ length: 4 }, (_, i) => ({
+        x: PAD, y: TOP + i * (FH + GAP), w: FW, h: FH,
+        color: t.colors?.[i] || bgColor
+      }));
+
+    } else if (layout === "B") {
+      // 2x2 grid — square output
+      W = 1000; H = 1000;
+      const PAD = 20, GAP = 12;
+      const FW = (W - PAD * 2 - GAP) / 2;
+      const FH = (H - PAD * 2 - GAP) / 2;
+      c = document.createElement("canvas"); c.width = W; c.height = H;
+      ctx = c.getContext("2d");
+      ctx.fillStyle = bgColor; ctx.fillRect(0, 0, W, H);
+      positions = [
+        { x: PAD,        y: PAD,        w: FW, h: FH, color: t.colors?.[0] || bgColor },
+        { x: PAD+FW+GAP, y: PAD,        w: FW, h: FH, color: t.colors?.[1] || bgColor },
+        { x: PAD,        y: PAD+FH+GAP, w: FW, h: FH, color: t.colors?.[2] || bgColor },
+        { x: PAD+FW+GAP, y: PAD+FH+GAP, w: FW, h: FH, color: t.colors?.[3] || bgColor },
+      ];
+
+    } else if (layout === "C") {
+      // Bordered strip — white background wide border
+      W = 500;
+      const BORDER = 40, GAP = 8, TOP = 60, BOT = 70;
+      const FW = W - BORDER * 2;
+      const FH = Math.round(FW * (4 / 3));
+      H = TOP + 4 * FH + 3 * GAP + BOT;
+      c = document.createElement("canvas"); c.width = W; c.height = H;
+      ctx = c.getContext("2d");
+      // White background
+      ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, W, H);
+      positions = Array.from({ length: 4 }, (_, i) => ({
+        x: BORDER, y: TOP + i * (FH + GAP), w: FW, h: FH,
+        color: t.colors?.[i] || "#f0f0f0"
+      }));
+
+    } else if (layout === "D") {
+      // 3 small stacked top + 1 large bottom
+      W = 500;
+      const PAD = 18, TOP = 48, BOT = 28, GAP = 10;
+      const FW = W - PAD * 2;
+      const FH_SM = Math.round(FW * (3 / 4)); // landscape small
+      const FH_LG = Math.round(FW * (4 / 3)); // portrait large
+      H = TOP + 3 * FH_SM + 2 * GAP + GAP + FH_LG + BOT;
+      c = document.createElement("canvas"); c.width = W; c.height = H;
+      ctx = c.getContext("2d");
+      ctx.fillStyle = bgColor; ctx.fillRect(0, 0, W, H);
+      const yLarge = TOP + 3 * FH_SM + 3 * GAP;
+      positions = [
+        { x: PAD, y: TOP,                    w: FW, h: FH_SM, color: t.colors?.[0] || bgColor },
+        { x: PAD, y: TOP + FH_SM + GAP,      w: FW, h: FH_SM, color: t.colors?.[1] || bgColor },
+        { x: PAD, y: TOP + 2*(FH_SM + GAP),  w: FW, h: FH_SM, color: t.colors?.[2] || bgColor },
+        { x: PAD, y: yLarge,                 w: FW, h: FH_LG, color: t.colors?.[3] || bgColor },
+      ];
     }
 
-    // Brand label
-    ctx.fillStyle = "rgba(255,255,255,0.55)";
-    ctx.font = "bold 15px Georgia, serif";
-    ctx.textAlign = "center";
-    ctx.fillText("✦ Cutesy Booth", W / 2, 30);
+    // Fill frame background colors
+    if (!t.frame) {
+      positions.forEach(({ x, y, w, h, color }) => {
+        ctx.fillStyle = color;
+        ctx.fillRect(x, y, w, h);
+      });
+    }
 
-    // Footer watermark
-    ctx.fillStyle = "rgba(255,255,255,0.3)";
-    ctx.font = "11px monospace";
-    ctx.fillText("cutesyphotobooth.com", W / 2, H - 10);
+    // Brand label (not on grid layout)
+    if (layout !== "B") {
+      ctx.fillStyle = "rgba(255,255,255,0.55)";
+      ctx.font = `bold ${layout === "C" ? "13px" : "15px"} Georgia, serif`;
+      ctx.textAlign = "center";
+      ctx.fillText("✦ Cutesy Booth", W / 2, layout === "C" ? 40 : 30);
+      ctx.fillStyle = "rgba(0,0,0,0.25)";
+      ctx.font = "11px monospace";
+      ctx.fillText("cutesyphotobooth.com", W / 2, H - (layout === "C" ? 20 : 10));
+    } else {
+      // Grid: watermark bottom center
+      ctx.fillStyle = "rgba(255,255,255,0.3)";
+      ctx.font = "18px monospace";
+      ctx.textAlign = "center";
+      ctx.fillText("cutesyphotobooth.com", W / 2, H - 8);
+    }
 
-    const positions = Array.from({ length: 4 }, (_, i) => ({
-      x: PAD,
-      y: TOP_PAD + i * (FRAME_H + GAP),
-      w: FRAME_W,
-      h: FRAME_H,
-    }));
-
-    const promises = State.shots.map(
-      (src, i) =>
-        new Promise((res) => {
-          const img = new Image();
-          img.onload = () => {
-            const { x, y, w, h } = positions[i];
-            ctx.save();
-            ctx.beginPath();
-            if (ctx.roundRect) ctx.roundRect(x, y, w, h, 12);
-            else ctx.rect(x, y, w, h);
-            ctx.clip();
-            // cover-fit — never stretch
-            const scale = Math.max(w / img.width, h / img.height);
-            const dx = x + (w - img.width * scale) / 2;
-            const dy = y + (h - img.height * scale) / 2;
-            ctx.drawImage(img, dx, dy, img.width * scale, img.height * scale);
-            ctx.restore();
-            res();
-          };
-          img.src = src;
-        }),
-    );
+    const promises = State.shots.map((src, i) => {
+      if (!positions[i]) return Promise.resolve();
+      const { x, y, w, h } = positions[i];
+      return drawPhoto(ctx, src, x, y, w, h, radius);
+    });
 
     Promise.all(promises).then(() => {
       if (t.frame) {
-        const frameImg = new Image();
-        frameImg.onload = () => {
-          ctx.drawImage(frameImg, 0, 0, W, H);
-          resolve(c);
-        };
-        frameImg.onerror = () => resolve(c);
-        frameImg.src = t.frame;
+        const fi = new Image();
+        fi.onload = () => { ctx.drawImage(fi, 0, 0, W, H); resolve(c); };
+        fi.onerror = () => resolve(c);
+        fi.src = t.frame;
       } else {
         resolve(c);
       }
@@ -860,10 +910,28 @@ img { display:block; width:auto; max-width:100%; max-height:100vh; object-fit:co
   });
 }
 
-/* ── MOBILE STEP SYSTEM ── */
-function isMobile() {
-  return window.innerWidth <= 600;
+/* ── LAYOUT SYSTEM ── */
+// A = classic strip, B = 2x2 grid, C = bordered strip, D = 3+1
+State.currentLayout = "A";
+
+function setLayout(layout, btn) {
+  State.currentLayout = layout;
+  document.querySelectorAll(".layout-card").forEach(b => b.classList.remove("active"));
+  if (btn) btn.classList.add("active");
+  // Update shots count based on layout
+  // All layouts use 4 shots for now
+  updateResultPreviewLayout();
 }
+
+function updateResultPreviewLayout() {
+  // Update the template-mini preview shape to match layout
+  const mini = document.getElementById("tmpl-mini");
+  if (!mini) return;
+  mini.dataset.layout = State.currentLayout || "A";
+}
+
+/* ── MOBILE STEP SYSTEM ── */
+function isMobile() { return window.innerWidth <= 600; }
 
 function mobileProceedToCamera() {
   const s2 = document.getElementById("s2");
@@ -904,23 +972,13 @@ function rateSuggestion(value) {
 
 function submitSuggestion() {
   const text = document.getElementById("suggestion-text")?.value.trim();
-  if (!text) {
-    showToast("Please write your suggestion first 🎀");
-    return;
-  }
+  if (!text) { showToast("Please write your suggestion first 🎀"); return; }
   const name = document.getElementById("suggestion-name")?.value.trim();
-  const suggestions = JSON.parse(
-    localStorage.getItem("cb-suggestions") || "[]",
-  );
+  const suggestions = JSON.parse(localStorage.getItem("cb-suggestions") || "[]");
   suggestions.push({
-    name: name || "Anonymous",
-    text,
+    name: name || "Anonymous", text,
     rating: suggestionRating,
-    date: new Date().toLocaleDateString("en-PH", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    }),
+    date: new Date().toLocaleDateString("en-PH", { month:"short", day:"numeric", year:"numeric" })
   });
   localStorage.setItem("cb-suggestions", JSON.stringify(suggestions));
   const form = document.getElementById("suggestion-form");
@@ -935,9 +993,7 @@ function submitSuggestion() {
     if (t) t.value = "";
     if (c) c.textContent = "0";
     suggestionRating = 0;
-    document
-      .querySelectorAll(".star-btn")
-      .forEach((b) => b.classList.remove("active"));
+    document.querySelectorAll(".star-btn").forEach(b => b.classList.remove("active"));
   }, 500);
 }
 
@@ -986,22 +1042,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const suggText = document.getElementById("suggestion-text");
   const suggChars = document.getElementById("suggestion-chars");
   if (suggText && suggChars) {
-    suggText.addEventListener("input", () => {
-      suggChars.textContent = suggText.value.length;
-    });
+    suggText.addEventListener("input", () => { suggChars.textContent = suggText.value.length; });
   }
 
   // Close suggestion modal on overlay click
   const suggModal = document.getElementById("suggestions-modal");
-  if (suggModal)
-    suggModal.addEventListener("click", (e) => {
-      if (e.target === suggModal) closeModal("suggestions-modal");
-    });
+  if (suggModal) suggModal.addEventListener("click", (e) => { if (e.target === suggModal) closeModal("suggestions-modal"); });
 
   // Handle resize for mobile S2
-  window.addEventListener("resize", () => {
-    if (State.currentScreen === 2) initMobileS2();
-  });
+  window.addEventListener("resize", () => { if (State.currentScreen === 2) initMobileS2(); });
 
   setupUploadHandler();
   updateTemplateMini();

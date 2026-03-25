@@ -55,12 +55,8 @@
       <div class="theme-switcher">
         <span class="toggle-label" id="toggle-label-minimal">◻ Minimal</span>
         <label class="toggle-switch" aria-label="Toggle theme">
-          <input
-            type="checkbox"
-            id="theme-toggle"
-            checked
-            onchange="setTheme(this.checked ? 'cutesy' : 'minimalist')"
-          />
+          <input type="checkbox" id="theme-toggle" checked
+            onchange="setTheme(this.checked ? 'cutesy' : 'minimalist')" />
           <span class="toggle-track"><span class="toggle-thumb"></span></span>
         </label>
         <span class="toggle-label" id="toggle-label-cutesy">🌸 Cutesy</span>
@@ -382,6 +378,49 @@
       aria-label="Photo capture screen"
     >
       <aside class="capture-sidebar" aria-label="Controls">
+        <!-- Layout Picker -->
+        <div>
+          <div class="sidebar-label">Layout</div>
+          <div class="layout-grid" id="layout-grid">
+            <button class="layout-card active" data-layout="A" onclick="setLayout('A', this)" title="Classic Strip">
+              <div class="layout-thumb layout-thumb-A">
+                <div class="lf"></div>
+                <div class="lf"></div>
+                <div class="lf"></div>
+                <div class="lf"></div>
+              </div>
+              <span class="layout-name">Strip</span>
+            </button>
+            <button class="layout-card" data-layout="B" onclick="setLayout('B', this)" title="2x2 Grid">
+              <div class="layout-thumb layout-thumb-B">
+                <div class="lf"></div>
+                <div class="lf"></div>
+                <div class="lf"></div>
+                <div class="lf"></div>
+              </div>
+              <span class="layout-name">Grid</span>
+            </button>
+            <button class="layout-card" data-layout="C" onclick="setLayout('C', this)" title="Bordered Strip">
+              <div class="layout-thumb layout-thumb-C">
+                <div class="lf"></div>
+                <div class="lf"></div>
+                <div class="lf"></div>
+                <div class="lf"></div>
+              </div>
+              <span class="layout-name">Border</span>
+            </button>
+            <button class="layout-card" data-layout="D" onclick="setLayout('D', this)" title="3+1 Layout">
+              <div class="layout-thumb layout-thumb-D">
+                <div class="lf lf-sm"></div>
+                <div class="lf lf-sm"></div>
+                <div class="lf lf-sm"></div>
+                <div class="lf lf-lg"></div>
+              </div>
+              <span class="layout-name">3+1</span>
+            </button>
+          </div>
+        </div>
+
         <div>
           <div class="sidebar-label">Filter</div>
           <div class="filter-chips">
@@ -469,11 +508,8 @@
             ✦ All Frames
           </button>
         </div>
-        <button
-          class="btn btn-primary mobile-start-btn"
-          onclick="mobileProceedToCamera()"
-          style="font-size: 14px"
-        >
+        <button class="btn btn-primary mobile-start-btn"
+          onclick="mobileProceedToCamera()" style="font-size:14px;">
           Continue →
         </button>
       </aside>
@@ -523,16 +559,9 @@
           <div id="flash" aria-hidden="true"></div>
         </div>
 
-        <button
-          class="btn btn-secondary mobile-back-btn"
+        <button class="btn btn-secondary mobile-back-btn"
           onclick="mobileBackToFilters()"
-          style="
-            font-size: 12px;
-            min-height: 34px;
-            margin-bottom: 4px;
-            align-self: flex-start;
-          "
-        >
+          style="font-size:12px;min-height:34px;margin-bottom:4px;align-self:flex-start;">
           ← Filters
         </button>
         <div class="shot-indicators" role="list" aria-label="Shot progress">
@@ -927,137 +956,41 @@
     </div>
 
     <!-- Suggestions Modal -->
-    <div
-      class="modal"
-      id="suggestions-modal"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="suggestions-title"
-    >
+    <div class="modal" id="suggestions-modal" role="dialog" aria-modal="true" aria-labelledby="suggestions-title">
       <div class="modal-card">
-        <button
-          class="modal-close"
-          onclick="closeModal('suggestions-modal')"
-          aria-label="Close"
-        >
-          ✕
-        </button>
-        <h2 class="modal-title" id="suggestions-title">
-          🎀 Share Your Suggestions
-        </h2>
-        <p class="modal-sub">
-          Help us make Cutesy Booth even better! We'd love to hear your ideas,
-          feedback, or anything you'd like to see improved.
-        </p>
+        <button class="modal-close" onclick="closeModal('suggestions-modal')" aria-label="Close">✕</button>
+        <h2 class="modal-title" id="suggestions-title">🎀 Share Your Suggestions</h2>
+        <p class="modal-sub">Help us make Cutesy Booth even better! We'd love to hear your ideas, feedback, or anything you'd like to see improved.</p>
         <div id="suggestion-form">
           <div class="suggestion-field">
-            <label class="suggestion-label"
-              >Your Name <span style="opacity: 0.5">(optional)</span></label
-            >
-            <input
-              type="text"
-              id="suggestion-name"
-              class="suggestion-input"
-              placeholder="e.g. Princess"
-              maxlength="50"
-            />
+            <label class="suggestion-label">Your Name <span style="opacity:0.5">(optional)</span></label>
+            <input type="text" id="suggestion-name" class="suggestion-input" placeholder="e.g. Princess" maxlength="50" />
           </div>
           <div class="suggestion-field">
-            <label class="suggestion-label"
-              >What would you like to suggest? ✦</label
-            >
-            <textarea
-              id="suggestion-text"
-              class="suggestion-textarea"
-              placeholder="e.g. I'd love more filter options, a countdown sound, stickers..."
-              maxlength="500"
-              rows="5"
-            ></textarea>
-            <div class="suggestion-count">
-              <span id="suggestion-chars">0</span>/500
-            </div>
+            <label class="suggestion-label">What would you like to suggest? ✦</label>
+            <textarea id="suggestion-text" class="suggestion-textarea"
+              placeholder="e.g. I'd love more filter options, a countdown sound, stickers..." maxlength="500" rows="5"></textarea>
+            <div class="suggestion-count"><span id="suggestion-chars">0</span>/500</div>
           </div>
           <div class="suggestion-field">
-            <label class="suggestion-label"
-              >How would you rate your experience? ✦</label
-            >
+            <label class="suggestion-label">How would you rate your experience? ✦</label>
             <div class="suggestion-stars" id="suggestion-stars">
-              <button
-                class="star-btn"
-                data-value="1"
-                onclick="rateSuggestion(1)"
-              >
-                ★
-              </button>
-              <button
-                class="star-btn"
-                data-value="2"
-                onclick="rateSuggestion(2)"
-              >
-                ★
-              </button>
-              <button
-                class="star-btn"
-                data-value="3"
-                onclick="rateSuggestion(3)"
-              >
-                ★
-              </button>
-              <button
-                class="star-btn"
-                data-value="4"
-                onclick="rateSuggestion(4)"
-              >
-                ★
-              </button>
-              <button
-                class="star-btn"
-                data-value="5"
-                onclick="rateSuggestion(5)"
-              >
-                ★
-              </button>
+              <button class="star-btn" data-value="1" onclick="rateSuggestion(1)">★</button>
+              <button class="star-btn" data-value="2" onclick="rateSuggestion(2)">★</button>
+              <button class="star-btn" data-value="3" onclick="rateSuggestion(3)">★</button>
+              <button class="star-btn" data-value="4" onclick="rateSuggestion(4)">★</button>
+              <button class="star-btn" data-value="5" onclick="rateSuggestion(5)">★</button>
             </div>
           </div>
-          <button
-            class="btn btn-primary"
-            style="width: 100%; margin-top: 8px; font-size: 14px"
-            onclick="submitSuggestion()"
-          >
+          <button class="btn btn-primary" style="width:100%;margin-top:8px;font-size:14px;" onclick="submitSuggestion()">
             Send Suggestion 🎀
           </button>
         </div>
-        <div
-          id="suggestion-success"
-          style="display: none; text-align: center; padding: 24px 0"
-        >
-          <div style="font-size: 48px; margin-bottom: 12px">🎀</div>
-          <h3
-            style="
-              font-family: var(--font-display);
-              font-size: 22px;
-              margin-bottom: 8px;
-            "
-          >
-            Thank you so much!
-          </h3>
-          <p
-            style="
-              color: var(--text-secondary);
-              font-size: 14px;
-              line-height: 1.6;
-            "
-          >
-            Your suggestion has been received. We truly appreciate your
-            feedback! ✦
-          </p>
-          <button
-            class="btn btn-outline"
-            style="margin-top: 20px; font-size: 13px"
-            onclick="closeModal('suggestions-modal')"
-          >
-            Close
-          </button>
+        <div id="suggestion-success" style="display:none;text-align:center;padding:24px 0;">
+          <div style="font-size:48px;margin-bottom:12px;">🎀</div>
+          <h3 style="font-family:var(--font-display);font-size:22px;margin-bottom:8px;">Thank you so much!</h3>
+          <p style="color:var(--text-secondary);font-size:14px;line-height:1.6;">Your suggestion has been received. We truly appreciate your feedback! ✦</p>
+          <button class="btn btn-outline" style="margin-top:20px;font-size:13px;" onclick="closeModal('suggestions-modal')">Close</button>
         </div>
       </div>
     </div>
