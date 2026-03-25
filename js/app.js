@@ -304,7 +304,7 @@ function updateTemplateMini() {
       <div class="t-frame-mini" style="background:${c(0)};flex:1"></div>
       <div class="t-frame-mini" style="background:${c(1)};flex:1"></div>
       <div class="t-frame-mini" style="background:${c(2)};flex:1"></div>
-      <div class="t-frame-mini" style="background:transparent;flex:1.5;border:1px dashed rgba(255,255,255,0.3)"></div>
+      <div class="t-frame-mini" style="background:rgba(255,255,255,0.06);flex:1.5"></div>
     `;
   }
 }
