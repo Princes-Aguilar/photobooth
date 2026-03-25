@@ -407,10 +407,10 @@ a {
 .layout-thumb-D .lf-space {
   flex: 2;
   background: transparent;
-  border: 1px dashed var(--bg-primary);
+  border: 1.5px dashed var(--bg-primary);
   border-radius: 1px;
   width: 100%;
-  opacity: 0.5;
+  opacity: 0.8;
 }
 
 /* ── SUGGESTIONS FORM ── */

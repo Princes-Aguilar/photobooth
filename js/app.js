@@ -1098,13 +1098,19 @@ function updateResultPreviewLayout() {
   const spFilm = document.querySelector(".sp-film");
   if (spFilm) {
     if (layout === "B") {
-      // 2x2 grid in sidebar strip
+      // 2x2 grid: rebuild to show 4 grid frames
       spFilm.style.display = "grid";
       spFilm.style.gridTemplateColumns = "1fr 1fr";
       spFilm.style.gridTemplateRows = "1fr 1fr";
       spFilm.style.gap = "3px";
       spFilm.style.padding = "4px";
       spFilm.style.flexDirection = "";
+      spFilm.style.height = "100%";
+      // Rebuild sp-frames to fill grid properly
+      spFilm.querySelectorAll(".sp-frame").forEach((f) => {
+        f.style.flex = "";
+        f.style.minHeight = "0";
+      });
     } else {
       // vertical strip
       spFilm.style.display = "flex";
@@ -1113,6 +1119,7 @@ function updateResultPreviewLayout() {
       spFilm.style.gridTemplateRows = "";
       spFilm.style.gap = "";
       spFilm.style.padding = "";
+      spFilm.style.height = "";
     }
   }
 

@@ -26,6 +26,16 @@
   );
 }
 
+/* Hide perforations and numbers when strip shows grid layout */
+.sp-film[style*="grid-template"] .sp-perf,
+.sp-film[style*="grid-template"] .sp-num {
+  display: none !important;
+}
+.sp-film[style*="grid-template"] .sp-frame {
+  flex: unset;
+  min-height: 0;
+}
+
 .capture-sidebar {
   height: 100%;
   align-self: stretch;
