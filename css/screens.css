@@ -860,29 +860,9 @@
     max-height: calc(100vh - var(--topbar-h) - var(--footer-h) - 160px);
   }
 
-  /* Strip panel hidden on all mobile screens by default */
+  /* Hide strip panel on ALL mobile screens */
   .strip-preview-panel {
     display: none !important;
-  }
-
-  /* Only show strip panel during S2 step 2 camera phase */
-  #s2.mobile-step-2 .strip-preview-panel {
-    display: flex !important;
-    position: fixed;
-    top: var(--topbar-h);
-    right: 0;
-    bottom: var(--footer-h);
-    width: 72px;
-    height: auto;
-    border-left: 1px solid var(--border-color);
-    padding: 8px 4px;
-    z-index: 10;
-    background: var(--bg-secondary);
-    overflow: hidden;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
   }
 
   .mobile-start-btn,

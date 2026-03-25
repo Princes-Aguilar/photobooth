@@ -112,6 +112,11 @@ function goTo(n) {
   if (n === 2) initMobileS2();
   if (n === 3) startPrinting();
   if (n === 4) populateResult();
+  // Hide strip panel on mobile for all screens except S2 camera step
+  if (isMobile() && n !== 2) {
+    const strip = document.querySelector(".strip-preview-panel");
+    if (strip) strip.style.cssText = "display: none !important;";
+  }
 }
 
 /* ──────────────────────────────────────────
@@ -1133,6 +1138,28 @@ function mobileProceedToCamera() {
   s2.classList.remove("mobile-step-1");
   s2.classList.add("mobile-step-2");
   s2.scrollTop = 0;
+  // Show strip panel only during camera shooting on mobile
+  const strip = document.querySelector(".strip-preview-panel");
+  if (strip && isMobile()) {
+    strip.style.cssText = `
+      display: flex !important;
+      position: fixed;
+      top: var(--topbar-h);
+      right: 0;
+      bottom: var(--footer-h);
+      width: 72px;
+      height: auto;
+      border-left: 1px solid var(--border-color);
+      padding: 8px 4px;
+      z-index: 10;
+      background: var(--bg-secondary);
+      overflow: hidden;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    `;
+  }
 }
 
 function mobileBackToFilters() {
@@ -1141,6 +1168,9 @@ function mobileBackToFilters() {
   s2.classList.remove("mobile-step-2");
   s2.classList.add("mobile-step-1");
   s2.scrollTop = 0;
+  // Hide strip again when going back to filters
+  const strip = document.querySelector(".strip-preview-panel");
+  if (strip && isMobile()) strip.style.cssText = "display: none !important;";
 }
 
 function initMobileS2() {
