@@ -823,7 +823,7 @@
     font-size: 15px;
   }
 
-  /* STEP 2: camera */
+  /* STEP 2: camera — no strip panel, viewfinder fills full width */
   #s2.mobile-step-2 .capture-sidebar { display: none; }
   #s2.mobile-step-2 .capture-main {
     display: flex;
@@ -831,36 +831,19 @@
     align-items: center;
     justify-content: flex-start;
     flex: 1;
-    padding: 20px calc(72px + 8px) 16px 8px;
+    padding: 20px 16px 16px;
     overflow: hidden;
     gap: clamp(8px, 1.8vh, 14px);
-  }
-  #s2.mobile-step-2 .strip-preview-panel {
-    display: flex;
-    position: fixed;
-    top: var(--topbar-h);
-    right: 0;
-    width: 72px;
-    height: calc(100vh - var(--topbar-h) - var(--footer-h));
-    border-left: 1px solid var(--border-color);
-    padding: 8px 4px;
-    z-index: 10;
-    background: var(--bg-secondary);
-    overflow: hidden;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
   }
   #s2.mobile-step-2 .strip-panel-label { font-size: 7px; }
   #s2.mobile-step-2 .sp-film { width: 56px; height: auto; flex: 1; max-height: none; }
   #s2.mobile-step-2 .viewfinder-wrap {
-    width: min(calc(100vw - 72px - 12px), clamp(240px, 70vw, 360px));
+    width: min(100%, clamp(260px, 80vw, 380px));
     aspect-ratio: 3 / 4;
     max-height: calc(100vh - var(--topbar-h) - var(--footer-h) - 160px);
   }
 
-  /* Hide strip panel on ALL mobile screens */
+  /* ALWAYS hide strip panel on mobile — no exceptions in CSS */
   .strip-preview-panel {
     display: none !important;
   }
@@ -878,10 +861,6 @@
 
   /* S3 — no strip panel on mobile */
   #s3 { padding: 16px; overflow-y: auto; justify-content: center; }
-
-  #s3.active .strip-preview-panel {
-    display: none !important;
-  }
 
   /* S4 */
   #s4 { padding: 16px 14px; overflow-y: auto; justify-content: flex-start; align-items: center; }

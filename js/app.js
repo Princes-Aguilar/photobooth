@@ -1138,28 +1138,7 @@ function mobileProceedToCamera() {
   s2.classList.remove("mobile-step-1");
   s2.classList.add("mobile-step-2");
   s2.scrollTop = 0;
-  // Show strip panel only during camera shooting on mobile
-  const strip = document.querySelector(".strip-preview-panel");
-  if (strip && isMobile()) {
-    strip.style.cssText = `
-      display: flex !important;
-      position: fixed;
-      top: var(--topbar-h);
-      right: 0;
-      bottom: var(--footer-h);
-      width: 72px;
-      height: auto;
-      border-left: 1px solid var(--border-color);
-      padding: 8px 4px;
-      z-index: 10;
-      background: var(--bg-secondary);
-      overflow: hidden;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-    `;
-  }
+  // Strip panel stays hidden on mobile — removed from camera view
 }
 
 function mobileBackToFilters() {
