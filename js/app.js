@@ -255,24 +255,31 @@ function updateTemplateMini() {
     return;
   }
 
-  if (layout === "A" || layout === "C") {
-    // 4 portrait frames stacked vertically
-    mini.style.flexDirection = "column";
+  if (layout === "A") {
     mini.style.display = "flex";
+    mini.style.flexDirection = "column";
     mini.style.gridTemplateColumns = "";
+    mini.style.padding = "";
+    mini.style.removeProperty("background");
     mini.innerHTML = `
       <div class="t-frame-mini" style="background:${c(0)};flex:1"></div>
       <div class="t-frame-mini" style="background:${c(1)};flex:1"></div>
       <div class="t-frame-mini" style="background:${c(2)};flex:1"></div>
       <div class="t-frame-mini" style="background:${c(3)};flex:1"></div>
     `;
-    if (layout === "C") {
-      mini.style.setProperty("background", c(0), "important");
-      mini.style.padding = "4px 8px";
-    } else {
-      mini.style.removeProperty("background");
-      mini.style.padding = "";
-    }
+  } else if (layout === "C") {
+    // Border layout: template color fills the padding area, frames inside
+    mini.style.display = "flex";
+    mini.style.flexDirection = "column";
+    mini.style.gridTemplateColumns = "";
+    mini.style.padding = "5px 10px";
+    mini.style.setProperty("background", c(0), "important");
+    mini.innerHTML = `
+      <div class="t-frame-mini" style="background:${c(1)};flex:1"></div>
+      <div class="t-frame-mini" style="background:${c(2)};flex:1"></div>
+      <div class="t-frame-mini" style="background:${c(3)};flex:1"></div>
+      <div class="t-frame-mini" style="background:${c(0)};flex:1"></div>
+    `;
   } else if (layout === "B") {
     // 2x2 grid
     mini.style.display = "grid";
