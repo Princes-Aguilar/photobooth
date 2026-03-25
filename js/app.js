@@ -94,7 +94,9 @@ function setTheme(theme) {
    SCREEN NAVIGATION
 ────────────────────────────────────────── */
 function goTo(n) {
-  document.querySelectorAll(".screen").forEach((s) => s.classList.remove("active"));
+  document
+    .querySelectorAll(".screen")
+    .forEach((s) => s.classList.remove("active"));
   const next = document.getElementById("s" + n);
   if (next) {
     next.classList.add("active");
@@ -265,13 +267,13 @@ function updateTemplateMini() {
       <div class="t-frame-mini" style="background:${c(3)};flex:1"></div>
     `;
     if (layout === "C") {
-      mini.style.background = "#fff";
+      // Use template color as border, not white
+      mini.style.background = c(0);
       mini.style.padding = "4px 8px";
     } else {
       mini.style.background = "";
       mini.style.padding = "";
     }
-
   } else if (layout === "B") {
     // 2x2 grid
     mini.style.display = "grid";
@@ -287,7 +289,6 @@ function updateTemplateMini() {
       <div class="t-frame-mini" style="background:${c(2)};border-radius:3px"></div>
       <div class="t-frame-mini" style="background:${c(3)};border-radius:3px"></div>
     `;
-
   } else if (layout === "D") {
     // 3 portrait frames + empty bottom space
     mini.style.display = "flex";
@@ -740,10 +741,15 @@ function startPrinting() {
     if (State.shots[i]) {
       ps.innerHTML = `<img src="${State.shots[i]}" style="width:100%;height:100%;object-fit:cover;" alt="print ${i + 1}">`;
     } else {
-      ps.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;opacity:.2;font-size:20px;">○</div>';
+      ps.innerHTML =
+        '<div style="display:flex;align-items:center;justify-content:center;height:100%;opacity:.2;font-size:20px;">○</div>';
     }
     if (!t.frame) {
-      ps.style.setProperty("background", t.colors?.[i] || t.colors?.[0] || "#1B3A2D", "important");
+      ps.style.setProperty(
+        "background",
+        t.colors?.[i] || t.colors?.[0] || "#1B3A2D",
+        "important",
+      );
     }
   }
 
@@ -784,7 +790,9 @@ function populateResult() {
   const dateEl = document.getElementById("rs-date");
   if (dateEl) {
     dateEl.textContent = new Date().toLocaleDateString("en-PH", {
-      month: "short", day: "numeric", year: "numeric",
+      month: "short",
+      day: "numeric",
+      year: "numeric",
     });
   }
 
@@ -847,16 +855,25 @@ function buildStripCanvas() {
     // ── LAYOUT A: Classic strip — 4 portrait frames stacked (3:4 each) ──
     if (layout === "A") {
       W = 500;
-      const PAD = 18, TOP = 48, BOT = 28, GAP = 10;
-      const FW = W - PAD * 2;                   // 464px
-      const FH = Math.round(FW * (4 / 3));       // 619px  ← matches 3:4 viewfinder
+      const PAD = 18,
+        TOP = 48,
+        BOT = 28,
+        GAP = 10;
+      const FW = W - PAD * 2; // 464px
+      const FH = Math.round(FW * (4 / 3)); // 619px  ← matches 3:4 viewfinder
       H = TOP + 4 * FH + 3 * GAP + BOT;
-      c = document.createElement("canvas"); c.width = W; c.height = H;
+      c = document.createElement("canvas");
+      c.width = W;
+      c.height = H;
       ctx = c.getContext("2d");
-      ctx.fillStyle = bgColor; ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, W, H);
       positions = Array.from({ length: 4 }, (_, i) => ({
-        x: PAD, y: TOP + i * (FH + GAP), w: FW, h: FH,
-        color: t.colors?.[i] || bgColor
+        x: PAD,
+        y: TOP + i * (FH + GAP),
+        w: FW,
+        h: FH,
+        color: t.colors?.[i] || bgColor,
       }));
       // Brand label
       ctx.fillStyle = "rgba(255,255,255,0.6)";
@@ -867,21 +884,44 @@ function buildStripCanvas() {
       ctx.font = "11px monospace";
       ctx.fillText("cutesyphotobooth.com", W / 2, H - 10);
 
-    // ── LAYOUT B: 2x2 grid — each cell 3:4 portrait, large bottom border ──
+      // ── LAYOUT B: 2x2 grid — each cell 3:4 portrait, large bottom border ──
     } else if (layout === "B") {
       W = 1000;
-      const PAD = 30, GAP = 16, BOT_BORDER = 220;
-      const FW = (W - PAD * 2 - GAP) / 2;       // each cell width
-      const FH = Math.round(FW * (4 / 3));       // each cell height — 3:4 portrait
+      const PAD = 30,
+        GAP = 16,
+        BOT_BORDER = 220;
+      const FW = (W - PAD * 2 - GAP) / 2; // each cell width
+      const FH = Math.round(FW * (4 / 3)); // each cell height — 3:4 portrait
       H = PAD + 2 * FH + GAP + BOT_BORDER;
-      c = document.createElement("canvas"); c.width = W; c.height = H;
+      c = document.createElement("canvas");
+      c.width = W;
+      c.height = H;
       ctx = c.getContext("2d");
-      ctx.fillStyle = bgColor; ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, W, H);
       positions = [
-        { x: PAD,        y: PAD,        w: FW, h: FH, color: t.colors?.[0] || bgColor },
-        { x: PAD+FW+GAP, y: PAD,        w: FW, h: FH, color: t.colors?.[1] || bgColor },
-        { x: PAD,        y: PAD+FH+GAP, w: FW, h: FH, color: t.colors?.[2] || bgColor },
-        { x: PAD+FW+GAP, y: PAD+FH+GAP, w: FW, h: FH, color: t.colors?.[3] || bgColor },
+        { x: PAD, y: PAD, w: FW, h: FH, color: t.colors?.[0] || bgColor },
+        {
+          x: PAD + FW + GAP,
+          y: PAD,
+          w: FW,
+          h: FH,
+          color: t.colors?.[1] || bgColor,
+        },
+        {
+          x: PAD,
+          y: PAD + FH + GAP,
+          w: FW,
+          h: FH,
+          color: t.colors?.[2] || bgColor,
+        },
+        {
+          x: PAD + FW + GAP,
+          y: PAD + FH + GAP,
+          w: FW,
+          h: FH,
+          color: t.colors?.[3] || bgColor,
+        },
       ];
       // Branding in large bottom border
       const brandY = PAD + 2 * FH + GAP;
@@ -893,43 +933,61 @@ function buildStripCanvas() {
       ctx.font = "22px monospace";
       ctx.fillText("cutesyphotobooth.com", W / 2, brandY + 140);
 
-    // ── LAYOUT C: Bordered strip — white bg, 4 portrait frames, wide border ──
+      // ── LAYOUT C: Bordered strip — uses template color as border/bg ──
     } else if (layout === "C") {
       W = 500;
-      const SIDE = 40, TOP = 60, BOT = 60, GAP = 8;
-      const FW = W - SIDE * 2;                   // narrower frame
-      const FH = Math.round(FW * (4 / 3));       // 3:4 portrait ← matches viewfinder
+      const SIDE = 40,
+        TOP = 60,
+        BOT = 60,
+        GAP = 8;
+      const FW = W - SIDE * 2;
+      const FH = Math.round(FW * (4 / 3));
       H = TOP + 4 * FH + 3 * GAP + BOT;
-      c = document.createElement("canvas"); c.width = W; c.height = H;
+      c = document.createElement("canvas");
+      c.width = W;
+      c.height = H;
       ctx = c.getContext("2d");
-      ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, W, H);
+      // Use template color as the border/background (not white)
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, W, H);
       positions = Array.from({ length: 4 }, (_, i) => ({
-        x: SIDE, y: TOP + i * (FH + GAP), w: FW, h: FH,
-        color: t.colors?.[i] || "#e8e8e8"
+        x: SIDE,
+        y: TOP + i * (FH + GAP),
+        w: FW,
+        h: FH,
+        color: t.colors?.[i] || t.colors?.[0] || bgColor,
       }));
-      // Dark branding on white
-      ctx.fillStyle = "rgba(0,0,0,0.5)";
+      // Branding
+      ctx.fillStyle = "rgba(255,255,255,0.6)";
       ctx.font = "bold 14px Georgia,serif";
       ctx.textAlign = "center";
       ctx.fillText("✦ Cutesy Booth", W / 2, 38);
-      ctx.fillStyle = "rgba(0,0,0,0.25)";
+      ctx.fillStyle = "rgba(255,255,255,0.25)";
       ctx.font = "10px monospace";
       ctx.fillText("cutesyphotobooth.com", W / 2, H - 18);
 
-    // ── LAYOUT D: 3 portrait frames stacked + extra large bottom space for name/website ──
+      // ── LAYOUT D: 3 portrait frames stacked + extra large bottom space for name/website ──
     } else if (layout === "D") {
       W = 500;
-      const PAD = 18, TOP = 48, GAP = 10;
-      const BOT_SPACE = 400;                     // extra large — room for name + website
+      const PAD = 18,
+        TOP = 48,
+        GAP = 10;
+      const BOT_SPACE = 400; // extra large — room for name + website
       const FW = W - PAD * 2;
-      const FH = Math.round(FW * (4 / 3));       // 3:4 portrait ← matches viewfinder
+      const FH = Math.round(FW * (4 / 3)); // 3:4 portrait ← matches viewfinder
       H = TOP + 3 * FH + 2 * GAP + BOT_SPACE;
-      c = document.createElement("canvas"); c.width = W; c.height = H;
+      c = document.createElement("canvas");
+      c.width = W;
+      c.height = H;
       ctx = c.getContext("2d");
-      ctx.fillStyle = bgColor; ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, W, H);
       positions = Array.from({ length: 3 }, (_, i) => ({
-        x: PAD, y: TOP + i * (FH + GAP), w: FW, h: FH,
-        color: t.colors?.[i] || bgColor
+        x: PAD,
+        y: TOP + i * (FH + GAP),
+        w: FW,
+        h: FH,
+        color: t.colors?.[i] || bgColor,
       }));
       // Brand label top
       ctx.fillStyle = "rgba(255,255,255,0.6)";
@@ -959,7 +1017,10 @@ function buildStripCanvas() {
     Promise.all(promises).then(() => {
       if (t.frame) {
         const fi = new Image();
-        fi.onload = () => { ctx.drawImage(fi, 0, 0, W, H); resolve(c); };
+        fi.onload = () => {
+          ctx.drawImage(fi, 0, 0, W, H);
+          resolve(c);
+        };
         fi.onerror = () => resolve(c);
         fi.src = t.frame;
       } else {
@@ -1017,7 +1078,9 @@ State.currentLayout = "A";
 
 function setLayout(layout, btn) {
   State.currentLayout = layout;
-  document.querySelectorAll(".layout-card").forEach(b => b.classList.remove("active"));
+  document
+    .querySelectorAll(".layout-card")
+    .forEach((b) => b.classList.remove("active"));
   if (btn) btn.classList.add("active");
   updateResultPreviewLayout();
   updateTemplateMini(); // update frame preview shape
@@ -1114,17 +1177,20 @@ function updateResultPreviewLayout() {
       frames += `<div class="rs-frame" id="rs${i}">○</div>`;
     }
 
-    const footer = layout === "D"
-      ? `<div class="rs-frame rs-frame-space"></div>
+    const footer =
+      layout === "D"
+        ? `<div class="rs-frame rs-frame-space"></div>
          <div class="rs-footer" style="text-align:center">cutesyphotobooth.com</div>`
-      : `<div class="rs-footer" ${layout === "B" ? 'style="grid-column:1/-1"' : ""}>cutesyphotobooth.com</div>`;
+        : `<div class="rs-footer" ${layout === "B" ? 'style="grid-column:1/-1"' : ""}>cutesyphotobooth.com</div>`;
 
     resultStrip.innerHTML = header + frames + footer;
   }
 }
 
 /* ── MOBILE STEP SYSTEM ── */
-function isMobile() { return window.innerWidth <= 600; }
+function isMobile() {
+  return window.innerWidth <= 600;
+}
 
 function hideMobileStrip(hide) {
   if (!isMobile()) return;
@@ -1180,13 +1246,23 @@ function rateSuggestion(value) {
 
 function submitSuggestion() {
   const text = document.getElementById("suggestion-text")?.value.trim();
-  if (!text) { showToast("Please write your suggestion first 🎀"); return; }
+  if (!text) {
+    showToast("Please write your suggestion first 🎀");
+    return;
+  }
   const name = document.getElementById("suggestion-name")?.value.trim();
-  const suggestions = JSON.parse(localStorage.getItem("cb-suggestions") || "[]");
+  const suggestions = JSON.parse(
+    localStorage.getItem("cb-suggestions") || "[]",
+  );
   suggestions.push({
-    name: name || "Anonymous", text,
+    name: name || "Anonymous",
+    text,
     rating: suggestionRating,
-    date: new Date().toLocaleDateString("en-PH", { month:"short", day:"numeric", year:"numeric" })
+    date: new Date().toLocaleDateString("en-PH", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    }),
   });
   localStorage.setItem("cb-suggestions", JSON.stringify(suggestions));
   const form = document.getElementById("suggestion-form");
@@ -1201,7 +1277,9 @@ function submitSuggestion() {
     if (t) t.value = "";
     if (c) c.textContent = "0";
     suggestionRating = 0;
-    document.querySelectorAll(".star-btn").forEach(b => b.classList.remove("active"));
+    document
+      .querySelectorAll(".star-btn")
+      .forEach((b) => b.classList.remove("active"));
   }, 500);
 }
 
@@ -1256,15 +1334,22 @@ document.addEventListener("DOMContentLoaded", () => {
   const suggText = document.getElementById("suggestion-text");
   const suggChars = document.getElementById("suggestion-chars");
   if (suggText && suggChars) {
-    suggText.addEventListener("input", () => { suggChars.textContent = suggText.value.length; });
+    suggText.addEventListener("input", () => {
+      suggChars.textContent = suggText.value.length;
+    });
   }
 
   // Close suggestion modal on overlay click
   const suggModal = document.getElementById("suggestions-modal");
-  if (suggModal) suggModal.addEventListener("click", (e) => { if (e.target === suggModal) closeModal("suggestions-modal"); });
+  if (suggModal)
+    suggModal.addEventListener("click", (e) => {
+      if (e.target === suggModal) closeModal("suggestions-modal");
+    });
 
   // Handle resize for mobile S2
-  window.addEventListener("resize", () => { if (State.currentScreen === 2) initMobileS2(); });
+  window.addEventListener("resize", () => {
+    if (State.currentScreen === 2) initMobileS2();
+  });
 
   setupUploadHandler();
   updateTemplateMini();
