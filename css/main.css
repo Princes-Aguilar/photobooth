@@ -312,7 +312,7 @@ a {
   padding: 6px 4px;
   border-radius: 10px;
   border: 1.5px solid var(--border-color);
-  background: var(--bg-secondary);
+  background: var(--card-bg);
   cursor: none;
   transition:
     border-color 0.15s ease,
@@ -341,11 +341,11 @@ a {
   color: var(--accent-yellow);
 }
 
-/* Layout thumbnails */
+/* Layout thumbnails — use text-primary so visible on both themes */
 .layout-thumb {
   width: 28px;
   height: 36px;
-  background: var(--film-bg);
+  background: var(--text-primary);
   border-radius: 3px;
   overflow: hidden;
   display: flex;
@@ -354,18 +354,17 @@ a {
   box-sizing: border-box;
 }
 
-/* Layout A — 4 vertical stacked */
+/* All layout frames use bg-primary so they contrast against text-primary bg */
 .layout-thumb-A {
   flex-direction: column;
 }
 .layout-thumb-A .lf {
   flex: 1;
-  background: var(--accent-primary);
-  opacity: 0.5;
+  background: var(--bg-primary);
   border-radius: 1px;
+  opacity: 0.75;
 }
 
-/* Layout B — 2x2 grid */
 .layout-thumb-B {
   flex-direction: row;
   flex-wrap: wrap;
@@ -375,50 +374,43 @@ a {
 .layout-thumb-B .lf {
   width: calc(50% - 1px);
   height: calc(50% - 1px);
-  background: var(--accent-primary);
-  opacity: 0.5;
+  background: var(--bg-primary);
   border-radius: 1px;
+  opacity: 0.75;
   box-sizing: border-box;
 }
 
-/* Layout C — 4 vertical with colored border (matches template) */
 .layout-thumb-C {
   flex-direction: column;
-  background: var(--film-bg);
   padding: 3px 5px 5px;
   gap: 1.5px;
 }
 .layout-thumb-C .lf {
   flex: 1;
-  background: var(--accent-primary);
-  opacity: 0.6;
+  background: var(--bg-primary);
   border-radius: 1px;
+  opacity: 0.75;
 }
 
-/* Layout D — 3 small top + 1 large bottom */
 .layout-thumb-D {
   flex-direction: column;
   gap: 2px;
   padding: 2px;
 }
 .layout-thumb-D .lf-sm {
-  flex: 1;
-  background: var(--accent-primary);
-  opacity: 0.5;
+  flex: 2;
+  background: var(--bg-primary);
   border-radius: 1px;
+  opacity: 0.75;
   width: 100%;
 }
-.layout-thumb-D .lf-sm {
-  flex: 2;
-}
-/* Empty bottom space in D thumbnail */
 .layout-thumb-D .lf-space {
   flex: 2;
   background: transparent;
-  border: 1px dashed var(--border-color);
+  border: 1px dashed var(--bg-primary);
   border-radius: 1px;
   width: 100%;
-  opacity: 0.6;
+  opacity: 0.5;
 }
 
 /* ── SUGGESTIONS FORM ── */
