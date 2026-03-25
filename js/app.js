@@ -829,11 +829,11 @@ function buildStripCanvas() {
       ctx.font = "10px monospace";
       ctx.fillText("cutesyphotobooth.com", W / 2, H - 18);
 
-    // ── LAYOUT D: 3 portrait frames stacked + large empty bottom space ──
+    // ── LAYOUT D: 3 portrait frames stacked + extra large bottom space for name/website ──
     } else if (layout === "D") {
       W = 500;
       const PAD = 18, TOP = 48, GAP = 10;
-      const BOT_SPACE = 220;                     // large empty bottom
+      const BOT_SPACE = 400;                     // extra large — room for name + website
       const FW = W - PAD * 2;
       const FH = Math.round(FW * (4 / 3));       // 3:4 portrait ← matches viewfinder
       H = TOP + 3 * FH + 2 * GAP + BOT_SPACE;
@@ -849,10 +849,10 @@ function buildStripCanvas() {
       ctx.font = "bold 15px Georgia,serif";
       ctx.textAlign = "center";
       ctx.fillText("✦ Cutesy Booth", W / 2, 32);
-      // Watermark in bottom space
-      ctx.fillStyle = "rgba(255,255,255,0.25)";
-      ctx.font = "12px monospace";
-      ctx.fillText("cutesyphotobooth.com", W / 2, H - 20);
+      // Small watermark at very bottom
+      ctx.fillStyle = "rgba(255,255,255,0.2)";
+      ctx.font = "11px monospace";
+      ctx.fillText("cutesyphotobooth.com", W / 2, H - 16);
     }
 
     // Fill frame backgrounds
