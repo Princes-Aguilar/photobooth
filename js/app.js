@@ -267,11 +267,10 @@ function updateTemplateMini() {
       <div class="t-frame-mini" style="background:${c(3)};flex:1"></div>
     `;
     if (layout === "C") {
-      // Use template color as border, not white
-      mini.style.background = c(0);
+      mini.style.setProperty("background", c(0), "important");
       mini.style.padding = "4px 8px";
     } else {
-      mini.style.background = "";
+      mini.style.removeProperty("background");
       mini.style.padding = "";
     }
   } else if (layout === "B") {
