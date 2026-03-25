@@ -110,8 +110,9 @@ function goTo(n) {
     if (i + 1 === n) d.classList.add("active");
   }
   if (n === 2) initMobileS2();
-  if (n === 3) startPrinting();
-  if (n === 4) populateResult();
+  if (n === 3) { startPrinting(); hideMobileStrip(true); }
+  if (n === 4) { populateResult(); hideMobileStrip(false); }
+  if (n === 1 || n === 2) hideMobileStrip(false);
 }
 
 /* ──────────────────────────────────────────
@@ -1120,6 +1121,12 @@ function updateResultPreviewLayout() {
 
 /* ── MOBILE STEP SYSTEM ── */
 function isMobile() { return window.innerWidth <= 600; }
+
+function hideMobileStrip(hide) {
+  if (!isMobile()) return;
+  const strip = document.querySelector(".strip-preview-panel");
+  if (strip) strip.style.display = hide ? "none" : "";
+}
 
 function mobileProceedToCamera() {
   const s2 = document.getElementById("s2");
