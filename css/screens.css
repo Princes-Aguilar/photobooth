@@ -137,6 +137,14 @@
   border: 1px solid var(--border-color);
   background: var(--bg-tertiary);
   overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+/* t-frame-mini fills properly in both flex and grid */
+.t-frame-mini {
+  border-radius: 3px;
+  min-height: 0;
+  min-width: 0;
 }
 
 @media (max-width: 600px) {

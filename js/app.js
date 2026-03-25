@@ -228,22 +228,85 @@ function openTemplateModal() {
 
 function updateTemplateMini() {
   const t = TEMPLATES[State.currentTemplate];
+  const layout = State.currentLayout || "A";
   const mini = document.getElementById("tmpl-mini");
   if (!mini) return;
+
+  // Reset styles
+  mini.style.backgroundImage = "none";
+  mini.style.backgroundSize = "";
+  mini.style.backgroundRepeat = "";
+
+  const c = (i) => t.colors?.[i] || t.colors?.[0] || "#1B3A2D";
 
   if (t.frame) {
     mini.style.backgroundImage = `url('${t.frame}')`;
     mini.style.backgroundSize = "100% 100%";
     mini.style.backgroundRepeat = "no-repeat";
     mini.innerHTML = "";
-  } else {
-    mini.style.backgroundImage = "none";
+    applyLayoutToMini(mini, layout);
+    return;
+  }
+
+  if (layout === "A" || layout === "C") {
+    // 4 portrait frames stacked vertically
+    mini.style.flexDirection = "column";
+    mini.style.display = "flex";
+    mini.style.gridTemplateColumns = "";
     mini.innerHTML = `
-      <div class="t-frame-mini" style="background:${t.colors?.[0] || "#1B3A2D"}"></div>
-      <div class="t-frame-mini" style="background:${t.colors?.[1] || t.colors?.[0] || "#1B3A2D"}"></div>
-      <div class="t-frame-mini" style="background:${t.colors?.[2] || t.colors?.[0] || "#1B3A2D"}"></div>
-      <div class="t-frame-mini" style="background:${t.colors?.[3] || t.colors?.[0] || "#1B3A2D"}"></div>
+      <div class="t-frame-mini" style="background:${c(0)};flex:1"></div>
+      <div class="t-frame-mini" style="background:${c(1)};flex:1"></div>
+      <div class="t-frame-mini" style="background:${c(2)};flex:1"></div>
+      <div class="t-frame-mini" style="background:${c(3)};flex:1"></div>
     `;
+    if (layout === "C") {
+      mini.style.background = "#fff";
+      mini.style.padding = "4px 8px";
+    } else {
+      mini.style.background = "";
+      mini.style.padding = "";
+    }
+
+  } else if (layout === "B") {
+    // 2x2 grid
+    mini.style.display = "grid";
+    mini.style.gridTemplateColumns = "1fr 1fr";
+    mini.style.gridTemplateRows = "1fr 1fr";
+    mini.style.gap = "3px";
+    mini.style.padding = "3px";
+    mini.style.flexDirection = "";
+    mini.style.background = "";
+    mini.innerHTML = `
+      <div class="t-frame-mini" style="background:${c(0)};border-radius:3px"></div>
+      <div class="t-frame-mini" style="background:${c(1)};border-radius:3px"></div>
+      <div class="t-frame-mini" style="background:${c(2)};border-radius:3px"></div>
+      <div class="t-frame-mini" style="background:${c(3)};border-radius:3px"></div>
+    `;
+
+  } else if (layout === "D") {
+    // 3 portrait frames + empty bottom space
+    mini.style.display = "flex";
+    mini.style.flexDirection = "column";
+    mini.style.gridTemplateColumns = "";
+    mini.style.background = "";
+    mini.style.padding = "";
+    mini.innerHTML = `
+      <div class="t-frame-mini" style="background:${c(0)};flex:1"></div>
+      <div class="t-frame-mini" style="background:${c(1)};flex:1"></div>
+      <div class="t-frame-mini" style="background:${c(2)};flex:1"></div>
+      <div class="t-frame-mini" style="background:transparent;flex:1.5;border:1px dashed rgba(255,255,255,0.2)"></div>
+    `;
+  }
+}
+
+function applyLayoutToMini(mini, layout) {
+  // For frame image templates, just adjust shape
+  if (layout === "B") {
+    mini.style.display = "grid";
+    mini.style.gridTemplateColumns = "1fr 1fr";
+  } else {
+    mini.style.display = "flex";
+    mini.style.flexDirection = "column";
   }
 }
 
@@ -951,9 +1014,8 @@ function setLayout(layout, btn) {
   State.currentLayout = layout;
   document.querySelectorAll(".layout-card").forEach(b => b.classList.remove("active"));
   if (btn) btn.classList.add("active");
-  // Update shots count based on layout
-  // All layouts use 4 shots for now
   updateResultPreviewLayout();
+  updateTemplateMini(); // update frame preview shape
 }
 
 function updateResultPreviewLayout() {
