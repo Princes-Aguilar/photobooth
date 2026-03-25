@@ -402,12 +402,17 @@ a {
   border-radius: 1px;
   width: 100%;
 }
-.layout-thumb-D .lf-lg {
+.layout-thumb-D .lf-sm {
   flex: 2;
-  background: var(--accent-primary);
-  opacity: 0.5;
+}
+/* Empty bottom space in D thumbnail */
+.layout-thumb-D .lf-space {
+  flex: 2;
+  background: transparent;
+  border: 1px dashed var(--border-color);
   border-radius: 1px;
   width: 100%;
+  opacity: 0.6;
 }
 
 /* ── SUGGESTIONS FORM ── */

@@ -753,16 +753,16 @@ function buildStripCanvas() {
   return new Promise((resolve) => {
     const t = TEMPLATES[State.currentTemplate];
     const layout = State.currentLayout || "A";
-    let c, ctx, W, H, positions, bgColor, radius = 10;
+    const bgColor = t.colors?.[0] || "#0F2419";
+    const radius = 10;
+    let c, ctx, W, H, positions;
 
-    bgColor = t.colors?.[0] || "#0F2419";
-
+    // ── LAYOUT A: Classic strip — 4 portrait frames stacked (3:4 each) ──
     if (layout === "A") {
-      // Classic vertical strip — 4 stacked portrait frames
-      W = 500; 
+      W = 500;
       const PAD = 18, TOP = 48, BOT = 28, GAP = 10;
-      const FW = W - PAD * 2;
-      const FH = Math.round(FW * (4 / 3));
+      const FW = W - PAD * 2;                   // 464px
+      const FH = Math.round(FW * (4 / 3));       // 619px  ← matches 3:4 viewfinder
       H = TOP + 4 * FH + 3 * GAP + BOT;
       c = document.createElement("canvas"); c.width = W; c.height = H;
       ctx = c.getContext("2d");
@@ -771,13 +771,22 @@ function buildStripCanvas() {
         x: PAD, y: TOP + i * (FH + GAP), w: FW, h: FH,
         color: t.colors?.[i] || bgColor
       }));
+      // Brand label
+      ctx.fillStyle = "rgba(255,255,255,0.6)";
+      ctx.font = "bold 15px Georgia,serif";
+      ctx.textAlign = "center";
+      ctx.fillText("✦ Cutesy Booth", W / 2, 32);
+      ctx.fillStyle = "rgba(255,255,255,0.25)";
+      ctx.font = "11px monospace";
+      ctx.fillText("cutesyphotobooth.com", W / 2, H - 10);
 
+    // ── LAYOUT B: 2x2 grid — each cell 3:4 portrait, large bottom border ──
     } else if (layout === "B") {
-      // 2x2 grid — square output
-      W = 1000; H = 1000;
-      const PAD = 20, GAP = 12;
-      const FW = (W - PAD * 2 - GAP) / 2;
-      const FH = (H - PAD * 2 - GAP) / 2;
+      W = 1000;
+      const PAD = 30, GAP = 16, BOT_BORDER = 220;
+      const FW = (W - PAD * 2 - GAP) / 2;       // each cell width
+      const FH = Math.round(FW * (4 / 3));       // each cell height — 3:4 portrait
+      H = PAD + 2 * FH + GAP + BOT_BORDER;
       c = document.createElement("canvas"); c.width = W; c.height = H;
       ctx = c.getContext("2d");
       ctx.fillStyle = bgColor; ctx.fillRect(0, 0, W, H);
@@ -787,44 +796,66 @@ function buildStripCanvas() {
         { x: PAD,        y: PAD+FH+GAP, w: FW, h: FH, color: t.colors?.[2] || bgColor },
         { x: PAD+FW+GAP, y: PAD+FH+GAP, w: FW, h: FH, color: t.colors?.[3] || bgColor },
       ];
+      // Branding in large bottom border
+      const brandY = PAD + 2 * FH + GAP;
+      ctx.fillStyle = "rgba(255,255,255,0.7)";
+      ctx.font = "bold 44px Georgia,serif";
+      ctx.textAlign = "center";
+      ctx.fillText("✦ Cutesy Booth", W / 2, brandY + 90);
+      ctx.fillStyle = "rgba(255,255,255,0.35)";
+      ctx.font = "22px monospace";
+      ctx.fillText("cutesyphotobooth.com", W / 2, brandY + 140);
 
+    // ── LAYOUT C: Bordered strip — white bg, 4 portrait frames, wide border ──
     } else if (layout === "C") {
-      // Bordered strip — white background wide border
       W = 500;
-      const BORDER = 40, GAP = 8, TOP = 60, BOT = 70;
-      const FW = W - BORDER * 2;
-      const FH = Math.round(FW * (4 / 3));
+      const SIDE = 40, TOP = 60, BOT = 60, GAP = 8;
+      const FW = W - SIDE * 2;                   // narrower frame
+      const FH = Math.round(FW * (4 / 3));       // 3:4 portrait ← matches viewfinder
       H = TOP + 4 * FH + 3 * GAP + BOT;
       c = document.createElement("canvas"); c.width = W; c.height = H;
       ctx = c.getContext("2d");
-      // White background
       ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, W, H);
       positions = Array.from({ length: 4 }, (_, i) => ({
-        x: BORDER, y: TOP + i * (FH + GAP), w: FW, h: FH,
-        color: t.colors?.[i] || "#f0f0f0"
+        x: SIDE, y: TOP + i * (FH + GAP), w: FW, h: FH,
+        color: t.colors?.[i] || "#e8e8e8"
       }));
+      // Dark branding on white
+      ctx.fillStyle = "rgba(0,0,0,0.5)";
+      ctx.font = "bold 14px Georgia,serif";
+      ctx.textAlign = "center";
+      ctx.fillText("✦ Cutesy Booth", W / 2, 38);
+      ctx.fillStyle = "rgba(0,0,0,0.25)";
+      ctx.font = "10px monospace";
+      ctx.fillText("cutesyphotobooth.com", W / 2, H - 18);
 
+    // ── LAYOUT D: 3 portrait frames stacked + large empty bottom space ──
     } else if (layout === "D") {
-      // 3 small stacked top + 1 large bottom
       W = 500;
-      const PAD = 18, TOP = 48, BOT = 28, GAP = 10;
+      const PAD = 18, TOP = 48, GAP = 10;
+      const BOT_SPACE = 220;                     // large empty bottom
       const FW = W - PAD * 2;
-      const FH_SM = Math.round(FW * (3 / 4)); // landscape small
-      const FH_LG = Math.round(FW * (4 / 3)); // portrait large
-      H = TOP + 3 * FH_SM + 2 * GAP + GAP + FH_LG + BOT;
+      const FH = Math.round(FW * (4 / 3));       // 3:4 portrait ← matches viewfinder
+      H = TOP + 3 * FH + 2 * GAP + BOT_SPACE;
       c = document.createElement("canvas"); c.width = W; c.height = H;
       ctx = c.getContext("2d");
       ctx.fillStyle = bgColor; ctx.fillRect(0, 0, W, H);
-      const yLarge = TOP + 3 * FH_SM + 3 * GAP;
-      positions = [
-        { x: PAD, y: TOP,                    w: FW, h: FH_SM, color: t.colors?.[0] || bgColor },
-        { x: PAD, y: TOP + FH_SM + GAP,      w: FW, h: FH_SM, color: t.colors?.[1] || bgColor },
-        { x: PAD, y: TOP + 2*(FH_SM + GAP),  w: FW, h: FH_SM, color: t.colors?.[2] || bgColor },
-        { x: PAD, y: yLarge,                 w: FW, h: FH_LG, color: t.colors?.[3] || bgColor },
-      ];
+      positions = Array.from({ length: 3 }, (_, i) => ({
+        x: PAD, y: TOP + i * (FH + GAP), w: FW, h: FH,
+        color: t.colors?.[i] || bgColor
+      }));
+      // Brand label top
+      ctx.fillStyle = "rgba(255,255,255,0.6)";
+      ctx.font = "bold 15px Georgia,serif";
+      ctx.textAlign = "center";
+      ctx.fillText("✦ Cutesy Booth", W / 2, 32);
+      // Watermark in bottom space
+      ctx.fillStyle = "rgba(255,255,255,0.25)";
+      ctx.font = "12px monospace";
+      ctx.fillText("cutesyphotobooth.com", W / 2, H - 20);
     }
 
-    // Fill frame background colors
+    // Fill frame backgrounds
     if (!t.frame) {
       positions.forEach(({ x, y, w, h, color }) => {
         ctx.fillStyle = color;
@@ -832,27 +863,10 @@ function buildStripCanvas() {
       });
     }
 
-    // Brand label (not on grid layout)
-    if (layout !== "B") {
-      ctx.fillStyle = "rgba(255,255,255,0.55)";
-      ctx.font = `bold ${layout === "C" ? "13px" : "15px"} Georgia, serif`;
-      ctx.textAlign = "center";
-      ctx.fillText("✦ Cutesy Booth", W / 2, layout === "C" ? 40 : 30);
-      ctx.fillStyle = "rgba(0,0,0,0.25)";
-      ctx.font = "11px monospace";
-      ctx.fillText("cutesyphotobooth.com", W / 2, H - (layout === "C" ? 20 : 10));
-    } else {
-      // Grid: watermark bottom center
-      ctx.fillStyle = "rgba(255,255,255,0.3)";
-      ctx.font = "18px monospace";
-      ctx.textAlign = "center";
-      ctx.fillText("cutesyphotobooth.com", W / 2, H - 8);
-    }
-
-    const promises = State.shots.map((src, i) => {
-      if (!positions[i]) return Promise.resolve();
-      const { x, y, w, h } = positions[i];
-      return drawPhoto(ctx, src, x, y, w, h, radius);
+    // Draw photos
+    const promises = positions.map(({ x, y, w, h }, i) => {
+      if (!State.shots[i]) return Promise.resolve();
+      return drawPhoto(ctx, State.shots[i], x, y, w, h, radius);
     });
 
     Promise.all(promises).then(() => {
