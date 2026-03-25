@@ -1176,11 +1176,16 @@ function mobileBackToFilters() {
 function initMobileS2() {
   const s2 = document.getElementById("s2");
   if (!s2) return;
+  const strip = document.querySelector(".strip-preview-panel");
   if (isMobile()) {
     s2.classList.add("mobile-step-1");
     s2.classList.remove("mobile-step-2");
+    // Always hide strip on mobile when entering S2
+    if (strip) strip.style.setProperty("display", "none", "important");
   } else {
     s2.classList.remove("mobile-step-1", "mobile-step-2");
+    // Restore strip on desktop
+    if (strip) strip.style.removeProperty("display");
   }
 }
 
@@ -1261,6 +1266,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const saved = localStorage.getItem("cb-theme") || "cutesy";
   setTheme(saved);
+
+  // Hide strip on mobile on initial load
+  if (isMobile()) {
+    const strip = document.querySelector(".strip-preview-panel");
+    if (strip) strip.style.setProperty("display", "none", "important");
+  }
 
   // Suggestion textarea character counter
   const suggText = document.getElementById("suggestion-text");
