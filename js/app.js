@@ -659,15 +659,23 @@ function startPrinting() {
   const inner = document.getElementById("print-inner");
   if (inner) inner.classList.remove("printing");
 
-  for (let i = 0; i < 4; i++) {
+  const layout = State.currentLayout || "A";
+  const shotCount = layout === "D" ? 3 : 4;
+  const t = TEMPLATES[State.currentTemplate];
+
+  // Rebuild print frame structure for current layout
+  updateResultPreviewLayout();
+
+  for (let i = 0; i < shotCount; i++) {
     const ps = document.getElementById("ps" + i);
     if (!ps) continue;
-
     if (State.shots[i]) {
       ps.innerHTML = `<img src="${State.shots[i]}" style="width:100%;height:100%;object-fit:cover;" alt="print ${i + 1}">`;
     } else {
-      ps.innerHTML =
-        '<div style="display:flex;align-items:center;justify-content:center;height:100%;opacity:.2;font-size:20px;">○</div>';
+      ps.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;opacity:.2;font-size:20px;">○</div>';
+    }
+    if (!t.frame) {
+      ps.style.setProperty("background", t.colors?.[i] || t.colors?.[0] || "#1B3A2D", "important");
     }
   }
 
@@ -699,25 +707,36 @@ function startPrinting() {
    RESULT
 ────────────────────────────────────────── */
 function populateResult() {
+  const layout = State.currentLayout || "A";
+  const shotCount = layout === "D" ? 3 : 4;
+
+  // Rebuild result strip structure for current layout
+  updateResultPreviewLayout();
+
   const dateEl = document.getElementById("rs-date");
   if (dateEl) {
     dateEl.textContent = new Date().toLocaleDateString("en-PH", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
+      month: "short", day: "numeric", year: "numeric",
     });
   }
 
-  for (let i = 0; i < 4; i++) {
+  const t = TEMPLATES[State.currentTemplate];
+
+  for (let i = 0; i < shotCount; i++) {
     const rf = document.getElementById("rs" + i);
     if (!rf) continue;
-
     if (State.shots[i]) {
       rf.className = "rs-frame";
       rf.innerHTML = `<img src="${State.shots[i]}" alt="photo ${i + 1}">`;
     } else {
       rf.className = "rs-frame";
       rf.innerHTML = "○";
+    }
+    if (!t.frame) {
+      const frameColor = t.colors?.[i] || t.colors?.[0] || "#1B3A2D";
+      rf.style.setProperty("background", frameColor, "important");
+      rf.style.setProperty("outline", `4px solid ${frameColor}`, "important");
+      rf.style.setProperty("outline-offset", "-1px", "important");
     }
   }
 
@@ -938,10 +957,103 @@ function setLayout(layout, btn) {
 }
 
 function updateResultPreviewLayout() {
-  // Update the template-mini preview shape to match layout
-  const mini = document.getElementById("tmpl-mini");
-  if (!mini) return;
-  mini.dataset.layout = State.currentLayout || "A";
+  const layout = State.currentLayout || "A";
+  const shotCount = layout === "D" ? 3 : 4;
+
+  // ── Update S2 sidebar strip preview ──
+  const spFilm = document.querySelector(".sp-film");
+  if (spFilm) {
+    if (layout === "B") {
+      // 2x2 grid in sidebar strip
+      spFilm.style.display = "grid";
+      spFilm.style.gridTemplateColumns = "1fr 1fr";
+      spFilm.style.gridTemplateRows = "1fr 1fr";
+      spFilm.style.gap = "3px";
+      spFilm.style.padding = "4px";
+      spFilm.style.flexDirection = "";
+    } else {
+      // vertical strip
+      spFilm.style.display = "flex";
+      spFilm.style.flexDirection = "column";
+      spFilm.style.gridTemplateColumns = "";
+      spFilm.style.gridTemplateRows = "";
+      spFilm.style.gap = "";
+      spFilm.style.padding = "";
+    }
+  }
+
+  // ── Update S3 print preview frames ──
+  const printInner = document.getElementById("print-inner");
+  if (printInner) {
+    // Rebuild frames
+    let html = "";
+    const count = shotCount;
+    if (layout === "B") {
+      printInner.style.display = "grid";
+      printInner.style.gridTemplateColumns = "1fr 1fr";
+      printInner.style.gap = "4px";
+      printInner.style.padding = "4px";
+      printInner.style.flexDirection = "";
+      for (let i = 0; i < 4; i++) {
+        html += `<div class="ps-frame" id="ps${i}">○</div>`;
+      }
+    } else {
+      printInner.style.display = "";
+      printInner.style.gridTemplateColumns = "";
+      printInner.style.gap = "";
+      printInner.style.padding = "";
+      printInner.style.flexDirection = "";
+      for (let i = 0; i < count; i++) {
+        html += `<div class="ps-frame" id="ps${i}">○</div>`;
+      }
+      if (layout === "D") {
+        // Large bottom space
+        html += `<div class="ps-frame ps-frame-space" id="ps-space"></div>`;
+      }
+    }
+    printInner.innerHTML = html;
+  }
+
+  // ── Update S4 result strip ──
+  const resultStrip = document.getElementById("result-strip");
+  if (resultStrip) {
+    // Set layout data attribute for CSS
+    resultStrip.dataset.layout = layout;
+
+    // Adjust grid for layout B
+    if (layout === "B") {
+      resultStrip.style.display = "grid";
+      resultStrip.style.gridTemplateColumns = "1fr 1fr";
+      resultStrip.style.gridTemplateRows = "auto 1fr 1fr";
+      resultStrip.style.gap = "4px";
+      resultStrip.style.padding = "8px";
+    } else {
+      resultStrip.style.display = "flex";
+      resultStrip.style.flexDirection = "column";
+      resultStrip.style.gridTemplateColumns = "";
+      resultStrip.style.gridTemplateRows = "";
+      resultStrip.style.gap = "";
+      resultStrip.style.padding = "";
+    }
+
+    // Rebuild result frames
+    const header = `<div class="rs-header" ${layout === "B" ? 'style="grid-column:1/-1"' : ""}>
+      <div class="rs-brand">✦ Cutesy Booth</div>
+      <div class="rs-date" id="rs-date">${document.getElementById("rs-date")?.textContent || ""}</div>
+    </div>`;
+
+    let frames = "";
+    for (let i = 0; i < shotCount; i++) {
+      frames += `<div class="rs-frame" id="rs${i}">○</div>`;
+    }
+
+    const footer = layout === "D"
+      ? `<div class="rs-frame rs-frame-space"></div>
+         <div class="rs-footer" style="text-align:center">cutesyphotobooth.com</div>`
+      : `<div class="rs-footer" ${layout === "B" ? 'style="grid-column:1/-1"' : ""}>cutesyphotobooth.com</div>`;
+
+    resultStrip.innerHTML = header + frames + footer;
+  }
 }
 
 /* ── MOBILE STEP SYSTEM ── */

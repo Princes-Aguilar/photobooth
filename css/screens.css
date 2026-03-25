@@ -659,6 +659,40 @@
   object-fit: cover;
 }
 
+/* Layout D — empty bottom space frame */
+.rs-frame-space {
+  flex: 2;
+  min-height: 80px;
+  background: transparent !important;
+  outline: none !important;
+  border: none !important;
+}
+
+/* ps-frame space for S3 */
+.ps-frame-space {
+  flex: 2;
+  min-height: 40px;
+  background: transparent !important;
+}
+
+/* Layout B — result strip grid */
+#result-strip[data-layout="B"] {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr 1fr auto;
+  gap: 4px;
+  padding: 8px;
+}
+
+#result-strip[data-layout="B"] .rs-header {
+  grid-column: 1 / -1;
+}
+
+#result-strip[data-layout="B"] .rs-footer {
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
 .rs-footer {
   text-align: center;
   padding-top: 4px;
