@@ -281,14 +281,13 @@ function updateTemplateMini() {
       <div class="t-frame-mini" style="background:${c(0)};flex:1"></div>
     `;
   } else if (layout === "B") {
-    // 2x2 grid
     mini.style.display = "grid";
     mini.style.gridTemplateColumns = "1fr 1fr";
     mini.style.gridTemplateRows = "1fr 1fr";
     mini.style.gap = "3px";
     mini.style.padding = "3px";
     mini.style.flexDirection = "";
-    mini.style.background = "";
+    mini.style.removeProperty("background");
     mini.innerHTML = `
       <div class="t-frame-mini" style="background:${c(0)};border-radius:3px"></div>
       <div class="t-frame-mini" style="background:${c(1)};border-radius:3px"></div>
@@ -296,17 +295,16 @@ function updateTemplateMini() {
       <div class="t-frame-mini" style="background:${c(3)};border-radius:3px"></div>
     `;
   } else if (layout === "D") {
-    // 3 portrait frames + empty bottom space
     mini.style.display = "flex";
     mini.style.flexDirection = "column";
     mini.style.gridTemplateColumns = "";
-    mini.style.background = "";
+    mini.style.removeProperty("background");
     mini.style.padding = "";
     mini.innerHTML = `
       <div class="t-frame-mini" style="background:${c(0)};flex:1"></div>
       <div class="t-frame-mini" style="background:${c(1)};flex:1"></div>
       <div class="t-frame-mini" style="background:${c(2)};flex:1"></div>
-      <div class="t-frame-mini" style="background:transparent;flex:1.5;border:1px dashed rgba(255,255,255,0.2)"></div>
+      <div class="t-frame-mini" style="background:transparent;flex:1.5;border:1px dashed rgba(255,255,255,0.3)"></div>
     `;
   }
 }
