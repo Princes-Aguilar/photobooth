@@ -853,19 +853,21 @@ function buildStripCanvas() {
     const t = TEMPLATES[State.currentTemplate];
     const layout = State.currentLayout || "A";
     const bgColor = t.colors?.[0] || "#0F2419";
-    const radius = 10;
+    const radius = 8;
     let c, ctx, W, H, positions;
 
-    // ── LAYOUT A: Classic strip — 4 portrait frames stacked (3:4 each) ──
+    // ── LAYOUT A: Standard 2×6 inch strip at 300dpi
+    // 600px wide × 1800px tall = 2" × 6" @ 300dpi
+    // 4 portrait frames each 3:4 ratio
     if (layout === "A") {
-      W = 500;
-      const PAD = 18,
-        TOP = 48,
-        BOT = 28,
+      W = 600;
+      const PAD = 20,
+        TOP = 50,
+        BOT = 40,
         GAP = 10;
-      const FW = W - PAD * 2; // 464px
-      const FH = Math.round(FW * (4 / 3)); // 619px  ← matches 3:4 viewfinder
-      H = TOP + 4 * FH + 3 * GAP + BOT;
+      const FW = W - PAD * 2; // 560px
+      const FH = Math.round(FW * (4 / 3)); // 747px — 3:4 portrait
+      H = TOP + 4 * FH + 3 * GAP + BOT; // ~3108px ≈ 2×6 ratio
       c = document.createElement("canvas");
       c.width = W;
       c.height = H;
@@ -879,24 +881,25 @@ function buildStripCanvas() {
         h: FH,
         color: t.colors?.[i] || bgColor,
       }));
-      // Brand label
       ctx.fillStyle = "rgba(255,255,255,0.6)";
-      ctx.font = "bold 15px Georgia,serif";
+      ctx.font = "bold 18px Georgia,serif";
       ctx.textAlign = "center";
-      ctx.fillText("✦ Cutesy Booth", W / 2, 32);
+      ctx.fillText("✦ Momenté Booth", W / 2, 34);
       ctx.fillStyle = "rgba(255,255,255,0.25)";
-      ctx.font = "11px monospace";
-      ctx.fillText("cutesyphotobooth.com", W / 2, H - 10);
+      ctx.font = "13px monospace";
+      ctx.fillText("momentephotobooth.com", W / 2, H - 14);
 
-      // ── LAYOUT B: 2x2 grid — each cell 3:4 portrait, large bottom border ──
+      // ── LAYOUT B: Standard 4×6 inch at 300dpi
+      // 1200px × 1800px = 4" × 6" @ 300dpi
+      // 2×2 grid, each cell 3:4 portrait + large bottom branding
     } else if (layout === "B") {
-      W = 1000;
+      W = 1200;
       const PAD = 30,
         GAP = 16,
-        BOT_BORDER = 220;
-      const FW = (W - PAD * 2 - GAP) / 2; // each cell width
-      const FH = Math.round(FW * (4 / 3)); // each cell height — 3:4 portrait
-      H = PAD + 2 * FH + GAP + BOT_BORDER;
+        BOT_BORDER = 260;
+      const FW = (W - PAD * 2 - GAP) / 2; // 562px per cell
+      const FH = Math.round(FW * (4 / 3)); // 749px per cell — 3:4 portrait
+      H = PAD + 2 * FH + GAP + BOT_BORDER; // ~1804px ≈ 4×6
       c = document.createElement("canvas");
       c.width = W;
       c.height = H;
@@ -927,31 +930,30 @@ function buildStripCanvas() {
           color: t.colors?.[3] || bgColor,
         },
       ];
-      // Branding in large bottom border
       const brandY = PAD + 2 * FH + GAP;
       ctx.fillStyle = "rgba(255,255,255,0.7)";
-      ctx.font = "bold 44px Georgia,serif";
+      ctx.font = "bold 52px Georgia,serif";
       ctx.textAlign = "center";
-      ctx.fillText("✦ Cutesy Booth", W / 2, brandY + 90);
+      ctx.fillText("✦ Momenté Booth", W / 2, brandY + 100);
       ctx.fillStyle = "rgba(255,255,255,0.35)";
-      ctx.font = "22px monospace";
-      ctx.fillText("cutesyphotobooth.com", W / 2, brandY + 140);
+      ctx.font = "26px monospace";
+      ctx.fillText("momentephotobooth.com", W / 2, brandY + 165);
 
-      // ── LAYOUT C: Bordered strip — uses template color as border/bg ──
+      // ── LAYOUT C: Standard 2×6 with wide colored border
+      // 600px × 1800px = 2" × 6" @ 300dpi
     } else if (layout === "C") {
-      W = 500;
-      const SIDE = 40,
+      W = 600;
+      const SIDE = 48,
         TOP = 60,
         BOT = 60,
         GAP = 8;
-      const FW = W - SIDE * 2;
-      const FH = Math.round(FW * (4 / 3));
+      const FW = W - SIDE * 2; // 504px
+      const FH = Math.round(FW * (4 / 3)); // 672px — 3:4 portrait
       H = TOP + 4 * FH + 3 * GAP + BOT;
       c = document.createElement("canvas");
       c.width = W;
       c.height = H;
       ctx = c.getContext("2d");
-      // Use template color as the border/background (not white)
       ctx.fillStyle = bgColor;
       ctx.fillRect(0, 0, W, H);
       positions = Array.from({ length: 4 }, (_, i) => ({
@@ -961,25 +963,27 @@ function buildStripCanvas() {
         h: FH,
         color: t.colors?.[i] || t.colors?.[0] || bgColor,
       }));
-      // Branding
       ctx.fillStyle = "rgba(255,255,255,0.6)";
-      ctx.font = "bold 14px Georgia,serif";
+      ctx.font = "bold 16px Georgia,serif";
       ctx.textAlign = "center";
-      ctx.fillText("✦ Cutesy Booth", W / 2, 38);
+      ctx.fillText("✦ Momenté Booth", W / 2, 40);
       ctx.fillStyle = "rgba(255,255,255,0.25)";
-      ctx.font = "10px monospace";
-      ctx.fillText("cutesyphotobooth.com", W / 2, H - 18);
+      ctx.font = "12px monospace";
+      ctx.fillText("momentephotobooth.com", W / 2, H - 20);
 
-      // ── LAYOUT D: 3 portrait frames stacked + extra large bottom space for name/website ──
+      // ── LAYOUT D: Standard 2×6 — 3 frames + large bottom space
+      // 600px × 1800px = 2" × 6" @ 300dpi
+      // 3 portrait frames + ~400px bottom space for name/branding
     } else if (layout === "D") {
-      W = 500;
-      const PAD = 18,
-        TOP = 48,
+      W = 600;
+      const PAD = 20,
+        TOP = 50,
         GAP = 10;
-      const BOT_SPACE = 400; // extra large — room for name + website
-      const FW = W - PAD * 2;
-      const FH = Math.round(FW * (4 / 3)); // 3:4 portrait ← matches viewfinder
-      H = TOP + 3 * FH + 2 * GAP + BOT_SPACE;
+      const FW = W - PAD * 2; // 560px
+      const FH = Math.round(FW * (4 / 3)); // 747px — 3:4 portrait
+      // 3 frames + bottom space = total ~1800px (2×6)
+      const BOT_SPACE = Math.round(W * 1.5) - (TOP + 3 * FH + 2 * GAP);
+      H = TOP + 3 * FH + 2 * GAP + Math.max(BOT_SPACE, 300);
       c = document.createElement("canvas");
       c.width = W;
       c.height = H;
@@ -993,15 +997,13 @@ function buildStripCanvas() {
         h: FH,
         color: t.colors?.[i] || bgColor,
       }));
-      // Brand label top
       ctx.fillStyle = "rgba(255,255,255,0.6)";
-      ctx.font = "bold 15px Georgia,serif";
+      ctx.font = "bold 18px Georgia,serif";
       ctx.textAlign = "center";
-      ctx.fillText("✦ Cutesy Booth", W / 2, 32);
-      // Small watermark at very bottom
+      ctx.fillText("✦ Momenté Booth", W / 2, 34);
       ctx.fillStyle = "rgba(255,255,255,0.2)";
-      ctx.font = "11px monospace";
-      ctx.fillText("cutesyphotobooth.com", W / 2, H - 16);
+      ctx.font = "13px monospace";
+      ctx.fillText("momentephotobooth.com", W / 2, H - 16);
     }
 
     // Fill frame backgrounds
@@ -1044,7 +1046,7 @@ function downloadStrip() {
 
 function saveCanvas(c) {
   const a = document.createElement("a");
-  a.download = `cutesybooth-${Date.now()}.jpg`;
+  a.download = `momente-${Date.now()}.jpg`;
   a.href = c.toDataURL("image/jpeg", 0.92);
   a.click();
   showToast("Strip saved! 🎀");
@@ -1059,17 +1061,22 @@ function printStrip() {
   buildStripCanvas().then((c) => {
     const dataUrl = c.toDataURL("image/jpeg", 0.95);
     const win = window.open("", "_blank", "width=420,height=900");
+    const isGrid = State.currentLayout === "B";
+    const pageSize = isGrid ? "A6 landscape" : "54mm 152mm";
+    const imgW = isGrid ? "148mm" : "51mm";
+    const imgH = isGrid ? "105mm" : "152mm";
     win.document.write(`<!DOCTYPE html><html><head><title>Cutesy Booth</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-html,body { background:#fff; display:flex; justify-content:center; }
-img { display:block; width:auto; max-width:100%; max-height:100vh; object-fit:contain; }
+html,body { background:#fff; display:flex; align-items:center; justify-content:center; width:100%; height:100%; }
+img { display:block; width:auto; height:auto; max-width:100%; max-height:100vh; object-fit:contain; }
 @media print {
-  @page { size: A4 portrait; margin: 10mm; }
-  img { height:100%; max-height:277mm; max-width:90mm; }
+  @page { size: ${pageSize}; margin: 2mm; }
+  html,body { width:100%; height:100%; }
+  img { width:${imgW}; height:${imgH}; object-fit:contain; }
 }
 </style></head><body>
-<img src="${dataUrl}" alt="Cutesy Booth Strip">
+<img src="${dataUrl}" alt="Momenté Booth Strip">
 <script>window.onload=function(){ setTimeout(function(){ window.print(); },400); };<\/script>
 </body></html>`);
     win.document.close();
@@ -1179,7 +1186,7 @@ function updateResultPreviewLayout() {
 
     // Rebuild result frames
     const header = `<div class="rs-header" ${layout === "B" ? 'style="grid-column:1/-1"' : ""}>
-      <div class="rs-brand">✦ Cutesy Booth</div>
+      <div class="rs-brand">✦ Momenté Booth</div>
       <div class="rs-date" id="rs-date">${document.getElementById("rs-date")?.textContent || ""}</div>
     </div>`;
 
@@ -1191,8 +1198,8 @@ function updateResultPreviewLayout() {
     const footer =
       layout === "D"
         ? `<div class="rs-frame rs-frame-space"></div>
-         <div class="rs-footer" style="text-align:center">cutesyphotobooth.com</div>`
-        : `<div class="rs-footer" ${layout === "B" ? 'style="grid-column:1/-1"' : ""}>cutesyphotobooth.com</div>`;
+         <div class="rs-footer" style="text-align:center">momentephotobooth.com</div>`
+        : `<div class="rs-footer" ${layout === "B" ? 'style="grid-column:1/-1"' : ""}>momentephotobooth.com</div>`;
 
     resultStrip.innerHTML = header + frames + footer;
   }
