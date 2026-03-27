@@ -306,6 +306,64 @@ function updateTemplateMini() {
       <div class="t-frame-mini" style="background:${c(2)};flex:1"></div>
       <div class="t-frame-mini" style="background:rgba(255,255,255,0.06);flex:1.5"></div>
     `;
+  } else if (layout === "E") {
+    // 2×3 grid
+    mini.style.display = "grid";
+    mini.style.gridTemplateColumns = "1fr 1fr";
+    mini.style.gridTemplateRows = "1fr 1fr 1fr 8px";
+    mini.style.gap = "2px";
+    mini.style.padding = "3px";
+    mini.style.flexDirection = "";
+    mini.style.removeProperty("background");
+    mini.innerHTML = `
+      <div class="t-frame-mini" style="background:${c(0)}"></div>
+      <div class="t-frame-mini" style="background:${c(1)}"></div>
+      <div class="t-frame-mini" style="background:${c(2)}"></div>
+      <div class="t-frame-mini" style="background:${c(3)}"></div>
+      <div class="t-frame-mini" style="background:${c(0)}"></div>
+      <div class="t-frame-mini" style="background:${c(1)}"></div>
+      <div class="t-frame-mini" style="background:rgba(255,255,255,0.08);grid-column:1/-1"></div>
+    `;
+  } else if (layout === "F") {
+    // top space + 3 stacked + bottom space
+    mini.style.display = "flex";
+    mini.style.flexDirection = "column";
+    mini.style.gridTemplateColumns = "";
+    mini.style.removeProperty("background");
+    mini.style.padding = "";
+    mini.innerHTML = `
+      <div class="t-frame-mini" style="background:rgba(255,255,255,0.1);flex:0.8"></div>
+      <div class="t-frame-mini" style="background:${c(0)};flex:1"></div>
+      <div class="t-frame-mini" style="background:${c(1)};flex:1"></div>
+      <div class="t-frame-mini" style="background:${c(2)};flex:1"></div>
+      <div class="t-frame-mini" style="background:rgba(255,255,255,0.1);flex:0.8"></div>
+    `;
+  } else if (layout === "G") {
+    // 4 stacked + large bottom branding
+    mini.style.display = "flex";
+    mini.style.flexDirection = "column";
+    mini.style.gridTemplateColumns = "";
+    mini.style.removeProperty("background");
+    mini.style.padding = "";
+    mini.innerHTML = `
+      <div class="t-frame-mini" style="background:${c(0)};flex:1"></div>
+      <div class="t-frame-mini" style="background:${c(1)};flex:1"></div>
+      <div class="t-frame-mini" style="background:${c(2)};flex:1"></div>
+      <div class="t-frame-mini" style="background:${c(3)};flex:1"></div>
+      <div class="t-frame-mini" style="background:rgba(255,255,255,0.1);flex:1.5"></div>
+    `;
+  } else if (layout === "H") {
+    // Film strip — 1 photo
+    mini.style.display = "flex";
+    mini.style.flexDirection = "column";
+    mini.style.gridTemplateColumns = "";
+    mini.style.setProperty("background", "#111", "important");
+    mini.style.padding = "0";
+    mini.innerHTML = `
+      <div style="flex:0 0 6px;background:repeating-linear-gradient(90deg,transparent 0,transparent 2px,rgba(255,255,255,0.5) 2px,rgba(255,255,255,0.5) 4px)"></div>
+      <div class="t-frame-mini" style="background:${c(0)};flex:1;margin:2px 4px"></div>
+      <div style="flex:0 0 6px;background:repeating-linear-gradient(90deg,transparent 0,transparent 2px,rgba(255,255,255,0.5) 2px,rgba(255,255,255,0.5) 4px)"></div>
+    `;
   }
 }
 
@@ -733,7 +791,7 @@ function startPrinting() {
   if (inner) inner.classList.remove("printing");
 
   const layout = State.currentLayout || "A";
-  const shotCount = layout === "D" ? 3 : 4;
+  const shotCount = getLayoutShotCount(layout);
   const t = TEMPLATES[State.currentTemplate];
 
   // Rebuild print frame structure for current layout
@@ -786,7 +844,7 @@ function startPrinting() {
 ────────────────────────────────────────── */
 function populateResult() {
   const layout = State.currentLayout || "A";
-  const shotCount = layout === "D" ? 3 : 4;
+  const shotCount = getLayoutShotCount(layout);
 
   // Rebuild result strip structure for current layout
   updateResultPreviewLayout();
@@ -884,10 +942,10 @@ function buildStripCanvas() {
       ctx.fillStyle = "rgba(255,255,255,0.6)";
       ctx.font = "bold 18px Georgia,serif";
       ctx.textAlign = "center";
-      ctx.fillText("✦ Momenté Booth", W / 2, 34);
+      ctx.fillText("✦ Momento Booth", W / 2, 34);
       ctx.fillStyle = "rgba(255,255,255,0.25)";
       ctx.font = "13px monospace";
-      ctx.fillText("momentephotobooth.com", W / 2, H - 14);
+      ctx.fillText("momentophotobooth.com", W / 2, H - 14);
 
       // ── LAYOUT B: Standard 4×6 inch at 300dpi
       // 1200px × 1800px = 4" × 6" @ 300dpi
@@ -934,10 +992,10 @@ function buildStripCanvas() {
       ctx.fillStyle = "rgba(255,255,255,0.7)";
       ctx.font = "bold 52px Georgia,serif";
       ctx.textAlign = "center";
-      ctx.fillText("✦ Momenté Booth", W / 2, brandY + 100);
+      ctx.fillText("✦ Momento Booth", W / 2, brandY + 100);
       ctx.fillStyle = "rgba(255,255,255,0.35)";
       ctx.font = "26px monospace";
-      ctx.fillText("momentephotobooth.com", W / 2, brandY + 165);
+      ctx.fillText("momentophotobooth.com", W / 2, brandY + 165);
 
       // ── LAYOUT C: Standard 2×6 with wide colored border
       // 600px × 1800px = 2" × 6" @ 300dpi
@@ -966,10 +1024,10 @@ function buildStripCanvas() {
       ctx.fillStyle = "rgba(255,255,255,0.6)";
       ctx.font = "bold 16px Georgia,serif";
       ctx.textAlign = "center";
-      ctx.fillText("✦ Momenté Booth", W / 2, 40);
+      ctx.fillText("✦ Momento Booth", W / 2, 40);
       ctx.fillStyle = "rgba(255,255,255,0.25)";
       ctx.font = "12px monospace";
-      ctx.fillText("momentephotobooth.com", W / 2, H - 20);
+      ctx.fillText("momentophotobooth.com", W / 2, H - 20);
 
       // ── LAYOUT D: Standard 2×6 — 3 frames + large bottom space
       // 600px × 1800px = 2" × 6" @ 300dpi
@@ -1000,10 +1058,10 @@ function buildStripCanvas() {
       ctx.fillStyle = "rgba(255,255,255,0.6)";
       ctx.font = "bold 18px Georgia,serif";
       ctx.textAlign = "center";
-      ctx.fillText("✦ Momenté Booth", W / 2, 34);
+      ctx.fillText("✦ Momento Booth", W / 2, 34);
       ctx.fillStyle = "rgba(255,255,255,0.2)";
       ctx.font = "13px monospace";
-      ctx.fillText("momentephotobooth.com", W / 2, H - 16);
+      ctx.fillText("momentophotobooth.com", W / 2, H - 16);
     }
 
     // Fill frame backgrounds
@@ -1012,6 +1070,207 @@ function buildStripCanvas() {
         ctx.fillStyle = color;
         ctx.fillRect(x, y, w, h);
       });
+    }
+
+    // ── LAYOUT E: 2×3 grid + bottom branding = 4×6 @ 300dpi ──
+    if (layout === "E") {
+      W = 1200;
+      const PAD = 30,
+        GAP = 14,
+        BOT = 220;
+      const FW = (W - PAD * 2 - GAP) / 2; // 2 cols
+      const FH = Math.round(FW * (3 / 4)); // landscape 4:3 per cell
+      H = PAD + 3 * FH + 2 * GAP + BOT;
+      c = document.createElement("canvas");
+      c.width = W;
+      c.height = H;
+      ctx = c.getContext("2d");
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, W, H);
+      positions = [
+        { x: PAD, y: PAD, w: FW, h: FH, color: t.colors?.[0] || bgColor },
+        {
+          x: PAD + FW + GAP,
+          y: PAD,
+          w: FW,
+          h: FH,
+          color: t.colors?.[1] || bgColor,
+        },
+        {
+          x: PAD,
+          y: PAD + FH + GAP,
+          w: FW,
+          h: FH,
+          color: t.colors?.[2] || bgColor,
+        },
+        {
+          x: PAD + FW + GAP,
+          y: PAD + FH + GAP,
+          w: FW,
+          h: FH,
+          color: t.colors?.[3] || bgColor,
+        },
+        {
+          x: PAD,
+          y: PAD + 2 * (FH + GAP),
+          w: FW,
+          h: FH,
+          color: t.colors?.[4] || t.colors?.[0] || bgColor,
+        },
+        {
+          x: PAD + FW + GAP,
+          y: PAD + 2 * (FH + GAP),
+          w: FW,
+          h: FH,
+          color: t.colors?.[5] || t.colors?.[1] || bgColor,
+        },
+      ];
+      const bY = PAD + 3 * FH + 2 * GAP;
+      ctx.fillStyle = "rgba(255,255,255,0.7)";
+      ctx.font = "bold 52px Georgia,serif";
+      ctx.textAlign = "center";
+      ctx.fillText("✦ Momento Booth", W / 2, bY + 90);
+      ctx.fillStyle = "rgba(255,255,255,0.35)";
+      ctx.font = "26px monospace";
+      ctx.fillText("momentophotobooth.com", W / 2, bY + 150);
+
+      // ── LAYOUT F: 3 stacked + top decor space + bottom large text = 2×6 ──
+    } else if (layout === "F") {
+      W = 600;
+      const PAD = 20,
+        GAP = 10,
+        TOP_SPACE = 160,
+        BOT_SPACE = 200;
+      const FW = W - PAD * 2;
+      const FH = Math.round(FW * (4 / 3));
+      H = TOP_SPACE + 3 * FH + 2 * GAP + BOT_SPACE;
+      c = document.createElement("canvas");
+      c.width = W;
+      c.height = H;
+      ctx = c.getContext("2d");
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, W, H);
+      positions = Array.from({ length: 3 }, (_, i) => ({
+        x: PAD,
+        y: TOP_SPACE + i * (FH + GAP),
+        w: FW,
+        h: FH,
+        color: t.colors?.[i] || bgColor,
+      }));
+      // Top decorative space — brand name
+      ctx.fillStyle = "rgba(255,255,255,0.8)";
+      ctx.font = "italic bold 36px Georgia,serif";
+      ctx.textAlign = "center";
+      ctx.fillText("✦ Momento Booth", W / 2, 70);
+      ctx.font = "18px monospace";
+      ctx.fillStyle = "rgba(255,255,255,0.4)";
+      ctx.fillText("momentophotobooth.com", W / 2, 108);
+      // Decorative line
+      ctx.strokeStyle = "rgba(255,255,255,0.2)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(PAD, 128);
+      ctx.lineTo(W - PAD, 128);
+      ctx.stroke();
+      // Bottom large text area
+      const bY = TOP_SPACE + 3 * FH + 2 * GAP;
+      ctx.fillStyle = "rgba(255,255,255,0.7)";
+      ctx.font = "bold 42px Georgia,serif";
+      ctx.textAlign = "center";
+      ctx.fillText("Your Event Name", W / 2, bY + 80);
+      ctx.fillStyle = "rgba(255,255,255,0.35)";
+      ctx.font = "20px monospace";
+      ctx.fillText("DATE · VENUE", W / 2, bY + 130);
+
+      // ── LAYOUT G: 4 stacked + large bottom branding = 2×6 ──
+    } else if (layout === "G") {
+      W = 600;
+      const PAD = 20,
+        GAP = 8,
+        TOP = 30,
+        BOT = 280;
+      const FW = W - PAD * 2;
+      const FH = Math.round(FW * (4 / 3));
+      H = TOP + 4 * FH + 3 * GAP + BOT;
+      c = document.createElement("canvas");
+      c.width = W;
+      c.height = H;
+      ctx = c.getContext("2d");
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, W, H);
+      positions = Array.from({ length: 4 }, (_, i) => ({
+        x: PAD,
+        y: TOP + i * (FH + GAP),
+        w: FW,
+        h: FH,
+        color: t.colors?.[i] || bgColor,
+      }));
+      // Large bottom branding
+      const bY = TOP + 4 * FH + 3 * GAP;
+      ctx.fillStyle = "rgba(255,255,255,0.8)";
+      ctx.font = "italic bold 44px Georgia,serif";
+      ctx.textAlign = "center";
+      ctx.fillText("✦ Momento Booth", W / 2, bY + 90);
+      ctx.strokeStyle = "rgba(255,255,255,0.3)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(PAD + 40, bY + 115);
+      ctx.lineTo(W - PAD - 40, bY + 115);
+      ctx.stroke();
+      ctx.fillStyle = "rgba(255,255,255,0.4)";
+      ctx.font = "18px monospace";
+      ctx.fillText("momentophotobooth.com", W / 2, bY + 150);
+
+      // ── LAYOUT H: 1 large photo + film border = 4×6 landscape ──
+    } else if (layout === "H") {
+      W = 1800;
+      H = 1200; // 4×6 landscape @ 300dpi
+      const FILM_H = 80; // sprocket strip height
+      const SPROCKET_W = 60; // side film strip width
+      const PAD = 20;
+      c = document.createElement("canvas");
+      c.width = W;
+      c.height = H;
+      ctx = c.getContext("2d");
+      // Black film background
+      ctx.fillStyle = "#0a0a0a";
+      ctx.fillRect(0, 0, W, H);
+      // Sprocket holes — top and bottom strips
+      [FILM_H / 2, H - FILM_H / 2].forEach((cy) => {
+        for (let x = 40; x < W - 20; x += 60) {
+          ctx.fillStyle = "#fff";
+          ctx.beginPath();
+          ctx.roundRect
+            ? ctx.roundRect(x, cy - 10, 36, 20, 4)
+            : ctx.rect(x, cy - 10, 36, 20);
+          ctx.fill();
+        }
+      });
+      // Main photo area
+      const PX = SPROCKET_W + PAD;
+      const PY = FILM_H + PAD;
+      const PW = W - SPROCKET_W * 2 - PAD * 2 - 260; // leave room for side text
+      const PH = H - FILM_H * 2 - PAD * 2;
+      positions = [
+        { x: PX, y: PY, w: PW, h: PH, color: t.colors?.[0] || bgColor },
+      ];
+      // Side text panel
+      const TX = PX + PW + PAD;
+      ctx.fillStyle = "rgba(255,255,255,0.85)";
+      ctx.font = "italic bold 38px Georgia,serif";
+      ctx.textAlign = "center";
+      ctx.save();
+      ctx.translate(TX + 100, H / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText("✦ Momento Booth", 0, 0);
+      ctx.restore();
+      ctx.fillStyle = "rgba(255,255,255,0.3)";
+      ctx.font = "18px monospace";
+      ctx.save();
+      ctx.translate(TX + 100, H / 2 + 180);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText("momentophotobooth.com", 0, 0);
+      ctx.restore();
     }
 
     // Draw photos
@@ -1046,7 +1305,7 @@ function downloadStrip() {
 
 function saveCanvas(c) {
   const a = document.createElement("a");
-  a.download = `momente-${Date.now()}.jpg`;
+  a.download = `momento-${Date.now()}.jpg`;
   a.href = c.toDataURL("image/jpeg", 0.92);
   a.click();
   showToast("Strip saved! 🎀");
@@ -1076,7 +1335,7 @@ img { display:block; width:auto; height:auto; max-width:100%; max-height:100vh; 
   img { width:${imgW}; height:${imgH}; object-fit:contain; }
 }
 </style></head><body>
-<img src="${dataUrl}" alt="Momenté Booth Strip">
+<img src="${dataUrl}" alt="Momento Booth Strip">
 <script>window.onload=function(){ setTimeout(function(){ window.print(); },400); };<\/script>
 </body></html>`);
     win.document.close();
@@ -1094,12 +1353,20 @@ function setLayout(layout, btn) {
     .forEach((b) => b.classList.remove("active"));
   if (btn) btn.classList.add("active");
   updateResultPreviewLayout();
-  updateTemplateMini(); // update frame preview shape
+  updateTemplateMini();
+}
+
+// Shot count helper
+function getLayoutShotCount(layout) {
+  if (layout === "D" || layout === "F") return 3;
+  if (layout === "E") return 6;
+  if (layout === "H") return 1;
+  return 4; // A B C G
 }
 
 function updateResultPreviewLayout() {
   const layout = State.currentLayout || "A";
-  const shotCount = layout === "D" ? 3 : 4;
+  const shotCount = getLayoutShotCount(layout);
 
   // ── Update S2 sidebar strip preview ──
   const spFilm = document.querySelector(".sp-film");
@@ -1186,7 +1453,7 @@ function updateResultPreviewLayout() {
 
     // Rebuild result frames
     const header = `<div class="rs-header" ${layout === "B" ? 'style="grid-column:1/-1"' : ""}>
-      <div class="rs-brand">✦ Momenté Booth</div>
+      <div class="rs-brand">✦ Momento Booth</div>
       <div class="rs-date" id="rs-date">${document.getElementById("rs-date")?.textContent || ""}</div>
     </div>`;
 
@@ -1198,8 +1465,8 @@ function updateResultPreviewLayout() {
     const footer =
       layout === "D"
         ? `<div class="rs-frame rs-frame-space"></div>
-         <div class="rs-footer" style="text-align:center">momentephotobooth.com</div>`
-        : `<div class="rs-footer" ${layout === "B" ? 'style="grid-column:1/-1"' : ""}>momentephotobooth.com</div>`;
+         <div class="rs-footer" style="text-align:center">momentophotobooth.com</div>`
+        : `<div class="rs-footer" ${layout === "B" ? 'style="grid-column:1/-1"' : ""}>momentophotobooth.com</div>`;
 
     resultStrip.innerHTML = header + frames + footer;
   }

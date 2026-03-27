@@ -127,13 +127,13 @@
 }
 
 /* ════════════════════════════════════════════
-   THEME: CUTESY — Momenté Booth
+   THEME: CUTESY — Momento Booth
    Maroon + White — elegant, premium, Philippine events
    ════════════════════════════════════════════ */
 
 [data-theme="cutesy"] .logo {
   font-size: 30px;
-  color: #ffffff;
+  color: #fffff0;
   letter-spacing: 0.02em;
 }
 
@@ -148,7 +148,7 @@
   --bg-tertiary: #2c0a0e;
 
   /* White text scale */
-  --text-primary: #ffffff;
+  --text-primary: #fffff0;
   --text-secondary: #f0d8da;
   --text-tertiary: #c9a0a6;
 
@@ -158,30 +158,30 @@
   --accent-green: #8b1a2a;
   --accent-yellow: #d4a847;
 
-  --border-color: rgba(255, 255, 255, 0.15);
+  --border-color: rgba(255, 255, 240, 0.15);
   --card-bg: rgba(61, 18, 23, 0.7);
   --card-radius: 18px;
   --btn-radius: 100px;
 
-  --logo-color: #ffffff;
+  --logo-color: #fffff0;
   --topbar-bg: rgba(44, 10, 14, 0.92);
-  --dot-inactive: rgba(255, 255, 255, 0.2);
-  --dot-active: #ffffff;
+  --dot-inactive: rgba(255, 255, 240, 0.2);
+  --dot-active: #fffff0;
   --dot-done: #d4a847;
 
   --btn-primary-bg: #800020;
-  --btn-primary-text: #ffffff;
+  --btn-primary-text: #fffff0;
   --btn-primary-hover: #a00028;
   --btn-primary-shadow: 0 8px 24px rgba(128, 0, 32, 0.5);
   --btn-secondary-bg: rgba(61, 18, 23, 0.6);
   --btn-secondary-text: #f0d8da;
   --btn-gold-text: #2c0a0e;
-  --btn-text: #ffffff;
+  --btn-text: #fffff0;
 
   --modal-overlay-bg: rgba(20, 4, 6, 0.88);
   --modal-bg: #3d1217;
   --toast-bg: #1a0408;
-  --toast-text: #ffffff;
+  --toast-text: #fffff0;
 
   --film-bg: #1a0408;
   --film-frame-bg: #2c0a0e;
@@ -221,7 +221,7 @@
 }
 
 [data-theme="cutesy"] .hero-tag {
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 240, 0.25);
   color: #d4a847;
 }
 
@@ -232,7 +232,7 @@
 [data-theme="cutesy"] .card {
   background: rgba(61, 18, 23, 0.6);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 240, 0.1);
 }
 
 [data-theme="cutesy"] .filter-chip.active {
@@ -242,7 +242,7 @@
 }
 
 [data-theme="cutesy"] .viewfinder-wrap {
-  border-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 240, 0.2);
   box-shadow:
     0 0 0 1px rgba(212, 168, 71, 0.1),
     0 32px 64px rgba(0, 0, 0, 0.7);
@@ -258,7 +258,7 @@
 }
 
 [data-theme="cutesy"] .print-sign-title {
-  color: #ffffff;
+  color: #fffff0;
 }
 
 /* Toggle label color */

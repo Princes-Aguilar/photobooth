@@ -4,40 +4,40 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
-      Momenté Booth — Free Online Photobooth Philippines | Photo Strips
-      Instantly
+      Momento Booth — Where Moments Become Masterpieces | Where Moments Become
+      Masterpieces
     </title>
     <meta
       name="description"
-      content="Momenté Booth is a free online photobooth in the Philippines. Take 4 photos, pick a filter and layout, and download your photo strip instantly — no sign up, no download needed. Perfect for debuts, weddings, and parties."
+      content="Momento Booth — Where moments become masterpieces. Where moments become masterpieces. Free online photobooth Philippines. Take 4 photos and download your photo strip instantly. No sign up needed. Perfect for debuts, weddings, and parties."
     />
     <meta
       name="keywords"
-      content="free online photobooth philippines, photo strip maker online, photobooth for debut, photobooth for wedding philippines, free photo strip philippines, online photobooth no download, Momenté Booth, momente photobooth"
+      content="free online photobooth philippines, photo strip maker online, photobooth for debut, photobooth for wedding philippines, free photo strip philippines, online photobooth no download, Momento Booth, momente photobooth"
     />
-    <meta name="author" content="Momenté Booth" />
+    <meta name="author" content="Momento Booth" />
     <meta name="robots" content="index, follow" />
-    <link rel="canonical" href="https://momentephotobooth.com" />
+    <link rel="canonical" href="https://momentophotobooth.com" />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Momenté Booth" />
+    <meta property="og:site_name" content="Momento Booth" />
     <meta
       property="og:title"
-      content="Momenté Booth — Free Online Photobooth Philippines"
+      content="Momento Booth — Where Moments Become Masterpieces"
     />
     <meta
       property="og:description"
       content="Take 4 free photos and get your photo strip instantly. No sign up. No download. Perfect for debuts, weddings, and parties in the Philippines."
     />
-    <meta property="og:url" content="https://momentephotobooth.com" />
+    <meta property="og:url" content="https://momentophotobooth.com" />
     <meta
       property="og:image"
-      content="https://momentephotobooth.com/images/og-image.jpg"
+      content="https://momentophotobooth.com/images/og-image.jpg"
     />
     <meta property="og:locale" content="en_PH" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta
       name="twitter:title"
-      content="Momenté Booth — Free Online Photobooth Philippines"
+      content="Momento Booth — Where Moments Become Masterpieces"
     />
     <meta
       name="twitter:description"
@@ -47,8 +47,8 @@
       {
         "@context": "https://schema.org",
         "@type": "WebApplication",
-        "name": "Momenté Booth",
-        "url": "https://momentephotobooth.com",
+        "name": "Momento Booth",
+        "url": "https://momentophotobooth.com",
         "description": "Free online photobooth Philippines. Take 4 photos, pick a filter and layout, and download your photo strip instantly.",
         "applicationCategory": "PhotographyApplication",
         "operatingSystem": "Any",
@@ -72,7 +72,7 @@
          TOP NAVIGATION BAR
     ══════════════════════════════ -->
     <nav class="topbar">
-      <button class="logo" onclick="goTo(1)">✦ Momenté Booth</button>
+      <button class="logo" onclick="goTo(1)">✦ Momento Booth</button>
 
       <div class="step-dots">
         <div class="dot active" id="d0"></div>
@@ -375,9 +375,9 @@
             Photo Strips Instantly
           </h1>
           <p class="hero-sub">
-            No sign up. No download. Take 4 shots and get your photo strip for
-            free — perfect for debuts, weddings, and parties in the Philippines.
-            ✦
+            Where moments become masterpieces. Take 4 shots and get your free
+            photo strip instantly — perfect for debuts, weddings, and parties in
+            the Philippines. ✦
           </p>
           <div class="hero-actions">
             <button
@@ -470,6 +470,66 @@
                 <div class="lf lf-space"></div>
               </div>
               <span class="layout-name">3+✦</span>
+            </button>
+            <button
+              class="layout-card"
+              data-layout="E"
+              onclick="setLayout('E', this)"
+              title="2x3 Grid + Branding"
+            >
+              <div class="layout-thumb layout-thumb-E">
+                <div class="lf"></div>
+                <div class="lf"></div>
+                <div class="lf"></div>
+                <div class="lf"></div>
+                <div class="lf"></div>
+                <div class="lf"></div>
+                <div class="lf lf-space" style="grid-column: 1/-1"></div>
+              </div>
+              <span class="layout-name">6-Grid</span>
+            </button>
+            <button
+              class="layout-card"
+              data-layout="F"
+              onclick="setLayout('F', this)"
+              title="3 Stacked + Top Decor + Bottom Text"
+            >
+              <div class="layout-thumb layout-thumb-F">
+                <div class="lf lf-space"></div>
+                <div class="lf lf-sm"></div>
+                <div class="lf lf-sm"></div>
+                <div class="lf lf-sm"></div>
+                <div class="lf lf-space"></div>
+              </div>
+              <span class="layout-name">Deco</span>
+            </button>
+            <button
+              class="layout-card"
+              data-layout="G"
+              onclick="setLayout('G', this)"
+              title="4 Stacked + Large Bottom"
+            >
+              <div class="layout-thumb layout-thumb-G">
+                <div class="lf"></div>
+                <div class="lf"></div>
+                <div class="lf"></div>
+                <div class="lf"></div>
+                <div class="lf lf-space" style="flex: 1.5"></div>
+              </div>
+              <span class="layout-name">Brand</span>
+            </button>
+            <button
+              class="layout-card"
+              data-layout="H"
+              onclick="setLayout('H', this)"
+              title="1 Photo + Film Border"
+            >
+              <div class="layout-thumb layout-thumb-H">
+                <div class="lf lf-film-top"></div>
+                <div class="lf lf-main"></div>
+                <div class="lf lf-film-bot"></div>
+              </div>
+              <span class="layout-name">Film</span>
             </button>
           </div>
         </div>
@@ -764,7 +824,7 @@
             aria-label="Your completed photo strip"
           >
             <div class="rs-header">
-              <div class="rs-brand">✦ Momenté Booth</div>
+              <div class="rs-brand">✦ Momento Booth</div>
               <div class="rs-date" id="rs-date"></div>
             </div>
             <div class="rs-frame" id="rs0">○</div>
@@ -1026,7 +1086,7 @@
         </button>
         <h2 class="modal-title">✦ Share Your Suggestions</h2>
         <p class="modal-sub">
-          Help us make Momenté Booth even better! We'd love to hear your ideas
+          Help us make Momento Booth even better! We'd love to hear your ideas
           and feedback.
         </p>
         <div id="suggestion-form">
